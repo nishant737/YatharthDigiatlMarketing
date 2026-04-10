@@ -21,14 +21,15 @@ app.use(express.json())
 // API Routes
 app.use('/api/lead', leadRoute)
 
-// Serve frontend in production
+// Serve frontend in production (only if dist exists — not needed when frontend is on Vercel)
 const distPath = path.join(__dirname, '../frontend/dist')
-app.use(express.static(distPath))
-
-// All non-API routes → frontend (SPA client-side routing)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(distPath, 'index.html'))
-})
+const fs = require('fs')
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath))
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'))
+  })
+}
 
 // Connect to MongoDB then start server
 mongoose.connect(process.env.MONGO_URI)
