@@ -2,6 +2,7 @@ require('dotenv').config()
 const express   = require('express')
 const mongoose  = require('mongoose')
 const cors      = require('cors')
+const path      = require('path')
 const leadRoute = require('./routes/lead')
 
 const app  = express()
@@ -17,11 +18,17 @@ app.use(cors({
 }))
 app.use(express.json())
 
-// Routes
+// API Routes
 app.use('/api/lead', leadRoute)
 
-// Health check
-app.get('/', (req, res) => res.json({ status: 'Yatharth backend running ✅' }))
+// Serve frontend in production
+const distPath = path.join(__dirname, '../frontend/dist')
+app.use(express.static(distPath))
+
+// All non-API routes → frontend (SPA client-side routing)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'))
+})
 
 // Connect to MongoDB then start server
 mongoose.connect(process.env.MONGO_URI)
