@@ -21,25 +21,6 @@ app.use(express.json())
 // API Routes
 app.use('/api/lead', leadRoute)
 
-// Debug: test Google Sheets connection
-app.get('/api/test-sheet', async (_req, res) => {
-  const { appendToSheet } = require('./services/sheets')
-  try {
-    await appendToSheet({
-      name: 'Test Lead',
-      phone: '0000000000',
-      service: 'Test',
-      description: 'Production connectivity test',
-      budget: '0',
-      score: 'WARM',
-      reason: 'Test entry',
-    })
-    res.json({ success: true, message: 'Sheet write attempted — check logs for ✅ or ❌' })
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message })
-  }
-})
-
 // Serve frontend in production (only if dist exists — not needed when frontend is on Vercel)
 const distPath = path.join(__dirname, '../frontend/dist')
 const fs = require('fs')
