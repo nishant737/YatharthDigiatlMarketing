@@ -123,7 +123,7 @@ export default function ChatBot({ loaded }) {
 
   // Responsive layout config
   const chatStyle = isMobile
-    ? { bottom: '80px', right: '12px', width: '260px', height: '360px', borderRadius: '16px' }
+    ? { bottom: '72px', right: '12px', width: '280px', height: '370px', borderRadius: '16px' }
     : { bottom: '80px', right: '24px', width: '300px', height: '420px', borderRadius: '16px' }
 
   // Framer-motion animation variants
@@ -349,6 +349,7 @@ const st = {
     border:          '1px solid rgba(255,255,255,0.06)',
     fontFamily:      "'Inter', system-ui, sans-serif",
     transformOrigin: 'bottom right',
+    boxSizing:       'border-box',
   },
   header: {
     background:     'linear-gradient(135deg, #DB6436 0%, #c9522a 100%)',
@@ -461,9 +462,12 @@ const st = {
     gap:        '8px',
     flexShrink: 0,
     background: '#111',
+    boxSizing:  'border-box',
+    width:      '100%',
   },
   input: {
     flex:         1,
+    minWidth:     0,
     background:   '#1e1e1e',
     border:       '1px solid rgba(255,255,255,0.08)',
     borderRadius: '12px',
@@ -472,6 +476,7 @@ const st = {
     fontSize:     '0.83rem',
     outline:      'none',
     fontFamily:   'inherit',
+    boxSizing:    'border-box',
   },
   sendBtn: {
     background:   'linear-gradient(135deg, #DB6436, #c9522a)',

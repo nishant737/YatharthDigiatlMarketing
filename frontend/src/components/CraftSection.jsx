@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import craftBg from '../asset/craft.jpeg'
-import storyVideo from '../asset/story.mp4'
+import goExtraBg from '../asset/goextra.jpeg'
 
 function useVisibleCount() {
   const [count, setCount] = useState(() => {
@@ -26,288 +26,137 @@ function useIsMobile() {
   return mobile
 }
 
-// ─── Responsive grid CSS ──────────────────────────────────────────────────────
-
-// ─── Parallax 3D background ──────────────────────────────────────────────────
-const ORBS = [
-  { x: '12%',  y: '18%',  size: 340, color: 'rgba(219,100,54,0.055)', blur: 80,  depth: 0.04 },
-  { x: '72%',  y: '12%',  size: 260, color: 'rgba(200,90,48,0.045)',  blur: 60,  depth: 0.07 },
-  { x: '85%',  y: '65%',  size: 420, color: 'rgba(219,100,54,0.035)', blur: 100, depth: 0.025 },
-  { x: '30%',  y: '75%',  size: 220, color: 'rgba(161,149,140,0.04)', blur: 55,  depth: 0.09 },
-  { x: '55%',  y: '45%',  size: 300, color: 'rgba(219,100,54,0.025)', blur: 90,  depth: 0.015 },
-]
-
-const SHAPES = [
-  { x: 18,  y: 22,  size: 80,  type: 'ring',    rot: 15,  depth: 0.12, dur: 18 },
-  { x: 80,  y: 15,  size: 50,  type: 'ring',    rot: -30, depth: 0.18, dur: 22 },
-  { x: 70,  y: 70,  size: 100, type: 'ring',    rot: 45,  depth: 0.08, dur: 28 },
-  { x: 10,  y: 72,  size: 60,  type: 'cross',   rot: 20,  depth: 0.15, dur: 16 },
-  { x: 90,  y: 45,  size: 40,  type: 'cross',   rot: -15, depth: 0.22, dur: 20 },
-  { x: 45,  y: 10,  size: 70,  type: 'diamond', rot: 0,   depth: 0.1,  dur: 24 },
-  { x: 25,  y: 50,  size: 45,  type: 'diamond', rot: 30,  depth: 0.2,  dur: 14 },
-  { x: 60,  y: 85,  size: 55,  type: 'ring',    rot: -45, depth: 0.13, dur: 19 },
-]
-
-function ParallaxOrb({ orb, smoothX, smoothY }) {
-  const tx = useTransform(smoothX, v => v * orb.depth * -600)
-  const ty = useTransform(smoothY, v => v * orb.depth * -600)
-  return (
-    <motion.div
-      style={{
-        position: 'absolute',
-        left: orb.x, top: orb.y,
-        width: orb.size, height: orb.size,
-        borderRadius: '50%',
-        background: orb.color,
-        filter: `blur(${orb.blur}px)`,
-        x: tx, y: ty,
-        translateX: '-50%', translateY: '-50%',
-        pointerEvents: 'none',
-      }}
-    />
-  )
-}
-
-function ParallaxShape({ s, smoothX, smoothY }) {
-  const tx = useTransform(smoothX, v => v * s.depth * -700)
-  const ty = useTransform(smoothY, v => v * s.depth * -700)
-  const base = {
-    position: 'absolute',
-    left: `${s.x}%`, top: `${s.y}%`,
-    width: s.size, height: s.size,
-    x: tx, y: ty,
-    translateX: '-50%', translateY: '-50%',
-    opacity: 0.13,
-    pointerEvents: 'none',
-  }
-  if (s.type === 'ring') return (
-    <motion.div style={base} animate={{ rotate: [s.rot, s.rot + 360] }} transition={{ duration: s.dur, repeat: Infinity, ease: 'linear' }}>
-      <svg width={s.size} height={s.size} viewBox="0 0 100 100" fill="none">
-        <circle cx="50" cy="50" r="44" stroke="#DB6436" strokeWidth="1.5" />
-        <circle cx="50" cy="50" r="34" stroke="rgba(219,100,54,0.4)" strokeWidth="0.8" strokeDasharray="6 4" />
-      </svg>
-    </motion.div>
-  )
-  if (s.type === 'cross') return (
-    <motion.div style={base} animate={{ rotate: [s.rot, s.rot + 180] }} transition={{ duration: s.dur, repeat: Infinity, ease: 'linear' }}>
-      <svg width={s.size} height={s.size} viewBox="0 0 100 100" fill="none">
-        <line x1="50" y1="8"  x2="50" y2="92" stroke="#DB6436" strokeWidth="1.5" />
-        <line x1="8"  y1="50" x2="92" y2="50" stroke="#DB6436" strokeWidth="1.5" />
-        <circle cx="50" cy="50" r="4" fill="rgba(219,100,54,0.6)" />
-      </svg>
-    </motion.div>
-  )
-  return (
-    <motion.div style={base} animate={{ rotate: [s.rot, s.rot + 360] }} transition={{ duration: s.dur, repeat: Infinity, ease: 'linear' }}>
-      <svg width={s.size} height={s.size} viewBox="0 0 100 100" fill="none">
-        <rect x="22" y="22" width="56" height="56" transform="rotate(45 50 50)" stroke="#DB6436" strokeWidth="1.5" />
-        <rect x="34" y="34" width="32" height="32" transform="rotate(45 50 50)" stroke="rgba(219,100,54,0.35)" strokeWidth="0.8" />
-      </svg>
-    </motion.div>
-  )
-}
-
-function ParallaxBackground() {
-  const mouseX  = useMotionValue(0)
-  const mouseY  = useMotionValue(0)
-  const smoothX = useSpring(mouseX, { stiffness: 60, damping: 28, mass: 1.2 })
-  const smoothY = useSpring(mouseY, { stiffness: 60, damping: 28, mass: 1.2 })
-  const containerRef = useRef(null)
-
-  useEffect(() => {
-    const onMove = (e) => {
-      const rect = containerRef.current?.getBoundingClientRect()
-      if (!rect) return
-      // only respond when mouse is within the section bounds
-      if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
-        mouseX.set(0); mouseY.set(0); return
-      }
-      mouseX.set((e.clientX - rect.left) / rect.width  - 0.5)
-      mouseY.set((e.clientY - rect.top)  / rect.height - 0.5)
-    }
-    window.addEventListener('mousemove', onMove, { passive: true })
-    return () => window.removeEventListener('mousemove', onMove)
-  }, [mouseX, mouseY])
-
-  return (
-    <div
-      ref={containerRef}
-      style={{
-        position: 'absolute', inset: 0,
-        pointerEvents: 'none',
-        zIndex: 0,
-        overflow: 'hidden',
-      }}
-    >
-      {/* ── Subtle grid ── */}
-      <div style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: `
-          linear-gradient(rgba(219,100,54,0.04) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(219,100,54,0.04) 1px, transparent 1px)
-        `,
-        backgroundSize: '72px 72px',
-        maskImage: 'radial-gradient(ellipse 85% 85% at 50% 50%, black 20%, transparent 100%)',
-        WebkitMaskImage: 'radial-gradient(ellipse 85% 85% at 50% 50%, black 20%, transparent 100%)',
-      }} />
-
-      {/* ── Orbs ── */}
-      {ORBS.map((orb, i) => (
-        <ParallaxOrb key={i} orb={orb} smoothX={smoothX} smoothY={smoothY} />
-      ))}
-
-      {/* ── Shapes ── */}
-      {SHAPES.map((s, i) => (
-        <ParallaxShape key={i} s={s} smoothX={smoothX} smoothY={smoothY} />
-      ))}
-
-      {/* ── Pulsing rings at center ── */}
-      <motion.div
-        animate={{ scale: [1, 1.12, 1], opacity: [0.04, 0.08, 0.04] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-        style={{
-          position: 'absolute', top: '50%', left: '50%',
-          width: 520, height: 520,
-          translateX: '-50%', translateY: '-50%',
-          borderRadius: '50%',
-          border: '1px solid rgba(219,100,54,0.35)',
-          pointerEvents: 'none',
-        }}
-      />
-      <motion.div
-        animate={{ scale: [1, 1.08, 1], opacity: [0.025, 0.055, 0.025] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-        style={{
-          position: 'absolute', top: '50%', left: '50%',
-          width: 780, height: 780,
-          translateX: '-50%', translateY: '-50%',
-          borderRadius: '50%',
-          border: '1px solid rgba(219,100,54,0.2)',
-          pointerEvents: 'none',
-        }}
-      />
-    </div>
-  )
-}
-
 // ─── Service data ─────────────────────────────────────────────────────────────
 const SERVICES = [
-  { num: '01', title: 'Brand Strategy',        desc: 'We define how you are seen.',       icon: '◎', accent: '#DB6436' },
-  { num: '02', title: 'Digital Marketing',     desc: 'We make sure you are found.',       icon: '◈', accent: '#C85A30' },
-  { num: '03', title: 'Content & Storytelling',desc: 'We give your brand a voice.',       icon: '❖', accent: '#C85A30' },
-  { num: '04', title: 'Creative Direction',    desc: 'We shape how it feels.',            icon: '✦', accent: '#DB6436' },
-  { num: '05', title: 'Social Presence',       desc: 'We build how you show up daily.',   icon: '◇', accent: '#C85A30' },
+  { num: '01', title: 'Brand Strategy',         desc: 'We define how you are seen.',     icon: '◎', accent: '#DB6436' },
+  { num: '02', title: 'Digital Marketing',      desc: 'We make sure you are found.',     icon: '◈', accent: '#C85A30' },
+  { num: '03', title: 'Content & Storytelling', desc: 'We give your brand a voice.',     icon: '❖', accent: '#C85A30' },
+  { num: '04', title: 'Creative Direction',     desc: 'We shape how it feels.',          icon: '✦', accent: '#DB6436' },
+  { num: '05', title: 'Social Presence',        desc: 'We build how you show up daily.', icon: '◇', accent: '#C85A30' },
 ]
 
-// ─── Single service card (flip on hover/tap → video on back) ─────────────────
+// ─── Service card ─────────────────────────────────────────────────────────────
+// Key fix: use separate motion.div for whileInView (entry) vs the interactive
+// tilt/hover/tap layer — never mix whileInView, animate, and spring style on one element.
 function ServiceCard({ service, index }) {
-  const [flipped, setFlipped] = useState(false)
-  const videoRef   = useRef(null)
-  const isTouchRef = useRef(false)
-  const cardRef    = useRef(null)
+  const cardRef = useRef(null)
 
-  // 3D tilt springs
-  const tiltX = useSpring(useMotionValue(0), { stiffness: 260, damping: 22 })
-  const tiltY = useSpring(useMotionValue(0), { stiffness: 260, damping: 22 })
+  // Motion values for cursor-tracked tilt — drives style directly, no animate conflict
+  const tiltX = useSpring(useMotionValue(0), { stiffness: 280, damping: 24 })
+  const tiltY = useSpring(useMotionValue(0), { stiffness: 280, damping: 24 })
+
+  // Spotlight — motion values avoid re-render on every mousemove
+  const spotX = useMotionValue(50)
+  const spotY = useMotionValue(50)
+  const spotBg = useTransform(
+    [spotX, spotY],
+    ([x, y]) => `radial-gradient(ellipse 55% 45% at ${x}% ${y}%, ${service.accent}1c 0%, transparent 68%)`
+  )
 
   const handleMouseMove = (e) => {
-    if (isTouchRef.current) return
     const rect = cardRef.current?.getBoundingClientRect()
     if (!rect) return
-    const x = (e.clientX - rect.left) / rect.width  - 0.5
-    const y = (e.clientY - rect.top)  / rect.height - 0.5
-    tiltY.set(x * 14)
-    tiltX.set(-y * 14)
-  }
-  const resetTilt = () => { tiltX.set(0); tiltY.set(0) }
-
-  const startFlip = () => {
-    setFlipped(true)
-    setTimeout(() => { videoRef.current?.play().catch(() => {}) }, 280)
-  }
-  const endFlip = () => {
-    setFlipped(false)
-    if (videoRef.current) {
-      videoRef.current.pause()
-      videoRef.current.currentTime = 0
-    }
+    const x = (e.clientX - rect.left) / rect.width
+    const y = (e.clientY - rect.top)  / rect.height
+    tiltY.set((x - 0.5) * 16)
+    tiltX.set(-(y - 0.5) * 16)
+    spotX.set(x * 100)
+    spotY.set(y * 100)
   }
 
-  const handleEnter = () => { if (!isTouchRef.current) startFlip() }
-  const handleLeave = () => { if (!isTouchRef.current) { endFlip(); resetTilt() } }
-
-  const handleTap = () => {
-    isTouchRef.current = true
-    flipped ? endFlip() : startFlip()
-    setTimeout(() => { isTouchRef.current = false }, 500)
+  const handleMouseLeave = () => {
+    tiltX.set(0)
+    tiltY.set(0)
+    spotX.set(50)
+    spotY.set(50)
   }
 
   return (
+    // Layer 1 — entry animation only (whileInView)
     <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 40, rotateX: 12 }}
-      whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-      viewport={{ once: false, amount: 0.2 }}
+      initial={{ opacity: 0, y: 48 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.15 }}
       transition={{ duration: 0.65, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
-      onHoverStart={handleEnter}
-      onHoverEnd={handleLeave}
-      onTapStart={handleTap}
-      onMouseMove={handleMouseMove}
-      style={{
-        perspective: '1000px',
-        minHeight: 'clamp(280px, 40vw, 340px)',
-        cursor: 'pointer',
-        rotateX: tiltX,
-        rotateY: tiltY,
-        transformStyle: 'preserve-3d',
-        willChange: 'transform',
-      }}
     >
-      {/* ── Flip container ── */}
+      {/* Layer 2 — hover lift + tap press (no spring style conflict) */}
       <motion.div
-        animate={{ rotateY: flipped ? 180 : 0 }}
-        transition={{ duration: 0.75, ease: [0.4, 0, 0.2, 1] }}
-        style={{
-          width: '100%',
-          minHeight: 'clamp(280px, 40vw, 340px)',
-          height: '100%',
-          position: 'relative',
-          transformStyle: 'preserve-3d',
-          willChange: 'transform',
-        }}
+        whileHover={{ y: -10, scale: 1.025 }}
+        whileTap={{ scale: 0.955, y: 2 }}
+        transition={{ type: 'spring', stiffness: 320, damping: 22 }}
+        // Layer 3 — cursor tilt via spring motion values in style
+        style={{ rotateX: tiltX, rotateY: tiltY, perspective: '900px', willChange: 'transform' }}
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
       >
+        {/* Outer glow — driven by CSS :hover via framer variants */}
+        <motion.div
+          variants={{ rest: { opacity: 0 }, hover: { opacity: 1 }, tap: { opacity: 0.8, scale: 0.97 } }}
+          initial="rest"
+          whileHover="hover"
+          whileTap="tap"
+          transition={{ duration: 0.25 }}
+          style={{
+            position: 'absolute', inset: '-2px', borderRadius: '20px',
+            background: `linear-gradient(135deg, ${service.accent}55, transparent 60%, ${service.accent}33)`,
+            filter: 'blur(1.5px)', pointerEvents: 'none', zIndex: 0,
+          }}
+        />
 
-        {/* ════ FRONT FACE ════ */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          backfaceVisibility: 'hidden',
-          WebkitBackfaceVisibility: 'hidden',
-          borderRadius: '18px',
-          background: 'linear-gradient(145deg, rgba(26,22,18,0.97) 0%, rgba(14,11,9,0.99) 100%)',
-          border: `1px solid ${flipped ? service.accent + '45' : 'rgba(161,149,140,0.12)'}`,
-          padding: 'clamp(28px, 3.5vw, 42px)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '18px',
-          overflow: 'hidden',
-          transition: 'border-color 0.4s ease',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.35)',
-        }}>
-          {/* Radial glow */}
-          <div style={{
+        {/* Press ripple — rendered via whileTap scale on parent, no extra state needed */}
+
+        {/* Card body */}
+        <motion.div
+          variants={{ rest: { borderColor: 'rgba(161,149,140,0.12)' }, hover: { borderColor: `${service.accent}55` }, tap: { borderColor: `${service.accent}88` } }}
+          initial="rest"
+          whileHover="hover"
+          whileTap="tap"
+          transition={{ duration: 0.25 }}
+          style={{
+            position: 'relative', zIndex: 1,
+            width: '100%',
+            minHeight: 'clamp(280px, 40vw, 340px)',
+            borderRadius: '18px',
+            background: 'linear-gradient(145deg, rgba(26,22,18,0.82) 0%, rgba(14,11,9,0.88) 100%)',
+            border: '1px solid rgba(161,149,140,0.12)',
+            padding: 'clamp(28px, 3.5vw, 42px)',
+            display: 'flex', flexDirection: 'column', gap: '18px',
+            overflow: 'hidden',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.35)',
+          }}
+        >
+          {/* Cursor-tracking inner spotlight — motion value, zero re-renders */}
+          <motion.div style={{
             position: 'absolute', inset: 0, borderRadius: '18px', pointerEvents: 'none',
-            background: `radial-gradient(ellipse 80% 55% at 50% 0%, ${service.accent}14 0%, transparent 70%)`,
+            background: spotBg,
           }} />
 
-          {/* Corner sparkle */}
-          <div style={{
-            position: 'absolute', top: '18px', right: '20px',
-            width: '6px', height: '6px', borderRadius: '50%',
-            background: service.accent,
-            boxShadow: `0 0 10px 3px ${service.accent}66`,
-            pointerEvents: 'none',
-          }} />
+          {/* Top shimmer on hover */}
+          <motion.div
+            variants={{ rest: { scaleX: 0.3, opacity: 0 }, hover: { scaleX: 1, opacity: 1 } }}
+            initial="rest" whileHover="hover"
+            transition={{ duration: 0.4 }}
+            style={{
+              position: 'absolute', top: 0, left: '10%', right: '10%', height: '1px',
+              background: `linear-gradient(90deg, transparent, ${service.accent}cc, transparent)`,
+              transformOrigin: 'center', pointerEvents: 'none',
+            }}
+          />
+
+          {/* Corner dot */}
+          <motion.div
+            variants={{ rest: { scale: 1, opacity: 0.55 }, hover: { scale: 1.5, opacity: 1 }, tap: { scale: 2, opacity: 1 } }}
+            initial="rest" whileHover="hover" whileTap="tap"
+            transition={{ duration: 0.22 }}
+            style={{
+              position: 'absolute', top: '18px', right: '20px',
+              width: '6px', height: '6px', borderRadius: '50%',
+              background: service.accent,
+              boxShadow: `0 0 10px 3px ${service.accent}66`,
+              pointerEvents: 'none',
+            }}
+          />
 
           {/* Number */}
           <span style={{
@@ -320,13 +169,19 @@ function ServiceCard({ service, index }) {
           </span>
 
           {/* Icon */}
-          <span style={{
-            fontSize: 'clamp(2rem, 3.2vw, 2.7rem)',
-            color: service.accent, lineHeight: 1,
-            display: 'inline-block', width: 'fit-content',
-          }}>
+          <motion.span
+            variants={{ rest: { scale: 1 }, hover: { scale: 1.15 }, tap: { scale: 0.9 } }}
+            initial="rest" whileHover="hover" whileTap="tap"
+            transition={{ type: 'spring', stiffness: 380, damping: 18 }}
+            style={{
+              fontSize: 'clamp(2rem, 3.2vw, 2.7rem)',
+              color: service.accent, lineHeight: 1,
+              display: 'inline-block', width: 'fit-content',
+              filter: `drop-shadow(0 0 0px ${service.accent})`,
+            }}
+          >
             {service.icon}
-          </span>
+          </motion.span>
 
           {/* Title */}
           <h3 style={{
@@ -338,7 +193,16 @@ function ServiceCard({ service, index }) {
           </h3>
 
           {/* Divider */}
-          <div style={{ height: '1px', background: `linear-gradient(90deg, ${service.accent}88, transparent)`, borderRadius: '1px' }} />
+          <motion.div
+            variants={{ rest: { scaleX: 0.45, opacity: 0.5 }, hover: { scaleX: 1, opacity: 1 } }}
+            initial="rest" whileHover="hover"
+            transition={{ duration: 0.38 }}
+            style={{
+              height: '1px',
+              background: `linear-gradient(90deg, ${service.accent}cc, transparent)`,
+              borderRadius: '1px', transformOrigin: 'left',
+            }}
+          />
 
           {/* Description */}
           <p style={{
@@ -349,101 +213,13 @@ function ServiceCard({ service, index }) {
             {service.desc}
           </p>
 
-          {/* Hover hint */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '8px',
-            marginTop: 'auto', paddingTop: '4px',
-            opacity: 0.6,
-          }}>
-            <div style={{ width: '20px', height: '1px', background: service.accent }} />
-            <span style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontWeight: 400, fontSize: '0.65rem',
-              letterSpacing: '0.18em', color: service.accent,
-              textTransform: 'uppercase',
-            }}>
-              Watch
-            </span>
-          </div>
-        </div>
-
-        {/* ════ BACK FACE ════ */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          backfaceVisibility: 'hidden',
-          WebkitBackfaceVisibility: 'hidden',
-          transform: 'rotateY(180deg)',
-          borderRadius: '18px',
-          overflow: 'hidden',
-          border: `1px solid ${service.accent}55`,
-          boxShadow: `0 20px 56px rgba(0,0,0,0.6), 0 0 48px ${service.accent}18`,
-        }}>
-          {/* Video */}
-          <video
-            ref={videoRef}
-            src={storyVideo}
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            style={{
-              width: '100%', height: '100%',
-              objectFit: 'cover',
-              display: 'block',
-            }}
-          />
-
-          {/* Dark gradient overlay at bottom */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: `linear-gradient(to top, rgba(8,5,3,0.85) 0%, transparent 55%)`,
-            pointerEvents: 'none',
-          }} />
-
-          {/* Service title overlay */}
-          <div style={{
-            position: 'absolute', bottom: 0, left: 0, right: 0,
-            padding: 'clamp(16px,2.5vw,24px)',
-            display: 'flex', flexDirection: 'column', gap: '4px',
-          }}>
-            <span style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontWeight: 400, fontSize: '0.6rem',
-              letterSpacing: '0.22em', color: service.accent,
-              textTransform: 'uppercase',
-            }}>
-              {service.num}
-            </span>
-            <span style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontWeight: 500, fontSize: 'clamp(0.9rem, 1.6vw, 1.1rem)',
-              color: '#f5f0eb', letterSpacing: '-0.01em',
-            }}>
-              {service.title}
-            </span>
-          </div>
-
-          {/* Play indicator */}
-          <div style={{
-            position: 'absolute', top: '16px', right: '16px',
-            width: '32px', height: '32px', borderRadius: '50%',
-            background: `${service.accent}22`,
-            border: `1px solid ${service.accent}55`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <svg width="10" height="12" viewBox="0 0 10 12" fill="none">
-              <path d="M1 1l8 5-8 5V1z" fill={service.accent}/>
-            </svg>
-          </div>
-        </div>
-
+        </motion.div>
       </motion.div>
     </motion.div>
   )
 }
 
-// ─── Main section ─────────────────────────────────────────────────────────────
+// ─── Arrow button ─────────────────────────────────────────────────────────────
 function ArrowBtn({ dir, onClick, disabled }) {
   const [hov, setHov] = useState(false)
   return (
@@ -453,16 +229,13 @@ function ArrowBtn({ dir, onClick, disabled }) {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        width: '44px', height: '44px',
-        borderRadius: '50%',
+        width: '44px', height: '44px', borderRadius: '50%',
         border: `1px solid ${hov && !disabled ? 'rgba(219,100,54,0.55)' : 'rgba(161,149,140,0.18)'}`,
         background: hov && !disabled ? 'rgba(219,100,54,0.08)' : 'transparent',
         color: disabled ? 'rgba(161,149,140,0.2)' : hov ? '#DB6436' : 'rgba(245,240,235,0.4)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         cursor: disabled ? 'default' : 'pointer',
-        transition: 'all 0.28s ease',
-        outline: 'none',
-        flexShrink: 0,
+        transition: 'all 0.28s ease', outline: 'none', flexShrink: 0,
       }}
     >
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -475,12 +248,14 @@ function ArrowBtn({ dir, onClick, disabled }) {
   )
 }
 
+// ─── Main section ─────────────────────────────────────────────────────────────
 export default function CraftSection({ onCenterCardChange }) {
   const [active, setActive] = useState(0)
-  const dir = useRef(1)
-  const VISIBLE = useVisibleCount()
+  const dir      = useRef(1)
+  const VISIBLE  = useVisibleCount()
   const isMobile = useIsMobile()
-  const PAGES = Math.ceil(SERVICES.length / VISIBLE)
+  const PAGES    = Math.ceil(SERVICES.length / VISIBLE)
+  const sectionRef = useRef(null)
 
   const go = (next) => {
     dir.current = next > active ? 1 : -1
@@ -490,7 +265,6 @@ export default function CraftSection({ onCenterCardChange }) {
   const page    = Math.floor(active / VISIBLE)
   const visible = SERVICES.slice(active, active + VISIBLE)
 
-  // Center card = index 1 when 3 cards visible, index 0 when ≤ 2 cards visible
   useEffect(() => {
     const centerIdx = visible.length >= 3 ? 1 : 0
     onCenterCardChange?.(visible[centerIdx])
@@ -499,54 +273,39 @@ export default function CraftSection({ onCenterCardChange }) {
   return (
     <section
       id="craft"
+      ref={sectionRef}
       style={{
-        position: 'relative',
-        zIndex: 10,
-        background: '#0a0806',
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: isMobile
-          ? '12px 4px 16px'
-          : 'clamp(28px, 5vw, 60px) clamp(8px, 3vw, 28px)',
+        position: 'relative', zIndex: 10,
+        background: '#0a0806', minHeight: '100vh',
+        display: 'flex', flexDirection: 'column',
+        justifyContent: 'center', alignItems: 'center',
+        padding: isMobile ? '12px 4px 16px' : 'clamp(28px,5vw,60px) clamp(8px,3vw,28px)',
         overflow: 'hidden',
       }}
     >
-      {/* Grid CSS injected safely inside the render tree */}
       <style>{`
-        .craft-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: clamp(14px, 2vw, 26px);
-          width: 100%;
-        }
-        @media (max-width: 1023px) {
-          .craft-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 599px) {
-          .craft-grid { grid-template-columns: 1fr; }
-        }
+        .craft-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(14px,2vw,26px); width: 100%; }
+        @media (max-width: 1023px) { .craft-grid { grid-template-columns: repeat(2,1fr); } }
+        @media (max-width: 599px)  { .craft-grid { grid-template-columns: 1fr; } }
       `}</style>
 
-      {/* ── Parallax 3D background — desktop only to prevent mobile jank ── */}
-      {!isMobile && <ParallaxBackground />}
+      {/* Craft image tint */}
+      <div aria-hidden style={{
+        position: 'absolute', inset: 0, zIndex: 0,
+        backgroundImage: `url(${craftBg})`,
+        backgroundSize: 'cover', backgroundPosition: 'center',
+        opacity: 0.04, pointerEvents: 'none',
+      }} />
 
-      {/* ── Craft image background (low opacity) ── */}
-      <div
-        aria-hidden
-        style={{
-          position: 'absolute', inset: 0, zIndex: 0,
-          backgroundImage: `url(${craftBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.12,
-          pointerEvents: 'none',
-        }}
-      />
+      {/* GoExtra background */}
+      <div aria-hidden style={{
+        position: 'absolute', inset: 0, zIndex: 0,
+        backgroundImage: `url(${goExtraBg})`,
+        backgroundSize: 'cover', backgroundPosition: 'center',
+        opacity: 0.07, pointerEvents: 'none',
+      }} />
 
-      {/* Section heading */}
+      {/* Heading */}
       <motion.h2
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -555,34 +314,24 @@ export default function CraftSection({ onCenterCardChange }) {
         style={{
           position: 'relative', zIndex: 1,
           fontFamily: "'Inter', system-ui, sans-serif",
-          fontWeight: 300,
-          fontSize: 'clamp(1.3rem, 4vw, 2.1rem)',
-          letterSpacing: '-0.03em',
-          color: '#f5f0eb',
-          margin: isMobile ? '0 0 4px' : '0 0 clamp(12px, 2vw, 28px)',
+          fontWeight: 300, fontSize: 'clamp(1.3rem,4vw,2.1rem)',
+          letterSpacing: '-0.03em', color: '#f5f0eb',
+          margin: isMobile ? '0 0 4px' : '0 0 clamp(12px,2vw,28px)',
           textAlign: 'center',
         }}
       >
         Our Services
       </motion.h2>
 
-      {/* ── 3-card slider ── */}
-      <div
-        style={{
-          position: 'relative', zIndex: 1,
-          width: '100%',
-          maxWidth: '1100px',
-          overflow: 'visible',
-          padding: '16px 4px 4px',
-        }}
-      >
+      {/* Card grid */}
+      <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '1100px', overflow: 'visible', padding: '16px 4px 4px' }}>
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={active}
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ opacity: 0, y: -14 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="craft-grid"
           >
             {visible.map((service, i) => (
@@ -592,53 +341,21 @@ export default function CraftSection({ onCenterCardChange }) {
         </AnimatePresence>
       </div>
 
-      {/* ── Controls: arrows + dots ── */}
-      <div
-        style={{
-          position: 'relative', zIndex: 2,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '20px',
-          marginTop: 'clamp(20px, 3vw, 44px)',
-          flexShrink: 0,
-        }}
-      >
+      {/* Controls */}
+      <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', gap: '20px', marginTop: 'clamp(20px,3vw,44px)', flexShrink: 0 }}>
         <ArrowBtn dir="prev" onClick={() => go(active - VISIBLE)} disabled={active === 0} />
-
-        {/* Dot indicators — one dot per page */}
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           {Array.from({ length: PAGES }).map((_, i) => (
-            <button
-              key={i}
-              onClick={() => go(i * VISIBLE)}
-              style={{
-                width: i === page ? '24px' : '6px',
-                height: '6px',
-                borderRadius: '3px',
-                border: 'none',
-                background: i === page ? '#DB6436' : 'rgba(161,149,140,0.28)',
-                cursor: 'pointer',
-                padding: 0,
-                transition: 'all 0.35s cubic-bezier(0.22,1,0.36,1)',
-                outline: 'none',
-              }}
-            />
+            <button key={i} onClick={() => go(i * VISIBLE)} style={{
+              width: i === page ? '24px' : '6px', height: '6px', borderRadius: '3px',
+              border: 'none', background: i === page ? '#DB6436' : 'rgba(161,149,140,0.28)',
+              cursor: 'pointer', padding: 0, outline: 'none',
+              transition: 'all 0.35s cubic-bezier(0.22,1,0.36,1)',
+            }} />
           ))}
         </div>
-
         <ArrowBtn dir="next" onClick={() => go(active + VISIBLE)} disabled={active + VISIBLE >= SERVICES.length} />
       </div>
-
-      {/* Bottom accent line */}
-      <div
-        aria-hidden
-        style={{
-          width: 'clamp(40px, 8vw, 80px)',
-          height: '1px',
-          background: 'rgba(219,100,54,0.25)',
-          marginTop: 'clamp(28px, 4vw, 56px)',
-        }}
-      />
     </section>
   )
 }

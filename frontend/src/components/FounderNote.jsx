@@ -325,30 +325,24 @@ export default function FounderNote() {
           {/* ── Left: founder card ── */}
           <motion.div className="founder-card" {...fadeUp(0.05)}>
             <div className="founder-photo-wrap" style={{ position: 'relative' }}>
-              {/* Glow beneath photo that pulses with float */}
-              <motion.div
+              {/* Subtle glow beneath photo */}
+              <div
                 aria-hidden
-                animate={{ opacity: [0.5, 0.85, 0.5], scale: [1, 1.06, 1] }}
-                transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
                 style={{
                   position: 'absolute',
-                  bottom: '-18px', left: '10%', right: '10%',
-                  height: '40px',
+                  bottom: '-14px', left: '10%', right: '10%',
+                  height: '36px',
                   borderRadius: '50%',
-                  background: 'radial-gradient(ellipse, rgba(219,100,54,0.35) 0%, transparent 70%)',
-                  filter: 'blur(12px)',
+                  background: 'radial-gradient(ellipse, rgba(219,100,54,0.28) 0%, transparent 70%)',
+                  filter: 'blur(10px)',
                   pointerEvents: 'none',
                   zIndex: 0,
                 }}
               />
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-                style={{ position: 'relative', zIndex: 1 }}
-              >
+              <div style={{ position: 'relative', zIndex: 1 }}>
                 <img src={founderImg} alt="Eshwar Shetty" style={{
                   width: '100%',
-                  height: '100%',
+                  height: 'clamp(260px, 36vw, 360px)',
                   objectFit: 'cover',
                   objectPosition: 'top center',
                   display: 'block',
@@ -356,7 +350,7 @@ export default function FounderNote() {
                   border: '1px solid rgba(219,100,54,0.35)',
                   boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(219,100,54,0.1), 0 20px 60px rgba(219,100,54,0.15)',
                 }} />
-              </motion.div>
+              </div>
             </div>
             <div className="founder-name-block">
               <p className="founder-name">Eshwar Shetty</p>

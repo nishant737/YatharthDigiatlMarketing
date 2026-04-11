@@ -20,16 +20,35 @@ html {
   scroll-behavior: auto;
   text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
+  margin: 0;
+  padding: 0;
+  /* remove scrollbar-gutter reservation — prevents left/right gap */
+  scrollbar-gutter: auto;
 }
 
 body {
-  background-color: var(--bg);
+  margin: 0;
+  padding: 0;
+  background-color: #060503;
   color: var(--text);
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+  width: 100%;
+  min-height: 100vh;
+}
+
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+main {
+  margin: 0;
+  padding: 0;
 }
 
 /* Branded text selection */
@@ -45,22 +64,22 @@ body {
   border-radius: 4px;
 }
 
-/* Thin branded scrollbar */
+/* Thin branded vertical scrollbar — horizontal scrollbar hidden */
 ::-webkit-scrollbar {
   width: 3px;
+  height: 0px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #DB6436, rgba(219,100,54,0.3));
+  background: rgba(161,149,140,0.3);
   border-radius: 2px;
 }
-
-/* Prevent layout shift from scrollbar appearing */
-html {
-  scrollbar-gutter: stable;
+::-webkit-scrollbar:horizontal {
+  display: none;
 }
+
 
 /* Mobile tap highlight removal */
 * {

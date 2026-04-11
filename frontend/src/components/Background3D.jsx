@@ -12,197 +12,295 @@ function useIsMobile() {
   return mobile
 }
 
-// ─── Slowly drifting large bokeh circles ──────────────────────────────────────
-function Bokeh({ count = 18 }) {
-  const circles = useMemo(() => Array.from({ length: count }, (_, i) => ({
-    x: (Math.random() - 0.5) * 22,
-    y: (Math.random() - 0.5) * 13,
-    z: -6 - Math.random() * 5,
-    radius: 0.4 + Math.random() * 1.4,
-    speed: 0.02 + Math.random() * 0.04,
-    phase: Math.random() * Math.PI * 2,
-    opacity: 0.03 + Math.random() * 0.07,
-    color: [
-      new THREE.Color('#DB6436'),
-      new THREE.Color('#b85c30'),
-      new THREE.Color('#7a3d20'),
-    ][i % 3],
-  })), [count])
+// ─── Wave Grid — the hero element ────────────────────────────────────────────
+// A dense grid of points that ripple like a 3D ocean surface
+function WaveGrid({ cols = 60, rows = 36 }) {
+  const ref    = useRef()
+  const colRef = useRef()
 
-  return (
-    <>
-      {circles.map((c, i) => (
-        <DriftCircle key={i} data={c} />
-      ))}
-    </>
-  )
-}
+  const { basePositions, count } = useMemo(() => {
+    const positions = []
+    const W = 26, H = 14
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const x = (c / (cols - 1) - 0.5) * W
+        const y = (r / (rows - 1) - 0.5) * H
+        positions.push(x, y, 0)
+      }
+    }
+    return { basePositions: new Float32Array(positions), count: cols * rows }
+  }, [cols, rows])
 
-function DriftCircle({ data: d }) {
-  const ref = useRef()
+  const geometry = useMemo(() => {
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.BufferAttribute(basePositions.slice(), 3))
+    g.setAttribute('color',    new THREE.BufferAttribute(new Float32Array(count * 3), 3))
+    return g
+  }, [basePositions, count])
+
+  const colA = new THREE.Color('#DB6436')
+  const colB = new THREE.Color('#3a1a08')
+  const colC = new THREE.Color('#ff9060')
+
   useFrame(({ clock }) => {
     if (!ref.current) return
-    const t = clock.getElapsedTime()
-    ref.current.position.x = d.x + Math.sin(t * d.speed + d.phase) * 1.2
-    ref.current.position.y = d.y + Math.cos(t * d.speed * 0.7 + d.phase) * 0.8
-    ref.current.material.opacity = d.opacity * (0.6 + Math.sin(t * d.speed * 1.5 + d.phase) * 0.4)
-  })
-  const geo = useMemo(() => new THREE.CircleGeometry(d.radius, 48), [d.radius])
-  return (
-    <mesh ref={ref} position={[d.x, d.y, d.z]} geometry={geo}>
-      <meshBasicMaterial color={d.color} transparent opacity={d.opacity} depthWrite={false} />
-    </mesh>
-  )
-}
-
-// ─── Thin horizontal scan lines scrolling slowly ──────────────────────────────
-function ScanLines({ count = 6 }) {
-  const lines = useMemo(() => Array.from({ length: count }, (_, i) => ({
-    yOffset: (i / count) * 14 - 7,
-    speed: 0.06 + Math.random() * 0.08,
-    opacity: 0.025 + Math.random() * 0.035,
-    width: 16 + Math.random() * 6,
-  })), [count])
-
-  const refs = useRef(lines.map(() => null))
-
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime()
-    refs.current.forEach((r, i) => {
-      if (!r) return
-      const l = lines[i]
-      r.position.y = ((l.yOffset + t * l.speed) % 14) - 7
-      r.material.opacity = l.opacity * (0.5 + Math.abs(Math.sin(t * 0.3 + i)))
-    })
-  })
-
-  return (
-    <>
-      {lines.map((l, i) => (
-        <mesh
-          key={i}
-          ref={el => refs.current[i] = el}
-          position={[0, l.yOffset, -4]}
-        >
-          <planeGeometry args={[l.width, 0.006]} />
-          <meshBasicMaterial color="#DB6436" transparent opacity={l.opacity} depthWrite={false} blending={THREE.AdditiveBlending} />
-        </mesh>
-      ))}
-    </>
-  )
-}
-
-// ─── Floating dust — tiny warm specks drifting upward ─────────────────────────
-function Dust({ count = 120 }) {
-  const meshRef = useRef()
-
-  const { geo } = useMemo(() => {
-    const pts = [], cols = []
-    const palette = [
-      new THREE.Color('#DB6436'),
-      new THREE.Color('#e8a87c'),
-      new THREE.Color('#f5d0b0'),
-      new THREE.Color('#a0604a'),
-    ]
-    const speeds   = new Float32Array(count)
-    const offsets  = new Float32Array(count)
-    const wobbles  = new Float32Array(count)
+    const t   = clock.getElapsedTime()
+    const pos = ref.current.geometry.attributes.position
+    const col = ref.current.geometry.attributes.color
 
     for (let i = 0; i < count; i++) {
-      pts.push(new THREE.Vector3(
-        (Math.random() - 0.5) * 20,
-        (Math.random() - 0.5) * 14,
-        (Math.random() - 0.5) * 6 - 3,
-      ))
-      const c = palette[i % 4]
-      cols.push(c.r, c.g, c.b)
-      speeds[i]  = 0.12 + Math.random() * 0.28
-      offsets[i] = Math.random() * 100
-      wobbles[i] = Math.random() * Math.PI * 2
+      const ox = basePositions[i * 3]
+      const oy = basePositions[i * 3 + 1]
+
+      // Multiple overlapping waves for complex surface
+      const z =
+        Math.sin(ox * 0.55 + t * 0.7)  * 0.9 +
+        Math.sin(oy * 0.70 + t * 0.5)  * 0.7 +
+        Math.sin((ox + oy) * 0.35 + t * 0.9) * 0.5 +
+        Math.sin(ox * 0.22 - t * 0.4)  * 0.4 +
+        Math.cos(oy * 0.45 + t * 0.6)  * 0.35
+
+      pos.array[i * 3 + 2] = z
+
+      // Color by height: peaks = bright orange, troughs = dark
+      const n = (z + 2.8) / 5.6   // normalise 0–1
+      const c = n > 0.6
+        ? colC.clone().lerp(colA, (n - 0.6) / 0.4)
+        : colA.clone().lerp(colB, 1 - n / 0.6)
+
+      col.array[i * 3]     = c.r
+      col.array[i * 3 + 1] = c.g
+      col.array[i * 3 + 2] = c.b
     }
 
-    const g = new THREE.BufferGeometry().setFromPoints(pts)
-    g.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3))
-    g.userData = { speeds, offsets, wobbles, origPts: pts.map(p => p.clone()) }
-    return { geo: g }
-  }, [count])
-
-  useFrame(({ clock }) => {
-    if (!meshRef.current) return
-    const t = clock.getElapsedTime()
-    const pos = meshRef.current.geometry.attributes.position.array
-    const { speeds, offsets, wobbles, origPts } = meshRef.current.geometry.userData
-
-    for (let i = 0; i < count; i++) {
-      const rise = ((t * speeds[i] + offsets[i]) % 16) - 8
-      pos[i * 3]     = origPts[i].x + Math.sin(t * 0.18 + wobbles[i]) * 0.6
-      pos[i * 3 + 1] = origPts[i].y + rise
-      pos[i * 3 + 2] = origPts[i].z
-    }
-    meshRef.current.geometry.attributes.position.needsUpdate = true
+    pos.needsUpdate = true
+    col.needsUpdate = true
   })
 
   return (
-    <points ref={meshRef} geometry={geo}>
+    <points ref={ref} geometry={geometry} position={[0, -1, -4]}>
       <pointsMaterial
-        size={0.055} vertexColors transparent opacity={0.5}
-        sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending}
+        size={0.055}
+        vertexColors
+        transparent
+        opacity={0.38}
+        sizeAttenuation
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
       />
     </points>
   )
 }
 
-// ─── Very slow large radial light pulse from center ───────────────────────────
-function RadialPulse() {
-  const ref1 = useRef(), ref2 = useRef(), ref3 = useRef()
+// ─── Second wave layer — offset, slower, more transparent ─────────────────────
+function WaveGridBack({ cols = 40, rows = 24 }) {
+  const ref = useRef()
+
+  const { basePositions, count } = useMemo(() => {
+    const positions = []
+    const W = 30, H = 16
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        positions.push(
+          (c / (cols - 1) - 0.5) * W,
+          (r / (rows - 1) - 0.5) * H,
+          0
+        )
+      }
+    }
+    return { basePositions: new Float32Array(positions), count: cols * rows }
+  }, [cols, rows])
+
+  const geometry = useMemo(() => {
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.BufferAttribute(basePositions.slice(), 3))
+    return g
+  }, [basePositions, count])
 
   useFrame(({ clock }) => {
-    const t = clock.getElapsedTime()
-    const rings = [ref1, ref2, ref3]
-    rings.forEach((r, i) => {
-      if (!r.current) return
-      const phase = (t * 0.18 + i * 1.1) % 3
-      const s = 1 + phase * 4.5
-      const op = Math.max(0, 0.06 * (1 - phase / 3))
-      r.current.scale.setScalar(s)
-      r.current.material.opacity = op
-    })
+    if (!ref.current) return
+    const t   = clock.getElapsedTime()
+    const pos = ref.current.geometry.attributes.position
+    for (let i = 0; i < count; i++) {
+      const ox = basePositions[i * 3]
+      const oy = basePositions[i * 3 + 1]
+      pos.array[i * 3 + 2] =
+        Math.sin(ox * 0.3 + t * 0.35 + 1.2) * 1.1 +
+        Math.sin(oy * 0.4 + t * 0.28)        * 0.8 +
+        Math.cos(ox * 0.18 - oy * 0.22 + t * 0.45) * 0.6
+    }
+    pos.needsUpdate = true
   })
 
   return (
-    <>
-      {[ref1, ref2, ref3].map((r, i) => (
-        <mesh key={i} ref={r} position={[0, 0, -8]}>
-          <ringGeometry args={[1.8, 1.86, 80]} />
-          <meshBasicMaterial color="#DB6436" transparent opacity={0.06} depthWrite={false} blending={THREE.AdditiveBlending} />
-        </mesh>
-      ))}
-    </>
+    <points ref={ref} geometry={geometry} position={[0, 0, -9]}>
+      <pointsMaterial
+        size={0.04}
+        color="#7a3010"
+        transparent
+        opacity={0.18}
+        sizeAttenuation
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
   )
+}
+
+// ─── Floating ambient orbs ────────────────────────────────────────────────────
+function AmbientOrbs({ count = 10 }) {
+  const blobs = useMemo(() => Array.from({ length: count }, (_, i) => ({
+    x:       (Math.random() - 0.5) * 20,
+    y:       (Math.random() - 0.5) * 10,
+    z:       -5 - Math.random() * 6,
+    radius:  0.8 + Math.random() * 2.2,
+    speed:   0.008 + Math.random() * 0.018,
+    phase:   (i / count) * Math.PI * 2,
+    opacity: 0.03 + Math.random() * 0.05,
+    color: [
+      new THREE.Color('#DB6436'),
+      new THREE.Color('#c05020'),
+      new THREE.Color('#ff7040'),
+    ][i % 3],
+  })), [count])
+
+  return <>{blobs.map((b, i) => <Orb key={i} data={b} />)}</>
+}
+
+function Orb({ data: d }) {
+  const ref = useRef()
+  const geo = useMemo(() => new THREE.CircleGeometry(d.radius, 32), [d.radius])
+  useFrame(({ clock }) => {
+    if (!ref.current) return
+    const t = clock.getElapsedTime()
+    ref.current.position.x = d.x + Math.sin(t * d.speed + d.phase) * 3
+    ref.current.position.y = d.y + Math.cos(t * d.speed * 0.7 + d.phase) * 2
+    ref.current.material.opacity = d.opacity * (0.5 + 0.5 * Math.sin(t * d.speed * 1.8 + d.phase))
+  })
+  return (
+    <mesh ref={ref} position={[d.x, d.y, d.z]} geometry={geo}>
+      <meshBasicMaterial color={d.color} transparent opacity={d.opacity} depthWrite={false} blending={THREE.AdditiveBlending} />
+    </mesh>
+  )
+}
+
+// ─── Sparse foreground particles — depth cue ─────────────────────────────────
+function ForegroundDust({ count = 50 }) {
+  const ref = useRef()
+
+  const data = useMemo(() => {
+    const pos    = new Float32Array(count * 3)
+    const speeds = new Float32Array(count)
+    const phases = new Float32Array(count)
+    for (let i = 0; i < count; i++) {
+      pos[i * 3]     = (Math.random() - 0.5) * 18
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 12
+      pos[i * 3 + 2] = Math.random() * 4 - 2
+      speeds[i] = 0.08 + Math.random() * 0.15
+      phases[i] = Math.random() * Math.PI * 2
+    }
+    return { orig: pos.slice(), pos, speeds, phases }
+  }, [count])
+
+  const geo = useMemo(() => {
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.BufferAttribute(data.pos, 3))
+    return g
+  }, [data])
+
+  useFrame(({ clock }) => {
+    if (!ref.current) return
+    const t = clock.getElapsedTime()
+    for (let i = 0; i < count; i++) {
+      data.pos[i * 3]     = data.orig[i * 3]     + Math.sin(t * data.speeds[i] + data.phases[i]) * 0.6
+      data.pos[i * 3 + 1] = data.orig[i * 3 + 1] + Math.cos(t * data.speeds[i] * 0.8 + data.phases[i]) * 0.5
+    }
+    ref.current.geometry.attributes.position.needsUpdate = true
+  })
+
+  return (
+    <points ref={ref} geometry={geo}>
+      <pointsMaterial
+        size={0.06}
+        color="#ff8050"
+        transparent
+        opacity={0.22}
+        sizeAttenuation
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  )
+}
+
+// ─── Camera — strong parallax, spring velocity, auto-orbit ───────────────────
+function CameraController({ mouseX, mouseY }) {
+  const state = useRef({ x: 0, y: 0, vx: 0, vy: 0 })
+
+  useFrame(({ camera, clock }) => {
+    const t  = clock.getElapsedTime()
+    const mx = mouseX?.get?.() ?? 0
+    const my = mouseY?.get?.() ?? 0
+
+    // Target position driven by mouse
+    const tx = mx * 2.8 + Math.sin(t * 0.09) * 0.4
+    const ty = my * -1.8 + Math.cos(t * 0.07) * 0.25
+
+    // Spring physics — snappy but weighted
+    const s = state.current
+    s.vx += (tx - s.x) * 0.06
+    s.vy += (ty - s.y) * 0.06
+    s.vx *= 0.80
+    s.vy *= 0.80
+    s.x  += s.vx
+    s.y  += s.vy
+
+    // Slight Z pulse for depth breathing
+    const z = 9 + Math.sin(t * 0.06) * 0.4
+
+    camera.position.set(s.x, s.y, z)
+    // Look slightly ahead of movement for a cinematic feel
+    camera.lookAt(s.x * 0.08, s.y * 0.08, 0)
+  })
+  return null
 }
 
 // ─── Scene ────────────────────────────────────────────────────────────────────
-function Scene({ isMobile }) {
+function Scene({ isMobile, mouseX, mouseY }) {
   return (
     <>
-      <Bokeh count={isMobile ? 10 : 20} />
-      <ScanLines count={isMobile ? 4 : 7} />
-      <Dust count={isMobile ? 55 : 130} />
-      <RadialPulse />
+      <CameraController mouseX={mouseX} mouseY={mouseY} />
+      <WaveGridBack cols={isMobile ? 24 : 40} rows={isMobile ? 14 : 24} />
+      <WaveGrid     cols={isMobile ? 36 : 60} rows={isMobile ? 22 : 36} />
+      <AmbientOrbs  count={isMobile ? 5 : 10} />
+      <ForegroundDust count={isMobile ? 24 : 50} />
     </>
   )
 }
 
-export default function Background3D() {
+export default function Background3D({ mouseX, mouseY }) {
   const isMobile = useIsMobile()
   return (
     <Canvas
-      style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }}
-      gl={{ alpha: true, antialias: false, powerPreference: 'high-performance' }}
+      style={{
+        position: 'fixed',
+        top: 0, left: 0,
+        width: '100vw', height: '100dvh',
+        zIndex: 1,
+        pointerEvents: 'none',
+        opacity: 0.92,
+      }}
+      gl={{
+        alpha: true,
+        antialias: false,
+        powerPreference: 'high-performance',
+        stencil: false,
+        depth: false,
+      }}
       dpr={isMobile ? [1, 1] : [1, 1.5]}
-      camera={{ position: [0, 0, 8], fov: 60 }}
+      camera={{ position: [0, 0, 9], fov: 62 }}
     >
-      <Scene isMobile={isMobile} />
+      <Scene isMobile={isMobile} mouseX={mouseX} mouseY={mouseY} />
     </Canvas>
   )
 }

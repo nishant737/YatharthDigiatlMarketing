@@ -24,6 +24,28 @@ const LOGOS = [
 ]
 
 const CSS = `
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(24px, 4vw, 48px);
+  max-width: 800px;
+  margin: clamp(52px, 8vh, 80px) auto 0;
+  padding: 0 clamp(20px, 4vw, 48px);
+  align-items: center;
+  justify-items: center;
+}
+@media (max-width: 640px) {
+  .stat-grid {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 28px;
+    column-gap: 16px;
+  }
+  .stat-last {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+}
+
 @keyframes ticker-left {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -441,16 +463,9 @@ export default function ClientSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.8, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
-            gap: 'clamp(24px, 4vw, 48px)',
-            maxWidth: '800px',
-            margin: 'clamp(52px, 8vh, 80px) auto 0',
-            padding: '0 clamp(20px, 4vw, 48px)',
-            alignItems: 'center',
-            justifyItems: 'center',
-          }}
+          className="stat-grid"
+          style={{}}
+
         >
           {/* 17+ Brands */}
           <div style={{ 
@@ -525,7 +540,7 @@ export default function ClientSection() {
           </div>
 
           {/* 90d To measurable results */}
-          <div style={{ 
+          <div className="stat-last" style={{
             textAlign: 'center',
             display: 'flex',
             flexDirection: 'column',

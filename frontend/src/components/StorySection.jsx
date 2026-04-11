@@ -6,29 +6,64 @@ const STORY_CSS = `
   .story-section { display:flex; flex-direction:row; }
   .story-right   { min-height: 100vh; }
 
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     .story-section {
       flex-direction: column !important;
-      min-height: unset !important;
+      min-height: 100vh !important;
+      max-height: 100vh !important;
+      height: 100vh !important;
+      overflow: hidden !important;
     }
     .story-left {
-      flex: none !important;
+      flex: 0 0 40% !important;
+      max-height: 40% !important;
       width: 100% !important;
-      min-height: auto !important;
+      min-height: unset !important;
       align-items: center !important;
       text-align: center !important;
-      padding: 56px 24px 40px !important;
+      padding: 18px 20px 10px !important;
+      justify-content: flex-start !important;
+      overflow: hidden !important;
     }
     .story-left .lamp-wrap {
-      margin-left: auto !important;
-      margin-right: auto !important;
+      width: 60px !important;
+      height: 60px !important;
+      margin: 0 auto 6px auto !important;
+    }
+    .story-text-block {
+      align-items: center !important;
+      gap: 4px !important;
+      overflow: hidden !important;
+    }
+    .story-text-block p {
+      font-size: 0.72rem !important;
+      line-height: 1.35 !important;
+      margin: 0 !important;
+    }
+    .story-text-block p:first-child {
+      font-size: 0.9rem !important;
+      margin-bottom: 4px !important;
+    }
+    .story-text-block p:last-child {
+      margin-top: 4px !important;
+    }
+    /* Hide some middle lines on very small screens */
+    .story-text-block p:nth-child(n+5):nth-child(-n+7) {
+      display: none !important;
     }
     .story-right {
-      flex: none !important;
+      flex: 0 0 60% !important;
+      max-height: 60% !important;
       width: 100% !important;
-      height: 60vh !important;
+      height: unset !important;
       min-height: unset !important;
       position: relative !important;
+      padding: 8px 14px 14px !important;
+    }
+    .story-right > div {
+      border-radius: 14px !important;
+      overflow: hidden !important;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 1px 6px rgba(219,100,54,0.12) !important;
     }
   }
 `
@@ -48,14 +83,15 @@ const CLOSING = 'Still learning. Still building.'
 function useLampTrigger(sectionRef) {
   const [lit, setLit] = useState(false)
   useEffect(() => {
-    const onScroll = () => {
+    const check = () => {
       if (!sectionRef.current) return
       const rect = sectionRef.current.getBoundingClientRect()
-      setLit(rect.top <= 0 && rect.bottom > 0)
+      const vh = window.innerHeight
+      setLit(rect.top <= vh * 0.3 && rect.bottom > 0)
     }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
+    window.addEventListener('scroll', check, { passive: true })
+    check()
+    return () => window.removeEventListener('scroll', check)
   }, [sectionRef])
   return lit
 }
@@ -126,9 +162,9 @@ function WallLamp({ lit }) {
       className="lamp-wrap"
       style={{
         position: 'relative',
-        width: 'clamp(120px, 22vw, 220px)',
-        height: 'clamp(90px, 14vw, 160px)',
-        margin: '0 auto clamp(24px, 3vw, 40px) auto',
+        width: 'clamp(110px, 15vw, 180px)',
+        height: 'clamp(110px, 15vw, 180px)',
+        margin: '0 auto clamp(16px, 2vw, 24px) auto',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -136,149 +172,202 @@ function WallLamp({ lit }) {
         zIndex: 2,
       }}
     >
-      {/* ── Wide cone — centered light falling down (refined) ── */}
+      {/* ── Wide outer light cone falling downward ── */}
       <motion.div
-        initial={{ opacity: 0, scaleY: 0.7 }}
-        animate={lit ? { opacity: 0.7, scaleY: 1 } : { opacity: 0, scaleY: 0.7 }}
-        transition={lit
-          ? { duration: 1.8, ease: [0.4, 0, 0.2, 1] }
-          : { duration: 0.3 }}
+        initial={{ opacity: 0, scaleY: 0.4 }}
+        animate={lit ? { opacity: 1, scaleY: 1 } : { opacity: 0, scaleY: 0.4 }}
+        transition={lit ? { duration: 2.2, ease: [0.4, 0, 0.2, 1] } : { duration: 0.3 }}
         style={{
           position: 'absolute',
-          top: '70%',
+          top: '88%',
           left: '50%',
           transform: 'translateX(-50%)',
           transformOrigin: 'top center',
-          width: 'clamp(340px, 60vw, 720px)',
-          height: 'clamp(440px, 75vw, 950px)',
-          background: 'radial-gradient(ellipse 60% 100% at 50% 0%, rgba(255,220,120,0.18) 0%, rgba(255,200,100,0.10) 60%, transparent 100%)',
-          filter: 'blur(8px)',
+          width: 'clamp(20px, 4vw, 40px)',
+          height: 'clamp(500px, 80vh, 900px)',
+          background: 'linear-gradient(to bottom, rgba(255,210,110,0.22) 0%, rgba(255,180,80,0.08) 30%, rgba(219,100,54,0.03) 70%, transparent 100%)',
+          clipPath: 'polygon(0% 0%, 100% 0%, 180% 100%, -80% 100%)',
+          filter: 'blur(20px)',
           zIndex: 0,
         }}
       />
 
-      {/* ── Soft radial fill in cone center ── */}
+      {/* ── Focused inner beam ── */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={lit ? { opacity: GLITCH_OPACITY } : { opacity: 0 }}
         transition={lit ? { duration: 1.6, times: GLITCH_TIMES } : { duration: 0.3 }}
         style={{
           position: 'absolute',
-          top: '75%',
+          top: '86%',
           left: '50%',
           transform: 'translateX(-50%)',
-          width: 'clamp(200px, 34vw, 460px)',
-          height: 'clamp(300px, 50vw, 650px)',
-          background: 'radial-gradient(ellipse 46% 100% at 50% 0%, rgba(255,185,80,0.28) 0%, rgba(255,155,55,0.08) 55%, transparent 80%)',
+          transformOrigin: 'top center',
+          width: 'clamp(10px, 2vw, 20px)',
+          height: 'clamp(400px, 65vh, 750px)',
+          background: 'linear-gradient(to bottom, rgba(255,220,130,0.3) 0%, rgba(255,190,90,0.1) 40%, transparent 100%)',
+          clipPath: 'polygon(0% 0%, 100% 0%, 160% 100%, -60% 100%)',
           filter: 'blur(14px)',
           zIndex: 0,
         }}
       />
 
-      {/* ── Floor pool — wide ambient glow at bottom ── */}
+      {/* ── Warm ambient spread around beam ── */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={lit ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: 0.8, delay: lit ? 1.7 : 0 }}
+        animate={lit ? { opacity: 0.6 } : { opacity: 0 }}
+        transition={{ duration: 1.4, delay: lit ? 0.8 : 0 }}
         style={{
           position: 'absolute',
-          top: '75%',
+          top: '90%',
           left: '50%',
           transform: 'translateX(-50%)',
-          width: 'clamp(360px, 65vw, 800px)',
-          height: 'clamp(500px, 80vw, 1000px)',
-          background: 'radial-gradient(ellipse 70% 60% at 50% 85%, rgba(219,100,54,0.13) 0%, transparent 70%)',
-          filter: 'blur(30px)',
+          width: 'clamp(200px, 38vw, 480px)',
+          height: 'clamp(350px, 60vh, 700px)',
+          background: 'radial-gradient(ellipse 45% 100% at 50% 0%, rgba(255,200,100,0.1) 0%, rgba(255,170,70,0.04) 45%, transparent 80%)',
+          filter: 'blur(16px)',
           zIndex: 0,
         }}
       />
 
-      {/* ── Wall halo ── */}
+      {/* ── Warm halo behind the lamp ── */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={lit ? { opacity: GLITCH_OPACITY, scale: 1 } : { opacity: 0, scale: 0.5 }}
+        initial={{ opacity: 0, scale: 0.4 }}
+        animate={lit ? { opacity: GLITCH_OPACITY, scale: 1 } : { opacity: 0, scale: 0.4 }}
         transition={lit ? { duration: 1.6, times: GLITCH_TIMES } : { duration: 0.3 }}
         style={{
           position: 'absolute',
-          top: '28%', left: '50%',
+          top: '52%', left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 'clamp(110px, 20vw, 240px)',
-          height: 'clamp(110px, 20vw, 240px)',
+          width: 'clamp(80px, 14vw, 160px)',
+          height: 'clamp(80px, 14vw, 160px)',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(255,210,100,0.7) 0%, rgba(255,160,55,0.2) 42%, transparent 68%)',
-          filter: 'blur(18px)',
+          background: 'radial-gradient(circle, rgba(255,200,90,0.6) 0%, rgba(219,100,54,0.15) 45%, transparent 70%)',
+          filter: 'blur(24px)',
           zIndex: 0,
         }}
       />
 
-      {/* ── SVG lamp — modern pendant, centered and elegant ── */}
-      <svg viewBox="0 0 120 100" fill="none"
+      {/* ── SVG — vintage industrial hanging lamp ── */}
+      <svg viewBox="0 0 200 180" fill="none"
         style={{ width: '100%', height: '100%', position: 'relative', zIndex: 1 }}>
-        {/* Ceiling rose */}
-        <ellipse cx="60" cy="2" rx="14" ry="3" fill="#19130d" stroke="#322818" strokeWidth="0.6"/>
-        {/* Chain links */}
-        {[8,14,20,26,32].map((y, i) => (
-          <ellipse key={i} cx="60" cy={y} rx="2.2" ry="1.2"
-            fill="#2a1e14" stroke="#2a1e14" strokeWidth="0.7"/>
-        ))}
-        {/* Shade top cap */}
-        <ellipse cx="60" cy="38" rx="20" ry="5" fill="#18120a" stroke="#2e2018" strokeWidth="0.7"/>
-        {/* Shade outer — more modern, subtle curve */}
-        <path d="M40 38 Q32 60 38 80 Q60 95 82 80 Q88 60 80 38 Z"
-          fill="#18120a" stroke="#2a1c10" strokeWidth="0.8"/>
-        {/* Shade inner ridge line */}
-        <path d="M44 40 Q38 62 44 78 Q60 90 76 78 Q82 62 76 40"
-          fill="none" stroke="#241a0e" strokeWidth="0.5" opacity="0.5"/>
-        {/* Bottom rim */}
-        <ellipse cx="60" cy="87" rx="24" ry="5" fill="#141009" stroke="#2a1c10" strokeWidth="0.7"/>
-        {/* Rim inner lip */}
-        <ellipse cx="60" cy="87" rx="20" ry="3.5" fill="#100d07" stroke="none"/>
-        {/* Inner shade glow (softer, more modern) */}
-        <motion.path
-          d="M44 40 Q38 62 44 78 Q60 90 76 78 Q82 62 76 40 Z"
-          initial={{ fill: 'rgba(0,0,0,0)' }}
-          animate={lit ? { fill: 'rgba(255,180,80,0.22)' } : { fill: 'rgba(0,0,0,0)' }}
-          transition={lit ? { duration: 1.2 } : { duration: 0.2 }}
-        />
-        {/* Bulb body (brighter, more defined) */}
-        <motion.ellipse cx="60" cy="61" rx="7" ry="9"
-          initial={{ fill: '#1a1008' }}
-          animate={lit ? { fill: '#fffbe0' } : { fill: '#1a1008' }}
-          transition={lit ? { duration: 1.2 } : { duration: 0.2 }}
-        />
-        {/* Bulb glow halo (softer, more realistic) */}
-        <motion.ellipse cx="60" cy="61" rx="15" ry="18"
-          initial={{ opacity: 0 }}
-          animate={lit ? { opacity: 0.45 } : { opacity: 0 }}
-          transition={lit ? { duration: 1.2 } : { duration: 0.2 }}
-          fill="rgba(255,220,110,0.38)" filter="url(#bGlow)"
-        />
         <defs>
-          <filter id="bGlow" x="-120%" y="-120%" width="340%" height="340%">
-            <feGaussianBlur stdDeviation="7" result="blur"/>
+          <filter id="lampGlow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="6" result="blur"/>
             <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
+          <linearGradient id="cordGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3a2a18"/>
+            <stop offset="100%" stopColor="#1a1208"/>
+          </linearGradient>
+          <linearGradient id="shadeGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#1e1610"/>
+            <stop offset="50%" stopColor="#141008"/>
+            <stop offset="100%" stopColor="#0e0a06"/>
+          </linearGradient>
         </defs>
+
+        {/* Ceiling hook / mount */}
+        <path d="M94 2 Q100 -1 106 2 L106 8 Q100 11 94 8 Z" fill="#2a2018" stroke="#3a2a18" strokeWidth="0.5"/>
+        <circle cx="100" cy="5" r="3" fill="#221a12" stroke="#3a2a18" strokeWidth="0.5"/>
+
+        {/* Twisted cord */}
+        <path d="M100 8 Q97 20 103 32 Q97 44 103 56 Q97 62 100 68"
+          fill="none" stroke="url(#cordGrad)" strokeWidth="2" strokeLinecap="round"/>
+        {/* Cord shadow */}
+        <path d="M101 8 Q98 20 104 32 Q98 44 104 56 Q98 62 101 68"
+          fill="none" stroke="rgba(0,0,0,0.3)" strokeWidth="1.5"/>
+
+        {/* Socket / fitting */}
+        <rect x="94" y="66" width="12" height="10" rx="2" fill="#2a2018" stroke="#3a2a18" strokeWidth="0.6"/>
+        <rect x="92" y="74" width="16" height="4" rx="1" fill="#221810" stroke="#3a2a18" strokeWidth="0.5"/>
+
+        {/* ── Shade — wide industrial cone ── */}
+        <path d="M96 78 L56 134 Q56 140 62 142 L138 142 Q144 140 144 134 L104 78 Z"
+          fill="url(#shadeGrad)" stroke="#2e2218" strokeWidth="0.8"/>
+        {/* Inner shade surface */}
+        <path d="M97 80 L62 132 Q62 138 66 139 L134 139 Q138 138 138 132 L103 80 Z"
+          fill="#120e08" stroke="none"/>
+        {/* Shade rivet details */}
+        {[72, 82, 92, 108, 118, 128].map((x, i) => (
+          <circle key={i} cx={x} cy="140" r="1.2" fill="#2a2018" stroke="#3a2818" strokeWidth="0.3"/>
+        ))}
+        {/* Inner shade left highlight */}
+        <path d="M97 82 L66 130" fill="none" stroke="rgba(255,255,255,0.025)" strokeWidth="2.5"/>
+        {/* Bottom rim — industrial thick band */}
+        <rect x="54" y="139" width="92" height="5" rx="1.5" fill="#1a1410" stroke="#2e2218" strokeWidth="0.6"/>
+        <rect x="56" y="140" width="88" height="3" rx="1" fill="#0e0a06"/>
+
+        {/* ── Warm inner glow when lit ── */}
+        <motion.path
+          d="M97 80 L62 132 Q62 138 66 139 L134 139 Q138 138 138 132 L103 80 Z"
+          initial={{ fill: 'rgba(0,0,0,0)' }}
+          animate={lit ? { fill: 'rgba(255,175,70,0.2)' } : { fill: 'rgba(0,0,0,0)' }}
+          transition={lit ? { duration: 1.4 } : { duration: 0.2 }}
+        />
+
+        {/* Edison bulb — glass body */}
+        <motion.path
+          d="M94 78 Q94 84 91 92 Q88 102 91 110 Q94 115 100 116 Q106 115 109 110 Q112 102 109 92 Q106 84 106 78"
+          initial={{ fill: '#1a1008', stroke: '#2a2018' }}
+          animate={lit
+            ? { fill: 'rgba(255,230,170,0.85)', stroke: 'rgba(255,210,120,0.4)' }
+            : { fill: '#1a1008', stroke: '#2a2018' }}
+          transition={lit ? { duration: 1.2 } : { duration: 0.2 }}
+          strokeWidth="0.8"
+        />
+        {/* Edison filament — zigzag wire */}
+        <motion.path
+          d="M96 86 L98 90 L96 94 L98 98 L96 102 L98 106 M104 86 L102 90 L104 94 L102 98 L104 102 L102 106"
+          fill="none"
+          initial={{ stroke: '#3a2a18', strokeWidth: 0.6 }}
+          animate={lit
+            ? { stroke: '#ffdd88', strokeWidth: 0.9 }
+            : { stroke: '#3a2a18', strokeWidth: 0.6 }}
+          transition={lit ? { duration: 1.2 } : { duration: 0.2 }}
+        />
+        {/* Filament center connector */}
+        <motion.line x1="98" y1="106" x2="102" y2="106"
+          initial={{ stroke: '#3a2a18' }}
+          animate={lit ? { stroke: '#ffcc66' } : { stroke: '#3a2a18' }}
+          transition={lit ? { duration: 1.2 } : { duration: 0.2 }}
+          strokeWidth="0.8"
+        />
+
+        {/* Bulb glow halo */}
+        <motion.ellipse cx="100" cy="96" rx="24" ry="30"
+          initial={{ opacity: 0 }}
+          animate={lit ? { opacity: 0.55 } : { opacity: 0 }}
+          transition={lit ? { duration: 1.4 } : { duration: 0.2 }}
+          fill="rgba(255,215,100,0.3)" filter="url(#lampGlow)"
+        />
+        {/* Bright filament core glow */}
+        <motion.ellipse cx="100" cy="96" rx="8" ry="12"
+          initial={{ opacity: 0 }}
+          animate={lit ? { opacity: 0.85 } : { opacity: 0 }}
+          transition={lit ? { duration: 1 } : { duration: 0.2 }}
+          fill="rgba(255,240,190,0.7)" filter="url(#lampGlow)"
+        />
       </svg>
 
-      {/* ── Steady breathing pulse after glitch settles ── */}
+      {/* ── Breathing pulse overlay ── */}
       <AnimatePresence>
         {lit && (
           <motion.div
             key="pulse"
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0.45, 0.9, 0.45] }}
+            animate={{ opacity: [0.4, 0.85, 0.4] }}
             exit={{ opacity: 0, transition: { duration: 0.2 } }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1.8 }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
             style={{
               position: 'absolute',
-              top: '50%', left: '50%',
+              top: '54%', left: '50%',
               transform: 'translate(-50%, -50%)',
-              width: 'clamp(28px, 5vw, 52px)',
-              height: 'clamp(28px, 5vw, 52px)',
+              width: 'clamp(22px, 4vw, 40px)',
+              height: 'clamp(22px, 4vw, 40px)',
               borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(255,235,150,1) 0%, rgba(255,195,70,0.4) 52%, transparent 75%)',
-              filter: 'blur(6px)',
+              background: 'radial-gradient(circle, rgba(255,230,150,0.9) 0%, rgba(255,195,70,0.3) 50%, transparent 80%)',
+              filter: 'blur(8px)',
               zIndex: 2,
             }}
           />
@@ -347,9 +436,9 @@ export default function StorySection() {
         background: '#0a0806',
         minHeight: '100vh',
         alignItems: 'stretch',
-        borderRadius: '0',
+        borderRadius: '0px',
         scrollBehavior: 'smooth',
-        boxShadow: '0 -20px 60px rgba(0,0,0,0.7)',
+        boxShadow: '0 -8px 40px rgba(0,0,0,0.9)',
         overflow: 'hidden',
       }}
     >
@@ -357,12 +446,12 @@ export default function StorySection() {
       <div
         className="story-left"
         style={{
-          flex: '0 0 clamp(280px, 45%, 560px)',
+          flex: '0 0 clamp(280px, 42%, 520px)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          alignItems: 'flex-start',
-          padding: 'clamp(24px, 5vw, 48px) clamp(24px, 5vw, 80px)',
+          alignItems: 'center',
+          padding: 'clamp(40px, 6vw, 72px) clamp(28px, 5vw, 72px)',
           minHeight: '100vh',
           minWidth: 0,
           position: 'relative',
@@ -505,7 +594,7 @@ export default function StorySection() {
         <WallLamp lit={lit} />
 
         {/* Text block */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px, 1.6vw, 20px)' }}>
+        <div className="story-text-block" style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px, 1.6vw, 20px)', width: '100%' }}>
 
           <motion.p
             {...fadeText(0.38)}
