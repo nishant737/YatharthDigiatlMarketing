@@ -194,6 +194,7 @@ const ARTICLES = [
     excerpt: "A brand is not a logo. It's a promise. And most brands fail because they confuse the two from the very beginning.",
     date: 'March 2025',
     featured: true,
+    url: 'https://www.become.team/blogs/why-brands-fail-and-what-businesses-can-learn-from-it',
   },
   {
     id: 2,
@@ -202,6 +203,7 @@ const ARTICLES = [
     excerpt: 'What separates a site that converts from one that gets clicked away from in seconds.',
     date: 'February 2025',
     featured: false,
+    url: 'https://medium.com/design-bootcamp/the-invisible-architecture-of-meaning-6e2b1e60b501',
   },
   {
     id: 3,
@@ -210,6 +212,7 @@ const ARTICLES = [
     excerpt: 'In an age of instant everything, the most radical thing a studio can do is take its time.',
     date: 'January 2025',
     featured: false,
+    url: 'https://medium.com/contemporary-pause/the-art-of-slowing-down-how-slowness-can-save-your-creativity-in-a-busy-world-550598b57ae8',
   },
   {
     id: 4,
@@ -218,6 +221,7 @@ const ARTICLES = [
     excerpt: 'Every typeface has a personality. Choosing the right one is the difference between whispering and shouting.',
     date: 'December 2024',
     featured: false,
+    url: 'https://medium.com/%40anandpdoshi/typography-giving-voice-to-words-fd5a79cd5da4',
   },
   {
     id: 5,
@@ -226,6 +230,7 @@ const ARTICLES = [
     excerpt: 'The projects we turn down define us as much as the ones we take on.',
     date: 'November 2024',
     featured: false,
+    url: 'https://www.creativeboom.com/tips/when-and-how-to-say-no-when-freelancing/',
   },
 ]
 
@@ -304,7 +309,9 @@ export default function JournalSection() {
             {featured.map(article => (
               <motion.a
                 key={article.id}
-                href="#"
+                href={article.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="journal-card journal-card-featured"
                 variants={{
                   hidden: { opacity: 0, y: 32 },
@@ -325,7 +332,9 @@ export default function JournalSection() {
             {rest.map(article => (
               <motion.a
                 key={article.id}
-                href="#"
+                href={article.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="journal-card"
                 variants={{
                   hidden: { opacity: 0, y: 32 },

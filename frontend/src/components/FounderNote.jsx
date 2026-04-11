@@ -399,7 +399,7 @@ export default function FounderNote() {
                 Let's Talk
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/company/yatharth-social/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="founder-btn-outline"
