@@ -310,28 +310,83 @@ export default function ChatBot({ loaded }) {
         )}
       </AnimatePresence>
 
-      {/* ── FAB ─────────────────────────────────────────────────────────── */}
+      {/* ── FAB + Label ─────────────────────────────────────────────────── */}
       <AnimatePresence>
         {!open && (
-          <motion.button
-            key="fab"
-            variants={fabVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            onClick={() => { setOpen(true); if (messages.length === 0) setMessages([{ from: 'bot', text: QUESTIONS[0].text }]) }}
-            style={st.fab}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.91 }}
-            aria-label="Open chat"
-          >
-            💬
-            <motion.span
-              style={st.badge}
-              animate={{ scale: [1, 1.28, 1] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-            >1</motion.span>
-          </motion.button>
+          <div style={{
+            position: 'fixed',
+            bottom: isMobile ? '16px' : '24px',
+            right: isMobile ? '10px' : '24px',
+            zIndex: 99998,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            maxWidth: 'calc(100vw - 20px)',
+          }}>
+            {/* "Chat with us" pill label — hidden on mobile */}
+            <motion.button
+              key="chat-label"
+              initial={{ opacity: 0, x: 16, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 12, scale: 0.9 }}
+              transition={{ type: 'spring', stiffness: 340, damping: 26, delay: 0.12 }}
+              onClick={() => { setOpen(true); if (messages.length === 0) setMessages([{ from: 'bot', text: QUESTIONS[0].text }]) }}
+              style={{
+                background: '#1a1108',
+                border: '1px solid rgba(219,100,54,0.35)',
+                borderRadius: '100px',
+                padding: isMobile ? '7px 12px' : '9px 16px',
+                color: '#f5f0eb',
+                fontSize: isMobile ? '0.72rem' : '0.78rem',
+                fontWeight: 500,
+                fontFamily: "'Inter', system-ui, sans-serif",
+                letterSpacing: '0.01em',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.45)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '7px',
+              }}
+              whileHover={{ scale: 1.04, borderColor: 'rgba(219,100,54,0.65)' }}
+              whileTap={{ scale: 0.96 }}
+            >
+              {/* Pulsing dot */}
+              <motion.span
+                style={{
+                  width: '7px', height: '7px', borderRadius: '50%',
+                  background: '#4ade80',
+                  display: 'inline-block',
+                  boxShadow: '0 0 6px rgba(74,222,128,0.8)',
+                  flexShrink: 0,
+                }}
+                animate={{ opacity: [1, 0.4, 1] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              Chat with us
+            </motion.button>
+
+            {/* FAB button */}
+            <motion.button
+              key="fab"
+              variants={fabVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              onClick={() => { setOpen(true); if (messages.length === 0) setMessages([{ from: 'bot', text: QUESTIONS[0].text }]) }}
+              style={st.fab}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.91 }}
+              aria-label="Open chat"
+            >
+              💬
+              <motion.span
+                style={st.badge}
+                animate={{ scale: [1, 1.28, 1] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+              >1</motion.span>
+            </motion.button>
+          </div>
         )}
       </AnimatePresence>
     </>
@@ -490,9 +545,7 @@ const st = {
     flexShrink:   0,
   },
   fab: {
-    position:       'fixed',
-    bottom:         '24px',
-    right:          '24px',
+    position:       'relative',
     background:     'linear-gradient(135deg, #DB6436, #c9522a)',
     border:         'none',
     borderRadius:   '50%',

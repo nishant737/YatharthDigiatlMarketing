@@ -389,7 +389,7 @@ export default function FounderNote() {
             </motion.div>
 
             <motion.div className="founder-actions" {...fadeUp(0.44)}>
-              <a href="#contact" className="founder-btn-primary">
+              <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2n6b8wPnSCQ_Xg6YKii-hTTBIuFp6vwFIVbiaHH3sFr1jkkf4SY-Utqpd5Gobe2O7U43bwm7ks" target="_blank" rel="noopener noreferrer" className="founder-btn-primary">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                   <line x1="16" y1="2" x2="16" y2="6"/>

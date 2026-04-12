@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion'
-import goextraBg from '../asset/goextra.jpeg'
+import craftBg from '../asset/bg.jpeg'
 import imgPrakash from '../asset/Dr. K. Prakash Shetty.png'
 import imgBrijesh from '../asset/Captain Brijesh Chowta.png'
 import imgGurme   from '../asset/Gurme Suresh Shetty.png'
@@ -217,16 +217,16 @@ export default function TestimonialsSection() {
         padding: 'clamp(60px, 8vh, 100px) clamp(16px, 4vw, 48px)',
       }}
     >
+      {/* bg.jpeg background */}
       <div aria-hidden style={{
-        position: 'absolute', inset: 0,
-        backgroundImage: `url(${goextraBg})`,
-        backgroundSize: 'cover', backgroundPosition: 'center top',
-        opacity: 0.08, zIndex: 0,
+        position: 'absolute', inset: 0, zIndex: 0,
+        backgroundImage: `url(${craftBg})`,
+        backgroundSize: 'cover', backgroundPosition: 'center',
+        opacity: 0.45,
       }} />
       <div aria-hidden style={{
-        position: 'absolute', inset: 0,
-        background: 'linear-gradient(180deg, rgba(6,5,3,0.95) 0%, rgba(6,5,3,0.80) 50%, rgba(6,5,3,0.95) 100%)',
-        zIndex: 1,
+        position: 'absolute', inset: 0, zIndex: 1,
+        background: 'linear-gradient(180deg, rgba(6,5,3,0.72) 0%, rgba(6,5,3,0.52) 50%, rgba(6,5,3,0.72) 100%)',
       }} />
       <div aria-hidden style={{
         position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',

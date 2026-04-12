@@ -250,7 +250,7 @@ export default function ContactSection() {
               <div style={{ height: '1px', background: 'rgba(219,100,54,0.1)' }} />
 
               {/* CTA */}
-              <a href="mailto:hello@yatharth.in" className="book-btn">
+              <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2n6b8wPnSCQ_Xg6YKii-hTTBIuFp6vwFIVbiaHH3sFr1jkkf4SY-Utqpd5Gobe2O7U43bwm7ks" target="_blank" rel="noopener noreferrer" className="book-btn">
                 Book an Appointment <ArrowIcon />
               </a>
             </motion.div>
@@ -308,7 +308,14 @@ export default function ContactSection() {
               </motion.div>
 
               {/* LinkedIn card */}
-              <motion.div {...fade(0.18)} className="contact-info-card">
+              <motion.a
+                {...fade(0.18)}
+                className="contact-info-card"
+                href="https://www.linkedin.com/company/yatharth-social/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'none', cursor: 'pointer' }}
+              >
                 <div style={{
                   width: '40px', height: '40px', borderRadius: '10px',
                   background: 'rgba(219,100,54,0.1)',
@@ -324,21 +331,13 @@ export default function ContactSection() {
                 }}>
                   LinkedIn
                 </div>
-                <a
-                  href="https://linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    fontFamily: "'Inter', system-ui, sans-serif",
-                    fontWeight: 400, fontSize: '0.78rem',
-                    color: '#DB6436', textDecoration: 'none',
-                    transition: 'opacity 0.2s',
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.opacity = '0.75'}
-                  onMouseLeave={e => e.currentTarget.style.opacity = '1'}
-                >
+                <div style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontWeight: 400, fontSize: '0.78rem',
+                  color: '#DB6436',
+                }}>
                   Connect with Yatharth
-                </a>
+                </div>
                 <div style={{
                   fontFamily: "'Inter', system-ui, sans-serif",
                   fontWeight: 300, fontSize: '0.72rem',
@@ -346,7 +345,7 @@ export default function ContactSection() {
                 }}>
                   Follow our journey
                 </div>
-              </motion.div>
+              </motion.a>
             </div>
 
             {/* Location card — full width */}
@@ -424,6 +423,38 @@ export default function ContactSection() {
           }}>
             Mangaluru &nbsp;·&nbsp; Est. 2020
           </span>
+          <a
+            href="https://www.linkedin.com/company/yatharth-social/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'flex', alignItems: 'center', gap: '7px',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontWeight: 400, fontSize: 'clamp(0.58rem, 0.88vw, 0.7rem)',
+              letterSpacing: '0.06em',
+              color: 'rgba(219,100,54,0.6)',
+              textDecoration: 'none',
+              border: '1px solid rgba(219,100,54,0.18)',
+              borderRadius: '100px',
+              padding: '6px 14px',
+              transition: 'color 0.25s ease, border-color 0.25s ease, background 0.25s ease',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.color = '#DB6436'
+              e.currentTarget.style.borderColor = 'rgba(219,100,54,0.5)'
+              e.currentTarget.style.background = 'rgba(219,100,54,0.06)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.color = 'rgba(219,100,54,0.6)'
+              e.currentTarget.style.borderColor = 'rgba(219,100,54,0.18)'
+              e.currentTarget.style.background = 'transparent'
+            }}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+            Connect with Yatharth
+          </a>
           <span style={{
             fontFamily: "'Inter', system-ui, sans-serif",
             fontWeight: 300, fontSize: 'clamp(0.56rem, 0.85vw, 0.66rem)',

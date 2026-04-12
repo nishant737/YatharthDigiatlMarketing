@@ -1,8 +1,6 @@
-import craftBg from '../asset/bg.jpeg'
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 
-// ─── All 17 company logos ─────────────────────────────────────────────────────
 const LOGOS = [
   { name: 'ABC',              file: 'ABC_Black_Logo.png'       },
   { name: 'Bolpu',            file: 'BOLPU_logo.png'           },
@@ -24,28 +22,7 @@ const LOGOS = [
 ]
 
 const CSS = `
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(24px, 4vw, 48px);
-  max-width: 800px;
-  margin: clamp(52px, 8vh, 80px) auto 0;
-  padding: 0 clamp(20px, 4vw, 48px);
-  align-items: center;
-  justify-items: center;
-}
-@media (max-width: 640px) {
-  .stat-grid {
-    grid-template-columns: 1fr 1fr;
-    row-gap: 28px;
-    column-gap: 16px;
-  }
-  .stat-last {
-    grid-column: 1 / -1;
-    justify-self: center;
-  }
-}
-
+/* ── Ticker ─────────────────────────────────────────────────── */
 @keyframes ticker-left {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -54,49 +31,199 @@ const CSS = `
   0%   { transform: translateX(-50%); }
   100% { transform: translateX(0); }
 }
-.ticker-l {
-  display: flex; width: max-content;
-  animation: ticker-left 32s linear infinite;
+.ticker-track-l {
+  display: flex;
+  width: max-content;
+  animation: ticker-left 38s linear infinite;
   will-change: transform;
+  pointer-events: none;
 }
-.ticker-r {
-  display: flex; width: max-content;
-  animation: ticker-right 32s linear infinite;
+.ticker-track-r {
+  display: flex;
+  width: max-content;
+  animation: ticker-right 44s linear infinite;
   will-change: transform;
+  pointer-events: none;
 }
-.logo-card {
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 12px;
-  transition: all 0.3s ease;
+
+/* ── Logo pill ──────────────────────────────────────────────── */
+.logo-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(245,240,235,0.04) 0%, rgba(245,240,235,0.02) 100%);
+  border: 1px solid rgba(245,240,235,0.08);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
 }
-.logo-card:hover {
-  transform: translateY(-3px);
+.logo-pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(219,100,54,0.06) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  border-radius: inherit;
+}
+
+/* ── Stats ──────────────────────────────────────────────────── */
+.cs-stats {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  border: 1px solid rgba(245,240,235,0.08);
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(245,240,235,0.03) 0%, rgba(245,240,235,0.01) 100%);
+  overflow: hidden;
+  max-width: 700px;
+  margin: clamp(52px,8vh,80px) auto 0;
+  position: relative;
+  z-index: 2;
+}
+.cs-stats::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(219,100,54,0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+.cs-stat {
+  flex: 1;
+  text-align: center;
+  padding: clamp(28px,4vw,44px) clamp(16px,3vw,40px);
+  position: relative;
+  transition: background 0.3s ease;
+}
+.cs-stat:hover {
+  background: rgba(219,100,54,0.04);
+}
+.cs-stat + .cs-stat::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 18%; bottom: 18%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(245,240,235,0.1), transparent);
+}
+.cs-stat-num {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+  letter-spacing: -0.04em;
+  color: #DB6436;
+  line-height: 1;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #DB6436 0%, #e8874f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.cs-stat-label {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(0.6rem, 1vw, 0.7rem);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(245,240,235,0.32);
+  line-height: 1.5;
+}
+
+/* ── Section heading badge ───────────────────────────────────── */
+.cs-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: clamp(0.58rem, 0.9vw, 0.68rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(219,100,54,0.7);
+  border: 1px solid rgba(219,100,54,0.2);
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 22px;
+  background: rgba(219,100,54,0.04);
+}
+.cs-badge-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #DB6436;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* ── Ticker row separator ───────────────────────────────────── */
+.ticker-sep {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, transparent 0%, rgba(219,100,54,0.12) 30%, rgba(219,100,54,0.12) 70%, transparent 100%);
+}
+
+@media (max-width: 580px) {
+  .cs-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 360px;
+    width: calc(100% - 48px);
+  }
+  /* Third stat spans both columns and sits centered below */
+  .cs-stat:last-child {
+    grid-column: 1 / -1;
+    border-top: 1px solid rgba(245,240,235,0.07);
+  }
+  /* Reset vertical pseudo-dividers */
+  .cs-stat + .cs-stat::before {
+    top: 18%; bottom: 18%;
+    left: 0;
+    width: 1px; height: auto;
+    background: linear-gradient(to bottom, transparent, rgba(245,240,235,0.1), transparent);
+  }
+  /* Remove the divider between col-2 and the full-width third stat */
+  .cs-stat:last-child::before {
+    display: none;
+  }
+  .cs-stat {
+    padding: 24px 12px;
+  }
+  .cs-stat-num {
+    font-size: 1.9rem;
+  }
+  .cs-stat-label {
+    font-size: 0.6rem;
+  }
 }
 `
 
-// ─── Infinite ticker row ──────────────────────────────────────────────────────
 function Ticker({ logos, dir = 'left' }) {
-  const items = [...logos, ...logos]
+  const items = [...logos, ...logos, ...logos, ...logos]
   return (
-    <div style={{ overflow: 'hidden', width: '100%', position: 'relative' }}>
-      <div className={dir === 'left' ? 'ticker-l' : 'ticker-r'}>
+    <div
+      style={{ overflow: 'hidden', width: '100%', position: 'relative' }}
+    >
+      <div className={dir === 'left' ? 'ticker-track-l' : 'ticker-track-r'}>
         {items.map((logo, i) => (
           <div
             key={`${logo.file}-${i}`}
             style={{
               flexShrink: 0,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              padding: '0 clamp(28px, 4vw, 36px)',
-              height: 'clamp(140px, 16vw, 152px)',
+              padding: `0 clamp(8px, 1.2vw, 14px)`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: 'clamp(100px, 12vw, 128px)',
             }}
           >
             <div
-              className="logo-card"
+              className="logo-pill"
               style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                width: 'clamp(200px, 24vw, 280px)',
-                height: 'clamp(100px, 12vw, 120px)',
-                padding: '20px 28px',
+                width: 'clamp(120px, 15vw, 190px)',
+                height: 'clamp(62px, 7.5vw, 82px)',
+                padding: '12px 18px',
               }}
             >
               <img
@@ -110,6 +237,7 @@ function Ticker({ logos, dir = 'left' }) {
                   objectFit: 'contain',
                   display: 'block',
                   userSelect: 'none',
+                  filter: 'brightness(0.9) contrast(1.08)',
                 }}
               />
             </div>
@@ -120,10 +248,23 @@ function Ticker({ logos, dir = 'left' }) {
   )
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
+const STATS = [
+  { num: '17+',  label: 'Brands' },
+  { num: '3×',   label: 'Avg. engagement lift' },
+  { num: '90d',  label: 'To measurable results' },
+]
+
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 24 },
+  animate: 'visible',
+  variants: {
+    visible: { opacity: 1, y: 0, transition: { duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] } },
+  },
+})
+
 export default function ClientSection() {
   const ref    = useRef(null)
-  const inView = useInView(ref, { margin: '-10% 0px' })
+  const inView = useInView(ref, { once: false, margin: '-8% 0px' })
 
   const half = Math.ceil(LOGOS.length / 2)
   const row1 = LOGOS.slice(0, half)
@@ -138,443 +279,162 @@ export default function ClientSection() {
         ref={ref}
         style={{
           background: '#060503',
-          padding: 'clamp(72px, 11vh, 120px) 0 clamp(64px, 10vh, 108px)',
+          padding: 'clamp(88px, 12vh, 140px) 0 clamp(80px, 11vh, 120px)',
           overflow: 'hidden',
           position: 'relative',
           zIndex: 20,
         }}
       >
-        {/* Background dot grid */}
-        <div aria-hidden style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          backgroundImage: `url(${craftBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.15,
-        }} />
-
-        {/* Animated background elements */}
-        <div aria-hidden style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          overflow: 'hidden',
-        }}>
-          {/* Floating orbs */}
-          <motion.div
-            animate={{
-              x: [0, 30, -20, 0],
-              y: [0, -40, 20, 0],
-              scale: [1, 1.1, 0.9, 1],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            style={{
-              position: 'absolute',
-              top: '10%',
-              left: '15%',
-              width: '300px',
-              height: '300px',
-              borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(219,100,54,0.08) 0%, transparent 70%)',
-              filter: 'blur(40px)',
-            }}
-          />
-          <motion.div
-            animate={{
-              x: [0, -25, 15, 0],
-              y: [0, 30, -10, 0],
-              scale: [1, 0.8, 1.2, 1],
-            }}
-            transition={{
-              duration: 25,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 2,
-            }}
-            style={{
-              position: 'absolute',
-              top: '60%',
-              right: '20%',
-              width: '250px',
-              height: '250px',
-              borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(200,90,48,0.06) 0%, transparent 70%)',
-              filter: 'blur(35px)',
-            }}
-          />
-          <motion.div
-            animate={{
-              x: [0, 40, -30, 0],
-              y: [0, -20, 40, 0],
-              scale: [1, 1.3, 0.7, 1],
-            }}
-            transition={{
-              duration: 18,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 4,
-            }}
-            style={{
-              position: 'absolute',
-              bottom: '20%',
-              left: '25%',
-              width: '200px',
-              height: '200px',
-              borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(219,100,54,0.05) 0%, transparent 70%)',
-              filter: 'blur(30px)',
-            }}
-          />
-
-          {/* Rotating geometric shapes */}
-          <motion.div
-            animate={{
-              rotate: 360,
-            }}
-            transition={{
-              duration: 60,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-            style={{
-              position: 'absolute',
-              top: '15%',
-              right: '30%',
-              width: '80px',
-              height: '80px',
-              border: '1px solid rgba(219,100,54,0.2)',
-              borderRadius: '12px',
-              transform: 'rotate(45deg)',
-            }}
-          />
-          <motion.div
-            animate={{
-              rotate: -360,
-            }}
-            transition={{
-              duration: 45,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-            style={{
-              position: 'absolute',
-              bottom: '30%',
-              right: '15%',
-              width: '60px',
-              height: '60px',
-              border: '1px solid rgba(200,90,48,0.15)',
-              borderRadius: '50%',
-            }}
-          />
-          <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            style={{
-              position: 'absolute',
-              top: '40%',
-              left: '10%',
-              width: '40px',
-              height: '40px',
-              background: 'linear-gradient(45deg, rgba(219,100,54,0.1), transparent)',
-              clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
-            }}
-          />
-
-          {/* Pulse rings */}
-          <motion.div
-            animate={{
-              scale: [1, 1.5, 1],
-              opacity: [0.3, 0.1, 0.3],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '400px',
-              height: '400px',
-              borderRadius: '50%',
-              border: '1px solid rgba(219,100,54,0.1)',
-              pointerEvents: 'none',
-            }}
-          />
-          <motion.div
-            animate={{
-              scale: [1, 1.8, 1],
-              opacity: [0.2, 0.05, 0.2],
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 2,
-            }}
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '600px',
-              height: '600px',
-              borderRadius: '50%',
-              border: '1px solid rgba(219,100,54,0.08)',
-              pointerEvents: 'none',
-            }}
-          />
-
-          {/* Floating particles */}
-          {[...Array(8)].map((_, i) => (
-            <motion.div
-              key={`particle-${i}`}
-              animate={{
-                y: [0, -100, 0],
-                opacity: [0, 0.6, 0],
-                x: [0, Math.sin(i) * 20, 0],
-              }}
-              transition={{
-                duration: 8 + i * 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: i * 1.5,
-              }}
-              style={{
-                position: 'absolute',
-                left: `${20 + i * 10}%`,
-                bottom: '10%',
-                width: '4px',
-                height: '4px',
-                borderRadius: '50%',
-                background: 'rgba(219,100,54,0.4)',
-                boxShadow: '0 0 6px rgba(219,100,54,0.6)',
-              }}
-            />
-          ))}
+        {/* ── Background layers ── */}
+        <div aria-hidden style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+          {/* Large central glow */}
+          <div style={{
+            position: 'absolute', top: '-10%', left: '50%', transform: 'translateX(-50%)',
+            width: '80%', height: '60%',
+            borderRadius: '50%',
+            background: 'radial-gradient(ellipse, rgba(219,100,54,0.07) 0%, transparent 60%)',
+            filter: 'blur(70px)',
+          }} />
+          {/* Bottom-left glow */}
+          <div style={{
+            position: 'absolute', bottom: '0%', left: '-5%',
+            width: '45%', height: '50%',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(200,90,48,0.05) 0%, transparent 65%)',
+            filter: 'blur(80px)',
+          }} />
+          {/* Bottom-right glow */}
+          <div style={{
+            position: 'absolute', bottom: '10%', right: '-5%',
+            width: '40%', height: '45%',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(219,100,54,0.04) 0%, transparent 65%)',
+            filter: 'blur(70px)',
+          }} />
+          {/* Subtle grid overlay */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            backgroundImage: `
+              linear-gradient(rgba(245,240,235,0.015) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(245,240,235,0.015) 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px',
+            maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%)',
+          }} />
         </div>
 
-        {/* Top glow line */}
+        {/* Top accent line */}
         <div aria-hidden style={{
           position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
-          width: '50%', height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(219,100,54,0.4), transparent)',
+          width: '35%', height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(219,100,54,0.55), transparent)',
         }} />
 
-        {/* Heading */}
+        {/* ── Heading ── */}
         <div style={{
           textAlign: 'center',
           padding: '0 clamp(20px, 4vw, 48px)',
           marginBottom: 'clamp(52px, 8vh, 80px)',
+          position: 'relative', zIndex: 2,
         }}>
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 14 }}
-            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              fontFamily: '"Inter", system-ui, sans-serif',
-              fontWeight: 400,
-              fontSize: 'clamp(0.54rem, 0.9vw, 0.66rem)',
-              letterSpacing: '0.32em',
-              textTransform: 'uppercase',
-              color: 'rgba(219,100,54,0.55)',
-              margin: '0 0 16px',
-            }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            Trusted By
-          </motion.p>
+            <span className="cs-badge">
+              <span className="cs-badge-dot" />
+              Trusted By
+            </span>
+          </motion.div>
 
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 26 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 26 }}
             transition={{ duration: 0.85, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             style={{
               fontFamily: '"Inter", system-ui, sans-serif',
               fontWeight: 300,
-              fontSize: 'clamp(1.8rem, 4.5vw, 3rem)',
-              letterSpacing: '-0.03em',
+              fontSize: 'clamp(2.2rem, 5.5vw, 4rem)',
+              letterSpacing: '-0.04em',
               color: '#f5f0eb',
               margin: '0 0 16px',
+              lineHeight: 1.08,
             }}
           >
             Brands that chose
-            <span style={{ color: '#DB6436' }}> to grow</span> with us
+            <br />
+            <span style={{
+              background: 'linear-gradient(135deg, #DB6436 0%, #e89060 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>
+              to grow
+            </span>
+            {' '}with us
           </motion.h2>
 
           <motion.p
             initial={{ opacity: 0, y: 14 }}
-            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+            transition={{ duration: 0.7, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
             style={{
               fontFamily: '"Inter", system-ui, sans-serif',
               fontWeight: 300,
-              fontSize: 'clamp(0.82rem, 1.4vw, 1rem)',
-              color: 'rgba(245,240,235,0.38)',
-              margin: 0,
+              fontSize: 'clamp(0.82rem, 1.3vw, 0.95rem)',
+              color: 'rgba(245,240,235,0.36)',
+              margin: '0 auto',
+              maxWidth: '400px',
+              lineHeight: 1.7,
             }}
           >
             {LOGOS.length}+ brands. Every story, every campaign — intentional.
           </motion.p>
         </div>
 
-        {/* Ticker rows */}
+        {/* ── Ticker rows ── */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 1, delay: 0.35 }}
+          style={{ position: 'relative' }}
         >
-          {/* Row 1 — left */}
           <Ticker logos={row1} dir="left" />
 
-          {/* Divider */}
-          <div style={{
-            width: '100%', height: '1px',
-            background: 'rgba(219,100,54,0.05)',
-            margin: '0',
-          }} />
+          <div className="ticker-sep" />
 
-          {/* Row 2 — right */}
           <Ticker logos={row2} dir="right" />
+
+          {/* Left + right edge fade */}
+          <div aria-hidden style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            background: 'linear-gradient(to right, #060503 0%, transparent 14%, transparent 86%, #060503 100%)',
+          }} />
         </motion.div>
 
-        {/* Left + right fade masks */}
-        <div aria-hidden style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: 'linear-gradient(to right, #06050300 0%, transparent 0%, transparent 100%, #060503 100%)',
-        }} />
-        <div aria-hidden style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: 'linear-gradient(to right, #06050300, transparent 10%, transparent 90%, #060503)',
-        }} />
-
-        {/* Stat strip */}
+        {/* ── Stats strip ── */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.8, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="stat-grid"
-          style={{}}
-
+          initial={{ opacity: 0, y: 28 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+          transition={{ duration: 0.85, delay: 0.52, ease: [0.22, 1, 0.36, 1] }}
+          className="cs-stats"
         >
-          {/* 17+ Brands */}
-          <div style={{ 
-            textAlign: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '100px',
-          }}>
-            <div style={{
-              fontFamily: '"Inter", system-ui, sans-serif',
-              fontWeight: 300,
-              fontSize: 'clamp(2rem, 4vw, 2.8rem)',
-              letterSpacing: '-0.04em',
-              color: '#DB6436',
-              lineHeight: 1,
-              marginBottom: '8px',
-              whiteSpace: 'nowrap',
-            }}>
-              17+
+          {STATS.map((s, i) => (
+            <div key={i} className="cs-stat">
+              <div className="cs-stat-num">{s.num}</div>
+              <div className="cs-stat-label">{s.label}</div>
             </div>
-            <div style={{
-              fontFamily: '"Inter", system-ui, sans-serif',
-              fontWeight: 300,
-              fontSize: 'clamp(0.58rem, 1.1vw, 0.75rem)',
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              color: 'rgba(245,240,235,0.35)',
-              lineHeight: 1.3,
-              maxWidth: '140px',
-              hyphens: 'auto',
-            }}>
-              Brands
-            </div>
-          </div>
-
-          {/* 3× Avg. engagement lift */}
-          <div style={{ 
-            textAlign: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '100px',
-          }}>
-            <div style={{
-              fontFamily: '"Inter", system-ui, sans-serif',
-              fontWeight: 300,
-              fontSize: 'clamp(2rem, 4vw, 2.8rem)',
-              letterSpacing: '-0.04em',
-              color: '#DB6436',
-              lineHeight: 1,
-              marginBottom: '8px',
-              whiteSpace: 'nowrap',
-            }}>
-              3×
-            </div>
-            <div style={{
-              fontFamily: '"Inter", system-ui, sans-serif',
-              fontWeight: 300,
-              fontSize: 'clamp(0.58rem, 1.1vw, 0.75rem)',
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              color: 'rgba(245,240,235,0.35)',
-              lineHeight: 1.3,
-              maxWidth: '140px',
-              hyphens: 'auto',
-            }}>
-              Avg. engagement lift
-            </div>
-          </div>
-
-          {/* 90d To measurable results */}
-          <div className="stat-last" style={{
-            textAlign: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '100px',
-          }}>
-            <div style={{
-              fontFamily: '"Inter", system-ui, sans-serif',
-              fontWeight: 300,
-              fontSize: 'clamp(2rem, 4vw, 2.8rem)',
-              letterSpacing: '-0.04em',
-              color: '#DB6436',
-              lineHeight: 1,
-              marginBottom: '8px',
-              whiteSpace: 'nowrap',
-            }}>
-              90d
-            </div>
-            <div style={{
-              fontFamily: '"Inter", system-ui, sans-serif',
-              fontWeight: 300,
-              fontSize: 'clamp(0.58rem, 1.1vw, 0.75rem)',
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              color: 'rgba(245,240,235,0.35)',
-              lineHeight: 1.3,
-              maxWidth: '140px',
-              hyphens: 'auto',
-            }}>
-              To measurable results
-            </div>
-          </div>
+          ))}
         </motion.div>
+
+        {/* Bottom accent line */}
+        <div aria-hidden style={{
+          position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)',
+          width: '20%', height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(219,100,54,0.25), transparent)',
+        }} />
       </section>
     </>
   )
