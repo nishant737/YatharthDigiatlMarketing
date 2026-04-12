@@ -87,6 +87,14 @@ function EmailIcon() {
   )
 }
 
+function PhoneIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1C10.61 21 3 13.39 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.21 2.2z" stroke="#DB6436" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
 function LinkedInIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="#DB6436">
@@ -286,7 +294,7 @@ export default function ContactSection() {
                   Email Us
                 </div>
                 <a
-                  href="mailto:hello@yatharth.in"
+                  href="mailto:info@yatharthsocial.com"
                   style={{
                     fontFamily: "'Inter', system-ui, sans-serif",
                     fontWeight: 400, fontSize: '0.78rem',
@@ -296,7 +304,7 @@ export default function ContactSection() {
                   onMouseEnter={e => e.currentTarget.style.opacity = '0.75'}
                   onMouseLeave={e => e.currentTarget.style.opacity = '1'}
                 >
-                  hello@yatharth.in
+                  info@yatharthsocial.com
                 </a>
                 <div style={{
                   fontFamily: "'Inter', system-ui, sans-serif",
@@ -347,6 +355,48 @@ export default function ContactSection() {
                 </div>
               </motion.a>
             </div>
+
+            {/* Phone card — full width */}
+            <motion.div {...fade(0.22)} className="contact-info-card" style={{ flexDirection: 'row', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+              <div style={{
+                width: '40px', height: '40px', borderRadius: '10px', flexShrink: 0,
+                background: 'rgba(219,100,54,0.1)',
+                border: '1px solid rgba(219,100,54,0.18)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <PhoneIcon />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontWeight: 300, fontSize: '0.72rem',
+                  color: 'rgba(245,240,235,0.35)',
+                  marginBottom: '6px', letterSpacing: '0.05em', textTransform: 'uppercase',
+                }}>
+                  Call Us
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 24px' }}>
+                  <a href="tel:+918970090057" style={{
+                    fontFamily: "'Inter', system-ui, sans-serif",
+                    fontWeight: 500, fontSize: 'clamp(0.82rem, 1.2vw, 0.95rem)',
+                    color: '#DB6436', textDecoration: 'none', letterSpacing: '0.01em',
+                    transition: 'opacity 0.2s', whiteSpace: 'nowrap',
+                  }}
+                    onMouseEnter={e => e.currentTarget.style.opacity = '0.75'}
+                    onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+                  >+91 89700 90057</a>
+                  <a href="tel:+917899780057" style={{
+                    fontFamily: "'Inter', system-ui, sans-serif",
+                    fontWeight: 500, fontSize: 'clamp(0.82rem, 1.2vw, 0.95rem)',
+                    color: 'rgba(219,100,54,0.7)', textDecoration: 'none', letterSpacing: '0.01em',
+                    transition: 'opacity 0.2s', whiteSpace: 'nowrap',
+                  }}
+                    onMouseEnter={e => e.currentTarget.style.opacity = '0.75'}
+                    onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+                  >+91 78997 80057</a>
+                </div>
+              </div>
+            </motion.div>
 
             {/* Location card — full width */}
             <motion.div {...fade(0.24)} className="contact-info-card" style={{ flexDirection: 'row', alignItems: 'center', gap: '16px' }}>
