@@ -37,10 +37,7 @@ export default function App() {
         }}>
           <StorySection />
 
-          {/* Craft stays pinned while Client scrolls up over it */}
-          <div style={{ position: 'sticky', top: 0, zIndex: 10, height: '100vh' }}>
-            <CraftSection />
-          </div>
+          <CraftSection />
 
           <ClientSection />
           <TestimonialsSection />
