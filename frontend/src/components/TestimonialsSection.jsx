@@ -100,9 +100,9 @@ function CardContent({ t, isActive, direction }) {
           <div style={{
             width: isActive ? '54px' : '38px',
             height: isActive ? '54px' : '38px',
-            borderRadius: '10px', flexShrink: 0,
+            borderRadius: 'none',
             overflow: 'hidden',
-            border: `1.5px solid ${isActive ? 'rgba(219,100,54,0.45)' : 'rgba(219,100,54,0.18)'}`,
+            
             transition: 'width 0.65s ease, height 0.65s ease',
           }}>
             <img src={t.img} alt={t.name}
@@ -395,7 +395,7 @@ export default function TestimonialsSection() {
       <div aria-hidden style={{
         position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)',
         width: '40%', height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(219,100,54,0.25), transparent)',
+       
         zIndex: 2,
       }} />
     </section>

@@ -39,7 +39,7 @@ function DesktopIndicator({ active }) {
   return (
     <div style={{
       position: 'fixed',
-      left: 'clamp(14px, 2vw, 24px)',
+      left: 'clamp(4px, 0.5vw, 8px)',
       top: '50%',
       transform: 'translateY(-50%)',
       zIndex: 1000,
@@ -73,16 +73,16 @@ function DesktopIndicator({ active }) {
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             />
 
-            {/* Label tooltip */}
+            {/* Label — always visible, highlighted when active */}
             <motion.span
-              animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : -6 }}
-              transition={{ duration: 0.2 }}
+              animate={{ opacity: isActive ? 1 : isHovered ? 0.7 : 0.3 }}
+              transition={{ duration: 0.25 }}
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
-                fontSize: '0.55rem',
-                letterSpacing: '0.15em',
+                fontSize: '0.30rem',
+                letterSpacing: '0.18em',
                 textTransform: 'uppercase',
-                color: isActive ? '#d49030' : 'rgba(240,230,208,0.5)',
+                color: isActive ? '#d49030' : 'rgba(240,230,208,0.6)',
                 whiteSpace: 'nowrap',
                 pointerEvents: 'none',
                 userSelect: 'none',

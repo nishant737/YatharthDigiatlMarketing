@@ -242,7 +242,7 @@ export default function ContactSection() {
                     fontWeight: 500, fontSize: 'clamp(0.92rem, 1.3vw, 1.02rem)',
                     color: '#f5f0eb', marginBottom: '4px',
                   }}>
-                    Schedule a Free Consultation
+                    Schedule Your Consultation
                   </div>
                   <div style={{
                     fontFamily: "'Inter', system-ui, sans-serif",
@@ -384,7 +384,7 @@ export default function ContactSection() {
                   }}
                     onMouseEnter={e => e.currentTarget.style.opacity = '0.75'}
                     onMouseLeave={e => e.currentTarget.style.opacity = '1'}
-                  >+91 89700 90057</a>
+                  >+91 78997 80057</a>
                   <a href="tel:+917899780057" style={{
                     fontFamily: "'Inter', system-ui, sans-serif",
                     fontWeight: 500, fontSize: 'clamp(0.82rem, 1.2vw, 0.95rem)',
@@ -393,7 +393,7 @@ export default function ContactSection() {
                   }}
                     onMouseEnter={e => e.currentTarget.style.opacity = '0.75'}
                     onMouseLeave={e => e.currentTarget.style.opacity = '1'}
-                  >+91 78997 80057</a>
+                  >+91 89700 90057</a>
                 </div>
               </div>
             </motion.div>

@@ -219,6 +219,7 @@ function buildScene(canvas) {
   return { renderer, scene, camera, group, nodeMeshes, orb1, orb2, rings }
 }
 
+
 // ─── Main hero ────────────────────────────────────────────────────────────────
 export default function HeroSection() {
   const canvasRef  = useRef(null)
@@ -227,7 +228,7 @@ export default function HeroSection() {
   const rafRef     = useRef(null)
 
   const [frameIdx, setFrameIdx] = useState(0)
-  const [ready, setReady]       = useState(false)
+  const [ready,    setReady]    = useState(false)
 
   // ── Build Three.js scene ──
   useEffect(() => {

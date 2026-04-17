@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import storyVideo from '../asset/story.mp4'
 
 const STORY_CSS = `
   .story-section { display:flex; flex-direction:row; }
@@ -396,9 +395,11 @@ function StoryVideo({ lit }) {
     >
       <video
         ref={videoRef}
-        src={storyVideo}
-        muted loop playsInline
-        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        src={'/asset/story.mp4'}
+        muted
+        loop
+        playsInline
+        style={{ width: '100%', height: '100%', objectFit: 'contain', aspectRatio: '9/16', background: '#000', display: 'block' }}
       />
       {/* Desktop: fade left edge into text. Mobile: fade top edge into text above */}
       <div style={{
