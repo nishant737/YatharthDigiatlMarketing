@@ -7,27 +7,40 @@ const STORY_CSS = `
 
   @media (max-width: 768px) {
     .story-section {
-      flex-direction: column !important;
+      position: relative !important;
       min-height: 100vh !important;
       max-height: 100vh !important;
       height: 100vh !important;
       overflow: hidden !important;
     }
-    .story-left {
-      flex: 0 0 40% !important;
-      max-height: 40% !important;
+    .story-right {
+      position: absolute !important;
+      inset: 0 !important;
       width: 100% !important;
+      height: 100% !important;
       min-height: unset !important;
+      padding: 0 !important;
+      z-index: 1 !important;
+    }
+    .story-right > div {
+      border-radius: 0 !important;
+    }
+    .story-left {
+      position: absolute !important;
+      inset: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      min-height: unset !important;
+      z-index: 2 !important;
       align-items: center !important;
       text-align: center !important;
-      padding: 18px 20px 10px !important;
-      justify-content: flex-start !important;
+      padding: 28px 24px 24px !important;
+      justify-content: flex-end !important;
+      background: linear-gradient(to top, rgba(10,8,6,0.85) 0%, rgba(10,8,6,0.4) 50%, rgba(10,8,6,0.1) 100%) !important;
       overflow: hidden !important;
     }
     .story-left .lamp-wrap {
-      width: 60px !important;
-      height: 60px !important;
-      margin: 0 auto 6px auto !important;
+      display: none !important;
     }
     .story-text-block {
       align-items: center !important;
@@ -46,23 +59,8 @@ const STORY_CSS = `
     .story-text-block p:last-child {
       margin-top: 4px !important;
     }
-    /* Hide some middle lines on very small screens */
     .story-text-block p:nth-child(n+5):nth-child(-n+7) {
       display: none !important;
-    }
-    .story-right {
-      flex: 0 0 60% !important;
-      max-height: 60% !important;
-      width: 100% !important;
-      height: unset !important;
-      min-height: unset !important;
-      position: relative !important;
-      padding: 8px 14px 14px !important;
-    }
-    .story-right > div {
-      border-radius: 14px !important;
-      overflow: hidden !important;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 1px 6px rgba(219,100,54,0.12) !important;
     }
   }
 `
@@ -399,14 +397,8 @@ function StoryVideo({ lit }) {
         muted
         loop
         playsInline
-        style={{ width: '100%', height: '100%', objectFit: 'contain', aspectRatio: '9/16', background: '#000', display: 'block' }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
       />
-      {/* Desktop: fade left edge into text. Mobile: fade top edge into text above */}
-      <div style={{
-        position: 'absolute', inset: 0,
-        background: 'linear-gradient(to right, #0a0806 0%, transparent 20%), linear-gradient(to bottom, #0a0806 0%, transparent 18%)',
-        pointerEvents: 'none',
-      }}/>
     </motion.div>
   )
 }
