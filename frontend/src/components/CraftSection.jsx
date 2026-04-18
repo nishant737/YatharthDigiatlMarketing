@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import craftBg from '../asset/craft.jpeg'
-import goExtraBg from '../asset/goextra.jpeg'
+import goExtraBg from '../asset/GOO.jpeg'
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
@@ -13,7 +13,6 @@ function useIsMobile() {
   return mobile
 }
 
-// ─── Service data ─────────────────────────────────────────────────────────────
 const SERVICES = [
   {
     num: '01', title: 'Brand Strategy',
@@ -42,7 +41,6 @@ const SERVICES = [
   },
 ]
 
-// ─── Main section ─────────────────────────────────────────────────────────────
 export default function CraftSection() {
   const sectionRef = useRef(null)
   const [activeIndex, setActiveIndex] = useState(0)
@@ -74,19 +72,15 @@ export default function CraftSection() {
     <section
       id="craft"
       ref={sectionRef}
-      style={{
-        position: 'relative',
-        height: `${COUNT * 100}vh`,
-      }}
+      style={{ position: 'relative', height: `${COUNT * 100}vh` }}
     >
-      {/* Sticky viewport */}
       <div style={{
         position: 'sticky', top: 0, height: '100vh',
         display: 'flex', flexDirection: 'column',
         justifyContent: 'center', alignItems: 'center',
         background: '#0a0806', overflow: 'hidden', zIndex: 10,
       }}>
-        {/* Background images */}
+        {/* Background images — unchanged */}
         <div aria-hidden style={{
           position: 'absolute', inset: 0, zIndex: 0,
           backgroundImage: `url(${craftBg})`,
@@ -100,157 +94,190 @@ export default function CraftSection() {
           opacity: 0.07, pointerEvents: 'none',
         }} />
 
-        {/* Heading */}
-        <motion.h2
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.1 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          style={{
-            position: 'relative', zIndex: 1,
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontWeight: 300, fontSize: isMobile ? '1.1rem' : 'clamp(1.3rem,4vw,2.1rem)',
-            letterSpacing: '-0.03em', color: '#f5f0eb',
-            marginBottom: isMobile ? '20px' : '60px',
-            textAlign: isMobile ? 'left' : 'center',
-            width: isMobile ? '100%' : 'auto',
-            paddingLeft: isMobile ? '24px' : 0,
-          }}
-        >
-          Our Services
-        </motion.h2>
-
-        {/* Number + Content layout */}
+        {/* Main two-column layout */}
         <div style={{
           position: 'relative', zIndex: 1,
           display: 'flex',
-          flexDirection: 'row',
-          alignItems: isMobile ? 'flex-start' : 'center',
-          justifyContent: isMobile ? 'flex-start' : 'center',
-          gap: isMobile ? '16px' : 'clamp(40px, 8vw, 120px)',
+          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: isMobile ? '32px' : 'clamp(60px, 9vw, 130px)',
           width: '100%',
-          maxWidth: '1100px',
-          padding: isMobile ? '0 20px' : '0 clamp(24px, 4vw, 60px)',
+          maxWidth: '1140px',
+          padding: isMobile ? '0 24px' : '0 clamp(32px, 5vw, 80px)',
         }}>
 
-          {/* LEFT — Big number */}
+          {/* ── LEFT: stacked service list ── */}
           <div style={{
-            position: 'relative',
-            display: 'flex', flexDirection: 'column', alignItems: isMobile ? 'flex-start' : 'center',
-            minWidth: isMobile ? '70px' : '220px',
-            paddingTop: isMobile ? '4px' : 0,
+            flex: '1 1 0',
+            maxWidth: isMobile ? '100%' : '520px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: isMobile ? '20px' : '28px',
           }}>
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={activeIndex}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -30 }}
-                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                  fontFamily: "'Inter', system-ui, sans-serif",
-                  fontWeight: 200,
-                  fontSize: isMobile ? '3.2rem' : 'clamp(7rem, 12vw, 11rem)',
-                  lineHeight: 1,
-                  color: 'transparent',
-                  WebkitTextStroke: isMobile ? `1px ${current.accent}` : `1.5px ${current.accent}`,
-                  letterSpacing: '-0.04em',
-                  userSelect: 'none',
-                }}
-              >
-                {current.num}
-              </motion.span>
-            </AnimatePresence>
+            {/* Label */}
+            <p style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontWeight: 300,
+              fontSize: isMobile ? '0.65rem' : '0.7rem',
+              letterSpacing: '0.24em',
+              textTransform: 'uppercase',
+              color: `${current.accent}88`,
+              margin: '0 0 8px',
+              transition: 'color 0.5s ease',
+            }}>
+              Our Services
+            </p>
 
-          </div>
-
-          {/* RIGHT — Content */}
-          <div style={{
-            flex: 1, maxWidth: isMobile ? 'none' : '560px',
-            minHeight: isMobile ? '180px' : '280px',
-            display: 'flex', flexDirection: 'column', justifyContent: 'flex-start',
-            paddingTop: isMobile ? '2px' : 0,
-          }}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeIndex}
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '10px' : '16px' }}
-              >
-                {/* Icon + Title row on mobile */}
-                {isMobile ? (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {SERVICES.map((service, i) => {
+              const isActive = i === activeIndex
+              return (
+                <motion.div
+                  key={service.num}
+                  animate={{
+                    opacity: isActive ? 1 : 0.22,
+                    y: isActive ? 0 : 0,
+                  }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ cursor: 'default' }}
+                >
+                  {/* Title row */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'baseline',
+                    gap: '14px',
+                    marginBottom: isActive ? (isMobile ? '8px' : '10px') : 0,
+                  }}>
+                    {/* Number */}
                     <span style={{
-                      fontSize: '1.2rem',
-                      color: current.accent, lineHeight: 1,
-                      filter: `drop-shadow(0 0 6px ${current.accent}44)`,
-                    }}>
-                      {current.icon}
-                    </span>
-                    <h3 style={{
                       fontFamily: "'Inter', system-ui, sans-serif",
-                      fontWeight: 500,
-                      fontSize: '1.4rem',
-                      color: '#f5f0eb', margin: 0,
-                      letterSpacing: '-0.02em',
+                      fontWeight: 300,
+                      fontSize: isMobile ? '0.7rem' : '0.75rem',
+                      color: isActive ? service.accent : 'rgba(245,240,235,0.3)',
+                      letterSpacing: '0.08em',
+                      transition: 'color 0.5s ease',
+                      minWidth: '24px',
                     }}>
-                      {current.title}
-                    </h3>
-                  </div>
-                ) : (
-                  <>
-                    {/* Icon */}
-                    <span style={{
-                      fontSize: 'clamp(1.6rem, 2.8vw, 2.2rem)',
-                      color: current.accent, lineHeight: 1,
-                      filter: `drop-shadow(0 0 8px ${current.accent}44)`,
-                    }}>
-                      {current.icon}
+                      {service.num}
                     </span>
 
                     {/* Title */}
-                    <h3 style={{
-                      fontFamily: "'Inter', system-ui, sans-serif",
-                      fontWeight: 500,
-                      fontSize: 'clamp(1.5rem, 2.5vw, 2rem)',
-                      color: '#f5f0eb', margin: 0,
-                      letterSpacing: '-0.02em',
-                    }}>
-                      {current.title}
-                    </h3>
-                  </>
-                )}
+                    <motion.h3
+                      animate={{
+                        fontSize: isActive
+                          ? (isMobile ? '1.55rem' : 'clamp(1.7rem, 2.8vw, 2.3rem)')
+                          : (isMobile ? '1.1rem' : 'clamp(1.1rem, 1.8vw, 1.4rem)'),
+                        color: isActive ? '#f5f0eb' : 'rgba(245,240,235,0.35)',
+                      }}
+                      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                      style={{
+                        fontFamily: "'Inter', system-ui, sans-serif",
+                        fontWeight: isActive ? 400 : 300,
+                        letterSpacing: '-0.025em',
+                        lineHeight: 1.15,
+                        margin: 0,
+                      }}
+                    >
+                      {service.title}
+                    </motion.h3>
+                  </div>
 
-                {/* Divider */}
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-                  style={{
-                    height: '1px', width: isMobile ? '40px' : '60px',
-                    background: `linear-gradient(90deg, ${current.accent}cc, transparent)`,
-                    transformOrigin: 'left',
-                  }}
-                />
-
-                {/* Description */}
-                <p style={{
-                  fontFamily: "'Inter', system-ui, sans-serif",
-                  fontWeight: 300,
-                  fontSize: isMobile ? '0.95rem' : 'clamp(0.92rem, 1.2vw, 1.05rem)',
-                  lineHeight: isMobile ? 1.7 : 1.75,
-                  color: 'rgba(245,240,235,0.55)', margin: 0,
-                  maxWidth: '480px',
-                }}>
-                  {current.desc}
-                </p>
-
-              </motion.div>
-            </AnimatePresence>
+                  {/* Description — only for active */}
+                  <AnimatePresence>
+                    {isActive && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                        style={{ overflow: 'hidden', paddingLeft: isMobile ? '0' : '38px' }}
+                      >
+                        {/* Divider */}
+                        <motion.div
+                          initial={{ scaleX: 0 }}
+                          animate={{ scaleX: 1 }}
+                          transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+                          style={{
+                            height: '1px',
+                            width: '48px',
+                            background: `linear-gradient(90deg, ${service.accent}cc, transparent)`,
+                            transformOrigin: 'left',
+                            marginBottom: '10px',
+                          }}
+                        />
+                        <p style={{
+                          fontFamily: "'Inter', system-ui, sans-serif",
+                          fontWeight: 300,
+                          fontSize: isMobile ? '0.9rem' : 'clamp(0.88rem, 1.1vw, 1rem)',
+                          lineHeight: 1.8,
+                          color: 'rgba(245,240,235,0.5)',
+                          margin: 0,
+                          maxWidth: '420px',
+                        }}>
+                          {service.desc}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              )
+            })}
           </div>
+
+          {/* ── RIGHT: clean portrait reel ── */}
+          {!isMobile && (
+            <div style={{
+              flex: '0 0 auto',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              {/* Clip container — same size as reel, hides slide travel */}
+              <div style={{
+                position: 'relative',
+                width: 'clamp(220px, 22vw, 290px)',
+                aspectRatio: '9 / 16',
+                borderRadius: '16px',
+                overflow: 'hidden',
+                boxShadow: `0 32px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.05)`,
+                background: '#000',
+              }}>
+                <AnimatePresence mode="popLayout">
+                  <motion.div
+                    key={activeIndex}
+                    initial={{ y: '100%' }}
+                    animate={{ y: '0%' }}
+                    exit={{ y: '-100%' }}
+                    transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+                    style={{ position: 'absolute', inset: 0 }}
+                  >
+                    <video
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                    >
+                      <source src="/asset/story.mp4" type="video/mp4" />
+                    </video>
+
+                    {/* Bottom fade */}
+                    <div style={{
+                      position: 'absolute', inset: 0, pointerEvents: 'none',
+                      background: 'linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.5) 100%)',
+                    }} />
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Accent glow at bottom edge */}
+                <motion.div
+                  animate={{ background: `radial-gradient(ellipse at 50% 110%, ${current.accent}22 0%, transparent 55%)` }}
+                  transition={{ duration: 1, ease: 'easeInOut' }}
+                  style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Scroll hint */}
@@ -259,34 +286,33 @@ export default function CraftSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ delay: 1, duration: 0.8 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
             style={{
-              position: 'absolute', bottom: isMobile ? '24px' : '60px', right: isMobile ? '20px' : '32px',
+              position: 'absolute',
+              bottom: '40px', right: '40px',
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
               zIndex: 2,
             }}
           >
             <motion.div
               animate={{ y: [0, 6, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+              transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
               style={{
                 width: '16px', height: '24px', borderRadius: '10px',
-                border: '1.5px solid rgba(245,240,235,0.2)',
+                border: '1.5px solid rgba(245,240,235,0.18)',
                 display: 'flex', justifyContent: 'center', paddingTop: '5px',
               }}
             >
               <div style={{
                 width: '2px', height: '5px', borderRadius: '1px',
-                background: 'rgba(245,240,235,0.3)',
+                background: 'rgba(245,240,235,0.28)',
               }} />
             </motion.div>
             <span style={{
               fontFamily: "'Inter', system-ui, sans-serif",
               fontSize: '0.58rem', letterSpacing: '0.15em',
-              color: 'rgba(245,240,235,0.2)', textTransform: 'uppercase',
-            }}>
-              Scroll
-            </span>
+              color: 'rgba(245,240,235,0.18)', textTransform: 'uppercase',
+            }}>Scroll</span>
           </motion.div>
         )}
       </div>

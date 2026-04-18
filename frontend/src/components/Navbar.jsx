@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion } from 'framer-motion'
-import logo from '../asset/logo.png'
+import logo from '../asset/logo2.png'
 
 const useIsMobile = () => {
   const [mobile, setMobile] = useState(window.innerWidth < 768)
@@ -32,21 +32,24 @@ function DesktopIndicator({ active }) {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
       const el = document.getElementById(id)
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY
+        window.scrollTo({ top, behavior: 'smooth' })
+      }
     }
   }, [])
 
   return (
     <div style={{
       position: 'fixed',
-      left: 'clamp(4px, 0.5vw, 8px)',
+      right: 'clamp(10px, 1vw, 18px)',
       top: '50%',
       transform: 'translateY(-50%)',
       zIndex: 1000,
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'flex-start',
-      gap: '12px',
+      alignItems: 'flex-end',
+      gap: '10px',
     }}>
       {SECTIONS.map((section, i) => {
         const isActive = active === section.id
@@ -57,30 +60,20 @@ function DesktopIndicator({ active }) {
             style={{
               display: 'flex', alignItems: 'center', gap: '8px',
               cursor: 'pointer', position: 'relative',
+              padding: '3px 0',
             }}
             onMouseEnter={() => setHovered(i)}
             onMouseLeave={() => setHovered(null)}
             onClick={() => handleClick(section.id)}
           >
-            {/* Dot / line */}
-            <motion.div
-              animate={{
-                height: isActive ? 18 : 4,
-                width: isActive ? 2 : 4,
-                borderRadius: isActive ? '1px' : '50%',
-                background: isActive ? '#d49030' : isHovered ? 'rgba(212,144,48,0.6)' : 'rgba(240,230,208,0.25)',
-              }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            />
-
-            {/* Label — always visible, highlighted when active */}
+            {/* Label */}
             <motion.span
-              animate={{ opacity: isActive ? 1 : isHovered ? 0.7 : 0.3 }}
-              transition={{ duration: 0.25 }}
+              animate={{ opacity: isActive ? 1 : isHovered ? 0.7 : 0 }}
+              transition={{ duration: 0.2 }}
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
-                fontSize: '0.30rem',
-                letterSpacing: '0.18em',
+                fontSize: '0.5rem',
+                letterSpacing: '0.15em',
                 textTransform: 'uppercase',
                 color: isActive ? '#d49030' : 'rgba(240,230,208,0.6)',
                 whiteSpace: 'nowrap',
@@ -90,6 +83,17 @@ function DesktopIndicator({ active }) {
             >
               {section.label}
             </motion.span>
+
+            {/* Dot / line */}
+            <motion.div
+              animate={{
+                height: isActive ? 20 : 5,
+                width: isActive ? 2 : 5,
+                borderRadius: isActive ? '1px' : '50%',
+                background: isActive ? '#d49030' : isHovered ? 'rgba(212,144,48,0.6)' : 'rgba(240,230,208,0.3)',
+              }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            />
           </div>
         )
       })}
@@ -109,7 +113,10 @@ function MobileWheelIndicator({ active }) {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
       const el = document.getElementById(id)
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY
+        window.scrollTo({ top, behavior: 'smooth' })
+      }
     }
   }, [])
 
@@ -213,8 +220,6 @@ function SectionIndicator({ active }) {
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 export default function Navbar() {
   const [activeSection, setActiveSection] = useState('home')
-  const [showNav, setShowNav] = useState(true)
-
   // Track which section is in view
   useEffect(() => {
     const onScroll = () => {
@@ -238,25 +243,11 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Show navbar only during hero section
-  useEffect(() => {
-    const onScroll = () => {
-      const heroEl = document.getElementById('home')
-      if (heroEl) {
-        const heroBottom = heroEl.offsetTop + heroEl.offsetHeight
-        setShowNav(window.scrollY < heroBottom - window.innerHeight * 0.5)
-      }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
   return (
     <>
       <motion.nav
         initial={{ y: -12, opacity: 0 }}
-        animate={{ y: 0, opacity: showNav ? 1 : 0 }}
+        animate={{ y: 0, opacity: activeSection === 'home' ? 1 : 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         style={{
           position: 'fixed', top: 0, left: 0, right: 0,
@@ -266,7 +257,7 @@ export default function Navbar() {
           padding: '0 clamp(16px, 4vw, 56px)',
           background: 'transparent',
           boxSizing: 'border-box',
-          pointerEvents: showNav ? 'auto' : 'none',
+          pointerEvents: activeSection === 'home' ? 'auto' : 'none',
         }}
       >
         {/* Logo */}
@@ -284,10 +275,15 @@ export default function Navbar() {
             src={logo}
             alt="Yatharth"
             style={{
-              height: 'clamp(24px, 4vw, 42px)',
+              height: 'clamp(80px, 12vw, 140px)',
               maxWidth: 'calc(100vw - 80px)',
               width: 'auto', objectFit: 'contain',
               display: 'block', userSelect: 'none', pointerEvents: 'none',
+              marginTop: '30px',    // ← add this
+  marginBottom: '10px', // ← add this
+  marginLeft: "1px",
+  
+
             }}
           />
         </a>

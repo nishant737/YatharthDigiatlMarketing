@@ -368,6 +368,30 @@ export default function HeroSection() {
               <StoryFrame key={frameIdx} frame={FRAMES[frameIdx]} />
             </AnimatePresence>
           </div>
+          {/* Simple Scroll to Explore text */}
+          <div
+            style={{
+              position: 'absolute',
+              left: '50%',
+              bottom: 'clamp(24px, 7vh, 54px)',
+              transform: 'translateX(-50%)',
+              zIndex: 3,
+              fontSize: 'clamp(0.50rem, 1.1vw, 0.70rem)',
+              color: 'rgba(245,240,235,0.7)',
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontWeight: 200,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              background: 'rgba(13,10,5,0.32)',
+              borderRadius: '12px',
+              padding: '7px 18px 7px',
+              boxShadow: '0 2px 16px 0 rgba(0,0,0,0.08)',
+              pointerEvents: 'none',
+              userSelect: 'none',
+            }}
+          >
+            Scroll to Explore
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, animate, useMotionValue, useTransform, useSpring } from 'framer-motion'
-import logo from '../asset/logo.png'
+import logo from '../asset/logo2.png'
 
 export default function LoadingScreen({ onComplete }) {
   const [phase,   setPhase]   = useState('idle')   // idle → loading → exit → done
@@ -87,12 +87,12 @@ export default function LoadingScreen({ onComplete }) {
         transition={{ duration:1.1, ease:[0.22,1,0.36,1] }}
         style={{
           position:'relative', zIndex:1,
-          height:'clamp(42px,7vw,68px)',
+          height:'clamp(180px,12vw,200px)',
           width:'auto',
           objectFit:'contain',
           userSelect:'none',
           pointerEvents:'none',
-          marginBottom:56,
+          marginBottom:-20,
         }}
       />
 
