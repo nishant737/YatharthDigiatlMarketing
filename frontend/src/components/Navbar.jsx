@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion } from 'framer-motion'
-import logo from '../asset/logo2.png'
+import logo from '../asset/l90.png'
 
 function smoothScrollTo(targetY, duration = 700) {
   const startY = window.scrollY
@@ -84,7 +84,7 @@ function DesktopIndicator({ active }) {
           >
             {/* Label */}
             <motion.span
-              animate={{ opacity: isActive ? 1 : isHovered ? 0.7 : 0 }}
+              animate={{ opacity: isActive ? 1 : isHovered ? 0.85 : 0.45 }}
               transition={{ duration: 0.2 }}
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",

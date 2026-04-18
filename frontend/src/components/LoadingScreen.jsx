@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, animate, useMotionValue, useTransform, useSpring } from 'framer-motion'
-import logo from '../asset/logo2.png'
+import logo from '../asset/l90.png'
 
 export default function LoadingScreen({ onComplete }) {
   const [phase,   setPhase]   = useState('idle')   // idle → loading → exit → done
@@ -127,8 +127,8 @@ export default function LoadingScreen({ onComplete }) {
             translateY:'-50%',
             left: barW,
             width:4, height:4, borderRadius:'50%',
-            background:'#DB6436',
-            boxShadow:'0 0 8px 3px rgba(219,100,54,0.7)',
+            background:'#FFFFFF',
+            boxShadow:'0 0 8px 3px rgba(255,255,255,0.7)',
             translateX:'-50%',
           }}/>
         </div>
@@ -141,7 +141,7 @@ export default function LoadingScreen({ onComplete }) {
               fontWeight:200,
               fontSize:'clamp(0.68rem,1.1vw,0.8rem)',
               letterSpacing:'0.16em',
-              color:'rgba(219,100,54,0.7)',
+              color:'rgba(255,255,255,0.7)',
               fontVariantNumeric:'tabular-nums',
               minWidth:'2.6ch',
               textAlign:'right',
@@ -154,7 +154,7 @@ export default function LoadingScreen({ onComplete }) {
             fontWeight:200,
             fontSize:'0.52rem',
             letterSpacing:'0.08em',
-            color:'rgba(219,100,54,0.3)',
+            color:'rgba(255,255,255,0.3)',
           }}>%</span>
         </div>
       </motion.div>
@@ -173,7 +173,7 @@ export default function LoadingScreen({ onComplete }) {
           fontSize:'clamp(0.5rem,0.78vw,0.6rem)',
           letterSpacing:'0.32em',
           textTransform:'uppercase',
-          color:'rgba(245,240,235,0.13)',
+          color:'rgba(255,255,255,0.13)',
           margin:0,
         }}
       >
