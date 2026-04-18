@@ -2,6 +2,22 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion } from 'framer-motion'
 import logo from '../asset/logo2.png'
 
+function smoothScrollTo(targetY, duration = 700) {
+  const startY = window.scrollY
+  const diff = targetY - startY
+  if (diff === 0) return
+  let start = null
+  const ease = t => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+  function step(ts) {
+    if (!start) start = ts
+    const elapsed = ts - start
+    const progress = Math.min(elapsed / duration, 1)
+    window.scrollTo(0, startY + diff * ease(progress))
+    if (progress < 1) requestAnimationFrame(step)
+  }
+  requestAnimationFrame(step)
+}
+
 const useIsMobile = () => {
   const [mobile, setMobile] = useState(window.innerWidth < 768)
   useEffect(() => {
@@ -29,12 +45,12 @@ function DesktopIndicator({ active }) {
 
   const handleClick = useCallback((id) => {
     if (id === 'home') {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      smoothScrollTo(0)
     } else {
       const el = document.getElementById(id)
       if (el) {
         const top = el.getBoundingClientRect().top + window.scrollY
-        window.scrollTo({ top, behavior: 'smooth' })
+        smoothScrollTo(top)
       }
     }
   }, [])
@@ -110,12 +126,12 @@ function MobileWheelIndicator({ active }) {
 
   const handleClick = useCallback((id) => {
     if (id === 'home') {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      smoothScrollTo(0)
     } else {
       const el = document.getElementById(id)
       if (el) {
         const top = el.getBoundingClientRect().top + window.scrollY
-        window.scrollTo({ top, behavior: 'smooth' })
+        smoothScrollTo(top)
       }
     }
   }, [])
@@ -263,7 +279,7 @@ export default function Navbar() {
         {/* Logo */}
         <a
           href="#home"
-          onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+          onClick={e => { e.preventDefault(); smoothScrollTo(0) }}
           style={{
             textDecoration: 'none',
             display: 'flex', alignItems: 'center',

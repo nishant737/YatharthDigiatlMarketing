@@ -1,8 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import lpBg from '../asset/lp.jpg'
+import lpBg from '../asset/pagenote.jpg'
 import founderImg from '../asset/final1.png'
-
 const FOUNDER_CSS = `
 .founder-lp-bg {
   position: absolute;
