@@ -297,7 +297,25 @@ export default function HeroSection() {
         @media (max-width: 768px) {
           .hero-subtitle { margin-bottom: 8px !important; }
         }
+        .seo-only {
+          position: absolute;
+          width: 1px; height: 1px;
+          overflow: hidden;
+          clip: rect(0 0 0 0);
+          white-space: nowrap;
+          border: 0;
+        }
       `}</style>
+
+      {/* SEO-only block — invisible to users, fully readable by crawlers */}
+      <div className="seo-only">
+        <h1>Yatharth — Brand Strategy &amp; Digital Marketing Agency India</h1>
+        <p>
+          Yatharth is a digital marketing and brand strategy agency founded by Eshwar Shetty,
+          helping businesses across India build a powerful digital presence. We specialise in
+          brand strategy, SEO, content creation, creative direction, and social media management.
+        </p>
+      </div>
 
       <div style={{
         position: 'sticky', top: 0,

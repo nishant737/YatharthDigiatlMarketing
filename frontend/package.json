@@ -22,5 +22,9 @@
     "react-dom": "^19.2.4",
     "three": "^0.183.2",
     "vite": "^8.0.5"
+  },
+  "devDependencies": {
+    "@prerenderer/renderer-jsdom": "^1.1.9",
+    "vite-plugin-prerender": "^1.0.8"
   }
 }

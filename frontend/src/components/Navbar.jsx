@@ -2,12 +2,13 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion } from 'framer-motion'
 import logo from '../asset/l90.png'
 
-function smoothScrollTo(targetY, duration = 700) {
+function smoothScrollTo(targetY, duration = 900) {
   const startY = window.scrollY
   const diff = targetY - startY
-  if (diff === 0) return
+  if (Math.abs(diff) < 1) return
   let start = null
-  const ease = t => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+  // Cubic ease-in-out for a more polished feel
+  const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
   function step(ts) {
     if (!start) start = ts
     const elapsed = ts - start
@@ -239,16 +240,23 @@ export default function Navbar() {
   // Track which section is in view
   useEffect(() => {
     const onScroll = () => {
-      const mid = window.innerHeight * 0.4
+      const vh = window.innerHeight
+      const threshold = vh * 0.5
 
       let active = 'home'
+      let closestDist = Infinity
       for (const s of SECTIONS) {
         const el = document.getElementById(s.id)
         if (!el) continue
         const rect = el.getBoundingClientRect()
-        // Section is considered active when its top has crossed 40% down the viewport
-        if (rect.top <= mid) {
-          active = s.id
+        // Pick the section whose top is closest to the threshold line (50% vh),
+        // but only if it has already scrolled past the top of the screen.
+        if (rect.top <= threshold) {
+          const dist = Math.abs(rect.top - threshold)
+          if (dist < closestDist) {
+            closestDist = dist
+            active = s.id
+          }
         }
       }
       setActiveSection(active)

@@ -74,6 +74,16 @@ export default function CraftSection() {
       ref={sectionRef}
       style={{ position: 'relative', height: `${COUNT * 100}vh` }}
     >
+      {/* SEO-only — invisible to users, readable by crawlers */}
+      <div className="seo-only" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap' }}>
+        <h2>Our Services</h2>
+        {SERVICES.map(s => (
+          <div key={s.num}>
+            <h3>{s.title}</h3>
+            <p>{s.desc}</p>
+          </div>
+        ))}
+      </div>
       <div style={{
         position: 'sticky', top: 0, height: '100vh',
         display: 'flex', flexDirection: 'column',
@@ -116,7 +126,7 @@ export default function CraftSection() {
             gap: isMobile ? '20px' : '28px',
           }}>
             {/* Label */}
-            <p style={{
+            <h2 style={{
               fontFamily: "'Inter', system-ui, sans-serif",
               fontWeight: 300,
               fontSize: isMobile ? '0.65rem' : '0.7rem',
@@ -127,7 +137,7 @@ export default function CraftSection() {
               transition: 'color 0.5s ease',
             }}>
               Our Services
-            </p>
+            </h2>
 
             {SERVICES.map((service, i) => {
               const isActive = i === activeIndex
