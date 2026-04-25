@@ -16,6 +16,7 @@ A potential customer submitted this enquiry:
 - Service needed: ${service}
 - Project description: ${description}
 - Budget: ₹${budget}
+- Phone: ${phone}
 
 Score this lead by carefully evaluating BOTH the budget AND the description quality together.
 
@@ -23,16 +24,16 @@ Scoring rules:
 
 HOT (score = "HOT"):
 - Budget ₹30,000 or above AND description is clear, specific, and shows serious intent
-- OR budget is very high (₹50,000+) even if description is average
+- OR budget is very high (₹50,000+) even if description is average and phone is not spam number 
 
 WARM (score = "WARM"):
 - Budget ₹10,000–₹29,999 with a decent description
 - OR budget ₹30,000+ but description is vague or unclear
-- OR budget is low but description is very detailed and shows strong intent
+- OR budget is low but description is very detailed and shows strong intent and phone is not a spam number
 
 COLD (score = "COLD"):
 - Budget under ₹10,000 AND description is vague, too short, or unclear
-- OR no real project scope is mentioned regardless of budget
+- OR no real project scope is mentioned regardless of budget AND phone is a spam number (e.g. 1234567890, 0000000000)
 
 Description quality checklist (use this to judge):
 - GOOD description: mentions specific goals, target audience, timeline, deliverables, or platform
