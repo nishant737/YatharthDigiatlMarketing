@@ -6,8 +6,10 @@ import HeroSection from './components/HeroSection'
 import StorySection from './components/StorySection'
 import CraftSection from './components/CraftSection'
 import ClientSection from './components/ClientSection'
+import OurWorkSection from './components/OurWorkSection'
 import TestimonialsSection from './components/TestimonialsSection'
 import FounderNote from './components/FounderNote'
+import FAQSection from './components/FAQSection'
 import JournalSection from './components/JournalSection'
 import ContactSection from './components/ContactSection'
 import ChatBot from './components/ChatBot'
@@ -40,8 +42,12 @@ export default function App() {
           <CraftSection />
 
           <ClientSection />
+
+          <OurWorkSection />
+
           <TestimonialsSection />
           <FounderNote />
+          <FAQSection />
           <JournalSection />
           <ContactSection />
         </div>

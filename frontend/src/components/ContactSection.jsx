@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import logo from '../asset/logo2.png'
+import logo from '../asset/l90.png'
 
 const fade = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -258,7 +258,7 @@ export default function ContactSection() {
               <div style={{ height: '1px', background: 'rgba(219,100,54,0.1)' }} />
 
               {/* CTA */}
-              <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2n6b8wPnSCQ_Xg6YKii-hTTBIuFp6vwFIVbiaHH3sFr1jkkf4SY-Utqpd5Gobe2O7U43bwm7ks" target="_blank" rel="noopener noreferrer" className="book-btn">
+              <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1OUs34rqdk-Z1vzcHv1HJ4wPzfIGhtEh3N1mkw7WwxeAG92UURRGwHMxOTVSKcFMO94T1qbtAM" target="_blank" rel="noopener noreferrer" className="book-btn">
                 Book an Appointment <ArrowIcon />
               </a>
             </motion.div>

@@ -36,6 +36,7 @@ const SECTIONS = [
   { label: 'Clients',      id: 'clients'       },
   { label: 'Testimonials', id: 'testimonials'  },
   { label: 'About Us',     id: 'about'         },
+  { label: 'FAQ',          id: 'faq'           },
   { label: 'Journal',      id: 'journal'       },
   { label: 'Contact',      id: 'contact'       },
 ]

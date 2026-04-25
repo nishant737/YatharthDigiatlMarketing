@@ -72,7 +72,7 @@ export default function CraftSection() {
     <section
       id="craft"
       ref={sectionRef}
-      style={{ position: 'relative', height: `${COUNT * 100}vh` }}
+      style={{ position: 'relative', height: `calc(${COUNT * 60}vh + 100vh)` }}
     >
       {/* SEO-only — invisible to users, readable by crawlers */}
       <div className="seo-only" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap' }}>
