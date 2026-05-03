@@ -59,16 +59,15 @@ const NAV_COLUMNS = [
   ],
 ]
 
-const MOBILE_MENU_LINKS = [
-  { label: 'Work',            id: 'craft'   },
-  { label: 'About',           id: 'about'   },
-  { label: 'Services',        id: 'craft'   },
-  { label: 'Branding Studio', id: 'story'   },
-  { label: 'Journal',         id: 'journal' },
-  { label: 'FAQ',             id: 'faq'     },
-  { label: 'Contact',         id: 'contact' },
-  { label: 'Instagram', href: 'https://www.instagram.com/yatharth_digitalmarketing/' },
-  { label: 'LinkedIn',  href: 'https://www.linkedin.com/company/yatharth'            },
+const MENU_LINKS = [
+  { label: 'Home',      id: 'home'     },
+  { label: 'Story',     id: 'story'    },
+  { label: 'Our Work',  id: 'our-work' },
+  { label: 'Services',  id: 'craft'    },
+  { label: 'About Us',  id: 'about'    },
+  { label: 'Journal',   id: 'journal'  },
+  { label: 'FAQ',       id: 'faq'      },
+  { label: 'Contact',   id: 'contact'  },
 ]
 
 // ─── Desktop section indicator dots (right side, shown when off home) ────────
@@ -237,22 +236,23 @@ export default function Navbar() {
           background: #fff; border-radius: 2px;
           transition: transform 0.3s ease, opacity 0.3s ease;
         }
-        .mobile-menu-link {
+        .menu-nav-link {
           font-family: 'Inter', sans-serif;
-          font-size: clamp(1.6rem, 7vw, 2.6rem);
-          font-weight: 300;
-          color: rgba(255,255,255,0.9);
+          font-size: clamp(2.4rem, 6.5vw, 7rem);
+          font-weight: 700;
+          letter-spacing: -0.04em;
+          line-height: 1.05;
           text-decoration: none;
-          padding: 12px 0;
           display: block;
-          transition: color 0.2s ease;
           cursor: pointer;
           background: none;
           border: none;
-          text-align: center;
-          width: 100%;
+          text-align: left;
+          padding: 0;
+          transition: color 0.18s ease;
+          will-change: transform, opacity;
         }
-        .mobile-menu-link:hover { color: #fff; }
+        .menu-nav-link:hover { color: #fff !important; }
       `}</style>
 
       {/* ── Main navbar ── */}
@@ -380,120 +380,100 @@ export default function Navbar() {
         )}
       </motion.nav>
 
-      {/* ── Mobile full-screen menu ── */}
-      <AnimatePresence>
-        {isMobile && menuOpen && (
-          <motion.div
-            key="mobile-menu"
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              zIndex: 1000,
-              background: 'rgba(227, 115, 94, 0.92)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '24px',
-              overflowY: 'auto',
-            }}
-          >
-            {MOBILE_MENU_LINKS.map(link =>
-              link.href ? (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mobile-menu-link"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link.label}
-                </a>
-              ) : (
-                <button
-                  key={link.label}
-                  className="mobile-menu-link"
-                  onClick={() => scrollTo(link.id)}
-                >
-                  {link.label}
-                </button>
-              )
-            )}
-
-            <button
-              className="nav-letstalk"
-              onClick={() => scrollTo('contact')}
-              style={{ marginTop: '36px', alignSelf: 'center', fontSize: '0.85rem', padding: '12px 28px' }}
-            >
-              Let&rsquo;s Talk
-              <svg width="11" height="11" viewBox="0 0 10 10" fill="none">
-                <path d="M1 1h8v8M1 9L9 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── Mobile full-screen menu (also for desktop when not on home) ── */}
+      {/* ── Full-screen hamburger menu (mobile + desktop) ── */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            key="collapsed-menu"
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            key="main-menu"
+            initial={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
+            animate={{ opacity: 1, clipPath: 'inset(0 0 0% 0)' }}
+            exit={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             style={{
               position: 'fixed',
               inset: 0,
               zIndex: 1000,
-              background: !isMobile ? 'rgba(10, 8, 6, 0.98)' : 'rgba(227, 115, 94, 0.92)',
+              background: '#E35336',
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '24px',
+              justifyContent: 'space-between',
+              padding: 'clamp(80px, 10vh, 110px) clamp(24px, 6vw, 88px) clamp(32px, 5vh, 56px)',
               overflowY: 'auto',
+              boxSizing: 'border-box',
             }}
           >
-            {MOBILE_MENU_LINKS.map(link =>
-              link.href ? (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mobile-menu-link"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link.label}
-                </a>
-              ) : (
-                <button
-                  key={link.label}
-                  className="mobile-menu-link"
-                  onClick={() => scrollTo(link.id)}
-                >
-                  {link.label}
-                </button>
-              )
-            )}
+            {/* Nav links */}
+            <nav style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(2px, 0.6vh, 8px)' }}>
+              {MENU_LINKS.map((link, i) => {
+                const isActive = activeSection === link.id
+                return (
+                  <motion.button
+                    key={link.label}
+                    className="menu-nav-link"
+                    onClick={() => scrollTo(link.id)}
+                    initial={{ opacity: 0, x: -32 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1], delay: 0.06 + i * 0.055 }}
+                    style={{
+                      color: isActive ? '#ffffff' : 'rgba(255,255,255,0.32)',
+                    }}
+                  >
+                    {link.label}
+                  </motion.button>
+                )
+              })}
+            </nav>
 
-            <button
-              className="nav-letstalk"
-              onClick={() => scrollTo('contact')}
-              style={{ marginTop: '36px', alignSelf: 'center', fontSize: '0.85rem', padding: '12px 28px' }}
+            {/* Bottom footer row */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: 'easeOut', delay: 0.52 }}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-end',
+                flexWrap: 'wrap',
+                gap: '16px',
+                borderTop: '1px solid rgba(255,255,255,0.22)',
+                paddingTop: 'clamp(16px, 2.5vh, 28px)',
+              }}
             >
-              Let&rsquo;s Talk
-              <svg width="11" height="11" viewBox="0 0 10 10" fill="none">
-                <path d="M1 1h8v8M1 9L9 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
+              <span style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 'clamp(0.65rem, 0.9vw, 0.82rem)',
+                fontWeight: 400,
+                color: 'rgba(255,255,255,0.55)',
+                letterSpacing: '0.02em',
+              }}>Yatharth Digital Marketing.</span>
+
+              <div style={{ display: 'flex', gap: '28px' }}>
+                {[
+                  { label: 'Instagram', href: 'https://www.instagram.com/yatharth_digitalmarketing/' },
+                  { label: 'LinkedIn',  href: 'https://www.linkedin.com/company/yatharth' },
+                ].map(s => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: 'clamp(0.65rem, 0.9vw, 0.82rem)',
+                      fontWeight: 400,
+                      color: 'rgba(255,255,255,0.55)',
+                      textDecoration: 'none',
+                      letterSpacing: '0.02em',
+                      transition: 'color 0.2s',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+                    onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.55)'}
+                  >
+                    {s.label}
+                  </a>
+                ))}
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

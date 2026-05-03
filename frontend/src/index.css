@@ -89,3 +89,15 @@ main {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ── Performance: isolate sections so layout/paint changes don't propagate ── */
+section {
+  contain: layout style;
+}
+
+/* Sticky containers — promote to own compositor layer */
+[style*="position: sticky"],
+[style*="position:sticky"] {
+  will-change: transform;
+  transform: translateZ(0);
+}

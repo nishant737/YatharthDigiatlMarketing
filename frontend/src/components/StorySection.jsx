@@ -18,7 +18,8 @@ const STORY_CSS = `
     background: #000;
     width: 100%;
     height: 100%;
-    will-change: transform, width, height;
+    will-change: transform;
+    transform-origin: 50% 50%;
   }
   .story-video-wrap video {
     width: 100%;
@@ -84,37 +85,27 @@ export default function StorySection() {
         trigger: section,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: true, // Instant response for faster animation
+        scrub: 1,
       }
     })
     
-    // Start fullscreen, compress to left side (side-by-side layout)
+    // Start fullscreen — only transform properties (no width/height → no layout reflow)
     gsap.set(videoContainer, {
-      width: '100%',
-      height: '100%',
-      x: 0,
-      y: 0,
+      scaleX: 1, scaleY: 1,
+      x: 0, y: 0,
       borderRadius: '0px',
+      transformOrigin: '50% 50%',
     })
     
-    // Animate to left position while compressing
+    // Compress to left using scale+translate only — GPU composited, zero reflow
     tl.to(videoContainer, {
-      width: '42%',
-      height: '55%',
-      x: '-24vw', // Move to left
-      y: 0,
-      borderRadius: '16px',
-      boxShadow: '0 25px 80px rgba(0,0,0,0.5)',
+      scaleX: 0.42,
+      scaleY: 0.55,
+      x: '-24vw',
+      borderRadius: '38px', // compensates for scaleX(0.42): 38×0.42≈16px visual radius
       ease: 'power2.out',
       duration: 0.6,
     }, 0)
-    
-    // Brightness animation
-    tl.fromTo(video,
-      { filter: 'brightness(0.6)' },
-      { filter: 'brightness(1)', duration: 0.6 },
-      0
-    )
     
     // Content reveal animation - staggered elements
     const tagline = taglineRef.current
@@ -126,10 +117,10 @@ export default function StorySection() {
     
     // Animate in with stagger
     if (tagline) {
-      tl.to(tagline, { opacity: 1, y: 0, duration: 0.15, ease: 'power2.out' }, 0.55)
+      tl.to(tagline, { opacity: 1, y: 0, duration: 0.15, ease: 'power2.out' }, 0.38)
     }
     if (para) {
-      tl.to(para, { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' }, 0.6)
+      tl.to(para, { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' }, 0.44)
     }
     
     // Autoplay video immediately and loop continuously
@@ -150,7 +141,7 @@ export default function StorySection() {
         id="story"
         ref={sectionRef}
         className="story-section"
-        style={{ minHeight: '350vh' }}
+        style={{ minHeight: '220vh' }}
       >
         <div style={{
           position: 'sticky',

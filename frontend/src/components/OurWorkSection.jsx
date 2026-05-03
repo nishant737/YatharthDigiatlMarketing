@@ -178,10 +178,13 @@ export default function OurWorkSection() {
   const outroRef     = useRef(null)
   const isMobile     = useIsMobile()
 
-  const targetG    = useRef(0)
-  const currentG   = useRef(0)
-  const rawScrollR = useRef(0)
-  const rafRef     = useRef(null)
+  const targetG      = useRef(0)
+  const currentG     = useRef(0)
+  const rawScrollR   = useRef(0)
+  const rafRef       = useRef(null)
+  const totalScrollR = useRef(1)      // cached section scroll height — avoids offsetHeight read per scroll
+  const lastOutroT   = useRef(-1)     // dirty-check — skip DOM writes when unchanged
+  const lastCardsT   = useRef(-1)
 
   // 100 vw per card, no gap — seamless full-screen gallery
   const CARD_VW = 100
@@ -190,12 +193,15 @@ export default function OurWorkSection() {
   useEffect(() => {
     if (isMobile) return
 
+    const recacheTotalScroll = () => {
+      const el = sectionRef.current
+      if (el) totalScrollR.current = Math.max(el.offsetHeight - window.innerHeight, 1)
+    }
+
     const onScroll = () => {
       const el = sectionRef.current
       if (!el) return
-      const rect = el.getBoundingClientRect()
-      const totalScroll = Math.max(el.offsetHeight - window.innerHeight, 1)
-      const raw  = Math.max(0, Math.min(1, -rect.top / totalScroll))
+      const raw  = Math.max(0, Math.min(1, -el.getBoundingClientRect().top / totalScrollR.current))
       rawScrollR.current = raw
       const hRaw = Math.min(1, raw / 0.78)
       targetG.current = 1 - Math.pow(1 - hRaw, 2.5)
@@ -230,26 +236,32 @@ export default function OurWorkSection() {
         })
       }
 
-      // Outro fade: raw 0.78 → 0.92
+      // Outro fade: raw 0.78 → 0.92 — only write DOM when value changes
       const outroT = Math.max(0, Math.min(1, (rawScrollR.current - 0.78) / 0.14))
       const cardsT = 1 - outroT
 
-      if (outroRef.current)     outroRef.current.style.opacity     = String(outroT)
-      if (outroRef.current)     outroRef.current.style.pointerEvents = outroT > 0.1 ? 'auto' : 'none'
-      if (headerRef.current)    headerRef.current.style.opacity    = String(cardsT)
-      if (cardsZoneRef.current) cardsZoneRef.current.style.opacity = String(cardsT)
+      if (Math.abs(outroT - lastOutroT.current) > 0.002) {
+        lastOutroT.current = outroT
+        lastCardsT.current = cardsT
+        if (outroRef.current) {
+          outroRef.current.style.opacity      = String(outroT)
+          outroRef.current.style.pointerEvents = outroT > 0.1 ? 'auto' : 'none'
+        }
+        if (headerRef.current)    headerRef.current.style.opacity    = String(cardsT)
+        if (cardsZoneRef.current) cardsZoneRef.current.style.opacity = String(cardsT)
+      }
 
       rafRef.current = requestAnimationFrame(tick)
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll, { passive: true })
+    window.addEventListener('resize', () => { recacheTotalScroll(); onScroll() }, { passive: true })
+    recacheTotalScroll()
     onScroll()
     rafRef.current = requestAnimationFrame(tick)
 
     return () => {
       window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
   }, [isMobile])
@@ -318,10 +330,11 @@ export default function OurWorkSection() {
           ref={headerRef}
           style={{
             flexShrink: 0,
-            padding: 'clamp(28px, 4.5vh, 48px) clamp(28px, 4vw, 56px) clamp(14px, 2vh, 22px)',
+            padding: 'clamp(88px, 12vh, 112px) clamp(28px, 4vw, 56px) clamp(14px, 2vh, 22px)',
             background: '#000',
             zIndex: 2,
             position: 'relative',
+            willChange: 'opacity',
           }}
         >
           <h2 style={{
@@ -350,6 +363,7 @@ export default function OurWorkSection() {
             position: 'relative',
             overflow: 'hidden',
             minHeight: 0,
+            willChange: 'opacity',
           }}
         >
           <div
@@ -397,6 +411,7 @@ export default function OurWorkSection() {
             alignItems: 'center',
             padding: `0 clamp(28px, 6vw, 80px)`,
             zIndex: 10,
+            willChange: 'opacity',
           }}
         >
           <p style={{

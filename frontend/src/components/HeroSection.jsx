@@ -273,29 +273,32 @@ export default function HeroSection() {
         }
         /* ── Glow keyframes ── */
         @keyframes tcPulseOuter {
-          0%   { opacity: 0.55; transform: translateX(-50%) scaleX(1)    scaleY(1);    filter: blur(32px); }
-          40%  { opacity: 0.95; transform: translateX(-50%) scaleX(1.08) scaleY(1.35); filter: blur(16px); }
-          70%  { opacity: 0.72; transform: translateX(-50%) scaleX(1.04) scaleY(1.15);  filter: blur(24px); }
-          100% { opacity: 0.55; transform: translateX(-50%) scaleX(1)    scaleY(1);    filter: blur(32px); }
+          0%   { opacity: 0.55; transform: translateX(-50%) scaleX(1)    scaleY(1); }
+          40%  { opacity: 0.95; transform: translateX(-50%) scaleX(1.08) scaleY(1.35); }
+          70%  { opacity: 0.72; transform: translateX(-50%) scaleX(1.04) scaleY(1.15); }
+          100% { opacity: 0.55; transform: translateX(-50%) scaleX(1)    scaleY(1); }
         }
         @keyframes tcSway {
-          0%  { left: 46%; } 30% { left: 55%; } 58% { left: 49%; } 80% { left: 43%; } 100% { left: 46%; }
+          0%  { transform: translateX(-54%); } 30% { transform: translateX(-45%); }
+          58% { transform: translateX(-51%); } 80% { transform: translateX(-57%); }
+          100% { transform: translateX(-54%); }
         }
         @keyframes tcPulseMid {
-          0%   { opacity: 0.65; transform: translateX(-50%) scaleX(1)    scaleY(1);    filter: blur(16px); }
-          35%  { opacity: 1.0;  transform: translateX(-50%) scaleX(1.18) scaleY(1.38); filter: blur(5px);  }
-          65%  { opacity: 0.78; transform: translateX(-50%) scaleX(1.08) scaleY(1.18); filter: blur(10px);  }
-          100% { opacity: 0.65; transform: translateX(-50%) scaleX(1)    scaleY(1);    filter: blur(16px); }
+          0%   { opacity: 0.65; transform: translateX(-50%) scaleX(1)    scaleY(1); }
+          35%  { opacity: 1.0;  transform: translateX(-50%) scaleX(1.18) scaleY(1.38); }
+          65%  { opacity: 0.78; transform: translateX(-50%) scaleX(1.08) scaleY(1.18); }
+          100% { opacity: 0.65; transform: translateX(-50%) scaleX(1)    scaleY(1); }
         }
         @keyframes tcSwaySlow {
-          0% { left: 49%; } 45% { left: 53%; } 100% { left: 49%; }
+          0% { transform: translateX(-51%); } 45% { transform: translateX(-47%); }
+          100% { transform: translateX(-51%); }
         }
         @keyframes tcCoreFlicker {
-          0%   { opacity: 0.45; transform: translateX(-50%) scaleX(1)    scaleY(1);    filter: blur(6px); }
-          22%  { opacity: 1.0;  transform: translateX(-50%) scaleX(1.28) scaleY(1.45); filter: blur(2px); }
-          55%  { opacity: 0.68; transform: translateX(-50%) scaleX(1.10) scaleY(1.20); filter: blur(4px); }
-          80%  { opacity: 0.95; transform: translateX(-50%) scaleX(1.32) scaleY(1.52); filter: blur(1px); }
-          100% { opacity: 0.45; transform: translateX(-50%) scaleX(1)    scaleY(1);    filter: blur(6px); }
+          0%   { opacity: 0.45; transform: translateX(-50%) scaleX(1)    scaleY(1); }
+          22%  { opacity: 1.0;  transform: translateX(-50%) scaleX(1.28) scaleY(1.45); }
+          55%  { opacity: 0.68; transform: translateX(-50%) scaleX(1.10) scaleY(1.20); }
+          80%  { opacity: 0.95; transform: translateX(-50%) scaleX(1.32) scaleY(1.52); }
+          100% { opacity: 0.45; transform: translateX(-50%) scaleX(1)    scaleY(1); }
         }
         /* ── Ember particle ── */
         @keyframes emberRise {
@@ -318,7 +321,6 @@ export default function HeroSection() {
         /* ── Glow layers ── */
         .hero-glow-outer {
           position: absolute; bottom: -120px; left: 50%;
-          transform: translateX(-50%);
           width: 140%; height: 680px;
           background: radial-gradient(ellipse 75% 56% at 50% 92%,
             rgba(195, 75, 40, 0.85) 0%,
@@ -326,13 +328,14 @@ export default function HeroSection() {
             rgba(85, 28, 12, 0.22)  58%,
             transparent 82%
           );
+          filter: blur(28px);
           pointer-events: none;
+          will-change: transform, opacity;
           animation: tcPulseOuter 4.8s cubic-bezier(0.45,0,0.55,1) infinite,
                      tcSway       12s  cubic-bezier(0.37,0,0.63,1) infinite;
         }
         .hero-glow-mid {
           position: absolute; bottom: -60px; left: 50%;
-          transform: translateX(-50%);
           width: 100%; height: 480px;
           background: radial-gradient(ellipse 70% 60% at 50% 94%,
             rgba(225, 95, 55, 0.95) 0%,
@@ -340,13 +343,14 @@ export default function HeroSection() {
             rgba(115, 45, 20, 0.30) 56%,
             transparent 70%
           );
+          filter: blur(10px);
           pointer-events: none;
+          will-change: transform, opacity;
           animation: tcPulseMid  3.3s cubic-bezier(0.4,0,0.6,1) infinite,
                      tcSwaySlow  9.8s ease-in-out              infinite;
         }
         .hero-glow-core {
           position: absolute; bottom: -24px; left: 50%;
-          transform: translateX(-50%);
           width: 62%; height: 300px;
           background: radial-gradient(ellipse 64% 58% at 50% 98%,
             rgba(240, 120, 75, 1)    0%,
@@ -354,7 +358,9 @@ export default function HeroSection() {
             rgba(155, 62, 28, 0.45)  50%,
             transparent              68%
           );
+          filter: blur(4px);
           pointer-events: none;
+          will-change: transform, opacity;
           animation: tcCoreFlicker 2.0s cubic-bezier(0.4,0,0.6,1) infinite;
         }
         /* ── Responsive ── */
