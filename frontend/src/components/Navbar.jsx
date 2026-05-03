@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useEffect, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import logo from '../asset/l90.png'
 
 function smoothScrollTo(targetY, duration = 900) {
@@ -7,7 +7,6 @@ function smoothScrollTo(targetY, duration = 900) {
   const diff = targetY - startY
   if (Math.abs(diff) < 1) return
   let start = null
-  // Cubic ease-in-out for a more polished feel
   const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
   function step(ts) {
     if (!start) start = ts
@@ -20,9 +19,9 @@ function smoothScrollTo(targetY, duration = 900) {
 }
 
 const useIsMobile = () => {
-  const [mobile, setMobile] = useState(window.innerWidth < 768)
+  const [mobile, setMobile] = useState(window.innerWidth < 900)
   useEffect(() => {
-    const h = () => setMobile(window.innerWidth < 768)
+    const h = () => setMobile(window.innerWidth < 900)
     window.addEventListener('resize', h)
     return () => window.removeEventListener('resize', h)
   }, [])
@@ -30,31 +29,56 @@ const useIsMobile = () => {
 }
 
 const SECTIONS = [
-  { label: 'Home',         id: 'home'         },
-  { label: 'Story',        id: 'story'         },
-  { label: 'Craft',        id: 'craft'         },
-  { label: 'Clients',      id: 'clients'       },
-  { label: 'Testimonials', id: 'testimonials'  },
-  { label: 'About Us',     id: 'about'         },
-  { label: 'FAQ',          id: 'faq'           },
-  { label: 'Journal',      id: 'journal'       },
-  { label: 'Contact',      id: 'contact'       },
+  { label: 'Home',         id: 'home'        },
+  { label: 'Story',        id: 'story'       },
+  { label: 'Craft',        id: 'craft'       },
+  { label: 'Clients',      id: 'clients'     },
+  { label: 'Testimonials', id: 'testimonials'},
+  { label: 'About Us',     id: 'about'       },
+  { label: 'Journal',      id: 'journal'     },
+  { label: 'FAQ',          id: 'faq'         },
+  { label: 'Contact',      id: 'contact'     },
 ]
 
-// ─── Desktop: Section indicator dots (fixed left side) ──────────────────────
+const NAV_COLUMNS = [
+  [
+    { label: 'Story',        id: 'story'   },
+    { label: 'Clients',      id: 'clients' },
+  ],
+  [
+    { label: 'Craft',        id: 'craft'   },
+    { label: 'Testimonials', id: 'testimonials' },
+  ],
+  [
+    { label: 'About us',     id: 'about'   },
+    { label: 'Insights',     id: 'journal' },
+  ],
+  [
+    { label: 'Instagram',    href: 'https://www.instagram.com/yatharth_digitalmarketing/' },
+    { label: 'LinkedIn',     href: 'https://www.linkedin.com/company/yatharth'            },
+  ],
+]
+
+const MOBILE_MENU_LINKS = [
+  { label: 'Work',            id: 'craft'   },
+  { label: 'About',           id: 'about'   },
+  { label: 'Services',        id: 'craft'   },
+  { label: 'Branding Studio', id: 'story'   },
+  { label: 'Journal',         id: 'journal' },
+  { label: 'FAQ',             id: 'faq'     },
+  { label: 'Contact',         id: 'contact' },
+  { label: 'Instagram', href: 'https://www.instagram.com/yatharth_digitalmarketing/' },
+  { label: 'LinkedIn',  href: 'https://www.linkedin.com/company/yatharth'            },
+]
+
+// ─── Desktop section indicator dots (right side, shown when off home) ────────
 function DesktopIndicator({ active }) {
   const [hovered, setHovered] = useState(null)
 
   const handleClick = useCallback((id) => {
-    if (id === 'home') {
-      smoothScrollTo(0)
-    } else {
-      const el = document.getElementById(id)
-      if (el) {
-        const top = el.getBoundingClientRect().top + window.scrollY
-        smoothScrollTo(top)
-      }
-    }
+    if (id === 'home') { smoothScrollTo(0); return }
+    const el = document.getElementById(id)
+    if (el) smoothScrollTo(el.getBoundingClientRect().top + window.scrollY)
   }, [])
 
   return (
@@ -70,26 +94,21 @@ function DesktopIndicator({ active }) {
       gap: '10px',
     }}>
       {SECTIONS.map((section, i) => {
-        const isActive = active === section.id
+        const isActive  = active === section.id
         const isHovered = hovered === i
         return (
           <div
             key={section.id}
-            style={{
-              display: 'flex', alignItems: 'center', gap: '8px',
-              cursor: 'pointer', position: 'relative',
-              padding: '3px 0',
-            }}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '3px 0' }}
             onMouseEnter={() => setHovered(i)}
             onMouseLeave={() => setHovered(null)}
             onClick={() => handleClick(section.id)}
           >
-            {/* Label */}
             <motion.span
               animate={{ opacity: isActive ? 1 : isHovered ? 0.85 : 0.45 }}
               transition={{ duration: 0.2 }}
               style={{
-                fontFamily: "'Inter', system-ui, sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: '0.5rem',
                 letterSpacing: '0.15em',
                 textTransform: 'uppercase',
@@ -101,8 +120,6 @@ function DesktopIndicator({ active }) {
             >
               {section.label}
             </motion.span>
-
-            {/* Dot / line */}
             <motion.div
               animate={{
                 height: isActive ? 20 : 5,
@@ -119,201 +136,368 @@ function DesktopIndicator({ active }) {
   )
 }
 
-// ─── Mobile: Circular rotating wheel indicator ──────────────────────────────
-function MobileWheelIndicator({ active }) {
-  const activeIdx = SECTIONS.findIndex(s => s.id === active)
-  const RADIUS = 32
-  const SIZE = 82
-  const CENTER = SIZE / 2
-
-  const handleClick = useCallback((id) => {
-    if (id === 'home') {
-      smoothScrollTo(0)
-    } else {
-      const el = document.getElementById(id)
-      if (el) {
-        const top = el.getBoundingClientRect().top + window.scrollY
-        smoothScrollTo(top)
-      }
-    }
-  }, [])
-
-  // Rotation so the active section's dot is at the top (12 o'clock)
-  const anglePerSection = 360 / SECTIONS.length
-  const rotation = -(activeIdx * anglePerSection)
-
-  return (
-    <div style={{
-      position: 'fixed',
-      left: '10px',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      zIndex: 1000,
-      width: SIZE,
-      height: SIZE,
-    }}>
-      {/* Outer ring */}
-      <svg
-        width={SIZE} height={SIZE}
-        style={{ position: 'absolute', top: 0, left: 0 }}
-      >
-        <circle
-          cx={CENTER} cy={CENTER} r={RADIUS + 6}
-          fill="none" stroke="rgba(212,144,48,0.12)" strokeWidth="0.5"
-        />
-      </svg>
-
-      {/* Rotating wheel */}
-      <motion.div
-        animate={{ rotate: rotation }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        style={{
-          width: SIZE, height: SIZE,
-          position: 'relative',
-        }}
-      >
-        {SECTIONS.map((section, i) => {
-          const angle = (i * anglePerSection - 90) * (Math.PI / 180)
-          const x = CENTER + RADIUS * Math.cos(angle)
-          const y = CENTER + RADIUS * Math.sin(angle)
-          const isActive = active === section.id
-
-          return (
-            <motion.div
-              key={section.id}
-              onClick={() => handleClick(section.id)}
-              animate={{
-                scale: isActive ? 1.6 : 1,
-                background: isActive ? '#d49030' : 'rgba(240,230,208,0.25)',
-              }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              style={{
-                position: 'absolute',
-                left: x - 3,
-                top: y - 3,
-                width: 6,
-                height: 6,
-                borderRadius: '50%',
-                cursor: 'pointer',
-              }}
-            />
-          )
-        })}
-      </motion.div>
-
-      {/* Active label at center */}
-      <motion.span
-        key={active}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3 }}
-        style={{
-          position: 'absolute',
-          top: '50%', left: '50%',
-          transform: 'translate(-50%, -50%)',
-          fontFamily: "'Inter', system-ui, sans-serif",
-          fontSize: '0.38rem',
-          letterSpacing: '0.1em',
-          textTransform: 'uppercase',
-          color: '#d49030',
-          whiteSpace: 'nowrap',
-          pointerEvents: 'none',
-          userSelect: 'none',
-          fontWeight: 500,
-        }}
-      >
-        {SECTIONS[activeIdx >= 0 ? activeIdx : 0].label}
-      </motion.span>
-    </div>
-  )
-}
-
-// ─── Wrapper: desktop only ──────────────────────────────────────────────────
-function SectionIndicator({ active }) {
-  const isMobile = useIsMobile()
-  if (isMobile) return null
-  return <DesktopIndicator active={active} />
-}
-
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 export default function Navbar() {
   const [activeSection, setActiveSection] = useState('home')
-  // Track which section is in view
+  const [menuOpen, setMenuOpen] = useState(false)
+  const isMobile = useIsMobile()
+
   useEffect(() => {
     const onScroll = () => {
-      const vh = window.innerHeight
-      const threshold = vh * 0.5
-
+      const threshold = window.innerHeight * 0.5
       let active = 'home'
-      let closestDist = Infinity
+      let closest = Infinity
       for (const s of SECTIONS) {
         const el = document.getElementById(s.id)
         if (!el) continue
         const rect = el.getBoundingClientRect()
-        // Pick the section whose top is closest to the threshold line (50% vh),
-        // but only if it has already scrolled past the top of the screen.
         if (rect.top <= threshold) {
           const dist = Math.abs(rect.top - threshold)
-          if (dist < closestDist) {
-            closestDist = dist
-            active = s.id
-          }
+          if (dist < closest) { closest = dist; active = s.id }
         }
       }
       setActiveSection(active)
     }
-
     window.addEventListener('scroll', onScroll, { passive: true })
     onScroll()
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  const scrollTo = useCallback((id) => {
+    if (id === 'home') { smoothScrollTo(0) }
+    else {
+      const el = document.getElementById(id)
+      if (el) smoothScrollTo(el.getBoundingClientRect().top + window.scrollY)
+    }
+    setMenuOpen(false)
+  }, [])
+
+  const isHome = activeSection === 'home'
+
   return (
     <>
+      <style>{`
+        .nav-link {
+          font-family: 'Inter', sans-serif;
+          font-weight: 300;
+          font-size: clamp(0.58rem, 0.72vw, 0.68rem);
+          color: rgba(255,255,255,0.52);
+          text-decoration: none;
+          transition: color 0.2s ease;
+          white-space: nowrap;
+          cursor: pointer;
+          background: none;
+          border: none;
+          padding: 0;
+          line-height: 1.8;
+        }
+        .nav-link:hover { color: #E2725B ; }
+        .nav-col-link {
+          position: relative;
+        }
+        .nav-col-link::after {
+          content: '';
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+          width: 0;
+          height: 1px;
+          background: #fff;
+          transition: width 0.3s ease;
+        }
+        .nav-col-link:hover { color: #fff; }
+        .nav-col-link:hover::after { width: 100%; }
+        .nav-letstalk:hover {
+          background: #E2725B;
+          color: #fff;
+          box-shadow: 0 0 24px rgba(226, 114, 91, 0.35);
+        }
+        @media (max-width: 768px) {
+          .mobile-logo { height: clamp(64px, 14vw, 90px) !important; }
+        }
+        .nav-letstalk {
+          display: inline-flex; align-items: center; gap: 6px;
+          font-family: 'Inter', sans-serif; font-weight: 500;
+          font-size: clamp(0.62rem, 0.78vw, 0.72rem);
+          letter-spacing: 0.02em;
+          color: #000; background: #fff;
+          padding: 8px 20px; border-radius: 100px;
+          text-decoration: none; white-space: nowrap;
+          border: none; cursor: pointer;
+          box-shadow: 0 0 0 0 rgba(255,255,255,0);
+          transition: box-shadow 0.3s ease;
+        }
+        .nav-hamburger {
+          background: none; border: none; cursor: pointer;
+          display: flex; flex-direction: column; gap: 5px;
+          padding: 4px;
+        }
+        .nav-hamburger span {
+          display: block; width: 22px; height: 1.5px;
+          background: #fff; border-radius: 2px;
+          transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .mobile-menu-link {
+          font-family: 'Inter', sans-serif;
+          font-size: clamp(1.6rem, 7vw, 2.6rem);
+          font-weight: 300;
+          color: rgba(255,255,255,0.9);
+          text-decoration: none;
+          padding: 12px 0;
+          display: block;
+          transition: color 0.2s ease;
+          cursor: pointer;
+          background: none;
+          border: none;
+          text-align: center;
+          width: 100%;
+        }
+        .mobile-menu-link:hover { color: #fff; }
+      `}</style>
+
+      {/* ── Main navbar ── */}
       <motion.nav
-        initial={{ y: -12, opacity: 0 }}
-        animate={{ y: 0, opacity: activeSection === 'home' ? 1 : 0 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
         style={{
           position: 'fixed', top: 0, left: 0, right: 0,
-          zIndex: 1000,
-          height: 'clamp(56px, 7vh, 68px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'flex-start',
-          padding: '0 clamp(16px, 4vw, 56px)',
+          zIndex: 1001,
+          height: 'clamp(64px, 9vh, 82px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 clamp(14px, 2.8vw, 48px)',
           background: 'transparent',
           boxSizing: 'border-box',
-          pointerEvents: activeSection === 'home' ? 'auto' : 'none',
         }}
       >
-        {/* Logo */}
+        {/* Left: logo image */}
         <a
           href="#home"
-          onClick={e => { e.preventDefault(); smoothScrollTo(0) }}
+          onClick={e => { e.preventDefault(); scrollTo('home') }}
           style={{
             textDecoration: 'none',
-            display: 'flex', alignItems: 'center',
-            flexShrink: 1,
-            minWidth: 0,
+            display: 'flex',
+            alignItems: 'center',
+            flexShrink: 0,
           }}
         >
           <img
+            className="mobile-logo"
             src={logo}
             alt="Yatharth"
             style={{
-              height: 'clamp(80px, 12vw, 140px)',
-              maxWidth: 'calc(100vw - 80px)',
-              width: 'auto', objectFit: 'contain',
-              display: 'block', userSelect: 'none', pointerEvents: 'none',
-              marginTop: '30px',    // ← add this
-  marginBottom: '10px', // ← add this
-  marginLeft: "1px",
-  
-
+              height: 'clamp(56px, 8vw, 110px)', //logo size changes make it here 
+              width: 'auto',
+              objectFit: 'contain',
+              display: 'block',
+              userSelect: 'none',
+              pointerEvents: 'none',
             }}
           />
         </a>
+
+        {/* Center: 4-column nav grid (desktop) - absolute centered, hidden when not on home */}
+        {!isMobile && isHome && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isHome ? 1 : 0 }}
+            transition={{ duration: 0.3 }}
+            style={{
+              position: 'absolute',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 'clamp(40px, 6vw, 80px)',
+            }}>
+            {NAV_COLUMNS.map((col, colIdx) => (
+              <div key={colIdx} style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 1.2vh, 14px)' }}>
+                {col.map((link, linkIdx) => (
+                  <motion.a
+                    key={link.label}
+                    href={link.href || `#${link.id}`}
+                    onClick={(e) => {
+                      if (!link.href) { e.preventDefault(); scrollTo(link.id) }
+                    }}
+                    target={link.href ? '_blank' : undefined}
+                    rel={link.href ? 'noopener noreferrer' : undefined}
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 + colIdx * 0.08 + linkIdx * 0.04 }}
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontWeight: 400,
+                      fontSize: 'clamp(0.75rem, 0.95vw, 0.88rem)',
+                      color: 'rgba(255,255,255,0.7)',
+                      textDecoration: 'none',
+                      cursor: 'pointer',
+                      transition: 'color 0.2s ease',
+                    }}
+                    className="nav-col-link"
+                  >
+                    {link.label}
+                  </motion.a>
+                ))}
+              </div>
+            ))}
+          </motion.div>
+        )}
+
+        {/* Right: Let's Talk (desktop, only on home) or Hamburger (when not on home) */}
+        {!isMobile && isHome && (
+          <motion.button
+            className="nav-letstalk"
+            onClick={() => scrollTo('contact')}
+            initial={{ opacity: 0, x: 22 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
+            whileHover={{
+              scale: 1.07,
+              boxShadow: '0 0 22px rgba(255,255,255,0.28), 0 0 8px rgba(255,255,255,0.14)',
+            }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Let&rsquo;s Talk
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path d="M1.5 1.5h7v7M1.5 8.5l7-7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </motion.button>
+        )}
+
+        {/* Hamburger menu (mobile OR when not on home) */}
+        {(isMobile || (!isMobile && !isHome)) && (
+          <button
+            className="nav-hamburger"
+            onClick={() => setMenuOpen(v => !v)}
+            aria-label="Open menu"
+          >
+            <span style={{ transform: menuOpen ? 'translateY(6.5px) rotate(45deg)' : 'none' }} />
+            <span style={{ opacity: menuOpen ? 0 : 1 }} />
+            <span style={{ transform: menuOpen ? 'translateY(-6.5px) rotate(-45deg)' : 'none' }} />
+          </button>
+        )}
       </motion.nav>
-      <SectionIndicator active={activeSection} />
+
+      {/* ── Mobile full-screen menu ── */}
+      <AnimatePresence>
+        {isMobile && menuOpen && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 1000,
+              background: 'rgba(227, 115, 94, 0.92)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '24px',
+              overflowY: 'auto',
+            }}
+          >
+            {MOBILE_MENU_LINKS.map(link =>
+              link.href ? (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mobile-menu-link"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <button
+                  key={link.label}
+                  className="mobile-menu-link"
+                  onClick={() => scrollTo(link.id)}
+                >
+                  {link.label}
+                </button>
+              )
+            )}
+
+            <button
+              className="nav-letstalk"
+              onClick={() => scrollTo('contact')}
+              style={{ marginTop: '36px', alignSelf: 'center', fontSize: '0.85rem', padding: '12px 28px' }}
+            >
+              Let&rsquo;s Talk
+              <svg width="11" height="11" viewBox="0 0 10 10" fill="none">
+                <path d="M1 1h8v8M1 9L9 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Mobile full-screen menu (also for desktop when not on home) ── */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            key="collapsed-menu"
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 1000,
+              background: !isMobile ? 'rgba(10, 8, 6, 0.98)' : 'rgba(227, 115, 94, 0.92)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '24px',
+              overflowY: 'auto',
+            }}
+          >
+            {MOBILE_MENU_LINKS.map(link =>
+              link.href ? (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mobile-menu-link"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <button
+                  key={link.label}
+                  className="mobile-menu-link"
+                  onClick={() => scrollTo(link.id)}
+                >
+                  {link.label}
+                </button>
+              )
+            )}
+
+            <button
+              className="nav-letstalk"
+              onClick={() => scrollTo('contact')}
+              style={{ marginTop: '36px', alignSelf: 'center', fontSize: '0.85rem', padding: '12px 28px' }}
+            >
+              Let&rsquo;s Talk
+              <svg width="11" height="11" viewBox="0 0 10 10" fill="none">
+                <path d="M1 1h8v8M1 9L9 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </>
   )
 }

@@ -67,7 +67,7 @@ function CardContent({ t, isActive, direction }) {
         initial={{ opacity: 0, x: direction > 0 ? 28 : -28 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: direction > 0 ? -28 : 28 }}
-        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         style={{ display: 'flex', flexDirection: 'column', gap: isActive ? '20px' : '14px', height: '100%' }}
       >
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
@@ -143,7 +143,7 @@ function CardSlot({ position, t, direction, onClick }) {
         y:       isActive ? 0 : 22,
         filter:  isActive ? 'blur(0px)' : 'blur(0.8px)',
       }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
       style={{
         flex: isActive ? '0 0 44%' : '0 0 26%',
         transition: 'flex 0.7s cubic-bezier(0.22,1,0.36,1)',

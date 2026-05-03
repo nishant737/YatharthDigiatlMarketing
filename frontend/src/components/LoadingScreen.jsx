@@ -82,17 +82,17 @@ export default function LoadingScreen({ onComplete }) {
         src={logo}
         alt="Yatharth"
         draggable={false}
-        initial={{ opacity:0, scale:0.78, y:20 }}
-        animate={{ opacity:1, scale:1,    y:0  }}
-        transition={{ duration:1.1, ease:[0.22,1,0.36,1] }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         style={{
-          position:'relative', zIndex:1,
-          height:'clamp(180px,12vw,200px)',
-          width:'auto',
-          objectFit:'contain',
-          userSelect:'none',
-          pointerEvents:'none',
-          marginBottom:-20,
+          position: 'relative', zIndex: 1,
+          height: 'clamp(180px,12vw,200px)',
+          width: 'auto',
+          objectFit: 'contain',
+          userSelect: 'none',
+          pointerEvents: 'none',
+          marginBottom: -20,
         }}
       />
 

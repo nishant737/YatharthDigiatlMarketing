@@ -1,418 +1,589 @@
-import { useEffect, useRef, useState } from 'react'
-import * as THREE from 'three'
-import { gsap } from 'gsap'
-import { motion, AnimatePresence } from 'framer-motion'
-import bgImage from '../asset/bg.jpeg'
+import { useEffect, useState, useCallback, useRef } from 'react'
+import { motion } from 'framer-motion'
+import gsap from 'gsap'
+import logo from '../asset/l90.png'
 
-// ─── Typewriter frames ────────────────────────────────────────────────────────
-const FRAMES = [
-  { id: 0, lines: ['Everything begins', 'with an idea.']                      },
-  { id: 1, lines: ['Some stay ideas.', 'Some become presence.']               },
-  { id: 2, lines: ['We work on the ones', 'that matter.']                     },
-  { id: 3, lines: ['In a digital world,', 'how you are seen is everything.']  },
-  { id: 4, lines: ['So we shape that.', 'Carefully.']                         },
-  { id: 5, lines: ['Strategy. Story. Design.']                                },
-  { id: 6, lines: ['This is Yatharth.']                                       },
-]
-
-const SCROLL_PER_FRAME = 400
-
-// ─── Typewriter hook ──────────────────────────────────────────────────────────
-function useTypewriter(text, charDelay = 38) {
-  const [count, setCount] = useState(0)
-  const [done,  setDone]  = useState(false)
-  const timer = useRef(null)
-
+// Particle Logo Component with dispersion effect
+function ParticleLogo({ logo, isHovering, mousePos, onMouseMove, onMouseEnter, onMouseLeave }) {
+  const [particles, setParticles] = useState([])
+  const containerRef = useRef(null)
+  
+  // Generate grid of particles from logo
   useEffect(() => {
-    setCount(0)
-    setDone(false)
-    let i = 0, cancelled = false
-
-    const tick = () => {
-      if (cancelled) return
-      if (i >= text.length) { setDone(true); return }
-      i++
-      setCount(i)
-      const ch    = text[i - 1]
-      const delay = /[.!?]/.test(ch) ? charDelay * 5
-        : ch === ',' ? charDelay * 2.5
-        : ch === ' ' ? charDelay * 0.4
-        : charDelay + Math.random() * 14
-      timer.current = setTimeout(tick, delay)
+    const cols = 12
+    const rows = 4
+    const newParticles = []
+    for (let i = 0; i < cols; i++) {
+      for (let j = 0; j < rows; j++) {
+        newParticles.push({
+          id: `${i}-${j}`,
+          x: (i / (cols - 1)) * 100,
+          y: (j / (rows - 1)) * 100,
+          originX: (i / (cols - 1)) * 100,
+          originY: (j / (rows - 1)) * 100,
+        })
+      }
     }
-    timer.current = setTimeout(tick, 60)
-    return () => { cancelled = true; clearTimeout(timer.current) }
-  }, [text]) // eslint-disable-line
+    setParticles(newParticles)
+  }, [])
 
-  return { count, done }
-}
+  // Calculate particle displacement based on mouse position
+  const getParticleStyle = (particle) => {
+    if (!isHovering) {
+      return {
+        left: `${particle.originX}%`,
+        top: `${particle.originY}%`,
+        transform: 'translate(-50%, -50%) scale(0)',
+        opacity: 0,
+      }
+    }
+    
+    // Calculate distance from mouse
+    const dx = particle.originX - 50 - (mousePos.x * 30)
+    const dy = particle.originY - 50 - (mousePos.y * 30)
+    const distance = Math.sqrt(dx * dx + dy * dy)
+    const maxDistance = 60
+    const force = Math.max(0, 1 - distance / maxDistance)
+    
+    // Displacement based on mouse position
+    const dispX = mousePos.x * 40 * force + dx * 0.3
+    const dispY = mousePos.y * 40 * force + dy * 0.3
+    
+    return {
+      left: `${particle.originX + dispX}%`,
+      top: `${particle.originY + dispY}%`,
+      transform: `translate(-50%, -50%) scale(${0.3 + force * 0.7})`,
+      opacity: 0.6 + force * 0.4,
+    }
+  }
 
-// ─── Cursor ───────────────────────────────────────────────────────────────────
-function TypeCursor() {
   return (
-    <motion.span
-      aria-hidden
-      animate={{ opacity: [1, 0] }}
-      transition={{ duration: 0.55, repeat: Infinity, repeatType: 'reverse', ease: 'steps(1)' }}
+    <div
+      ref={containerRef}
+      onMouseMove={onMouseMove}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       style={{
-        display: 'inline-block', width: '2px', height: '0.78em',
-        background: '#d49030', marginLeft: '3px', verticalAlign: 'middle',
-        borderRadius: '1px', boxShadow: '0 0 8px rgba(212,144,48,0.7)',
-      }}
-    />
-  )
-}
-
-// ─── Story frame ──────────────────────────────────────────────────────────────
-function StoryFrame({ frame }) {
-  const fullText  = frame.lines.join('\n')
-  const { count, done } = useTypewriter(fullText)
-  const typed     = fullText.slice(0, count)
-  const typedLines = typed.split('\n')
-
-  return (
-    <motion.div
-      key={frame.id}
-      initial={{ opacity: 0, y: 22 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -14 }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      style={{
-        position: 'absolute', inset: 0,
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
-        padding: '0 clamp(20px, 8vw, 120px)',
-        gap: 'clamp(4px, 1vw, 10px)',
+        position: 'relative',
+        cursor: 'pointer',
+        width: 'clamp(85vw, 82vw, 94vw)',
+        height: 'auto',
       }}
     >
-      {frame.lines.map((fullLine, li) => {
-        const typedLine        = typedLines[li] ?? ''
-        const isLastTypingLine = !done && li === typedLines.length - 1
-        return (
-          <p key={li} style={{
-            margin: 0,
-            fontFamily: "Georgia, 'Times New Roman', Times, serif",
-            fontWeight: 400,
-            fontSize: 'clamp(1.8rem, 5vw, 5rem)',
-            lineHeight: 1.2,
-            letterSpacing: '-0.02em',
-            textAlign: 'center',
-            color: '#f0e6d0',
-            userSelect: 'none',
-            whiteSpace: 'normal',
-            wordBreak: 'break-word',
-            maxWidth: '820px',
-            width: '100%',
-            minHeight: '1.2em',
-          }}>
-            {typedLine}
-            {isLastTypingLine && <TypeCursor />}
-            {typedLine === '' && (
-              <span aria-hidden style={{ visibility: 'hidden' }}>{fullLine}</span>
-            )}
-          </p>
-        )
-      })}
-
-      {/* Accent line */}
-      <motion.div
-        animate={{ scaleX: done ? 1 : 0, opacity: done ? 0.5 : 0 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      {/* Clean logo - always visible */}
+      <img
+        src={logo}
+        alt="Yatharth"
         style={{
-          marginTop: 'clamp(8px, 1.5vw, 16px)',
-          height: '1px', width: 'clamp(32px, 6vw, 64px)',
-          background: 'linear-gradient(90deg, transparent, #d49030, transparent)',
-          transformOrigin: 'center',
+          width: '100%',
+          height: 'auto',
+          objectFit: 'contain',
+          userSelect: 'none',
+          pointerEvents: 'none',
+          display: 'block',
+          opacity: isHovering ? 0.3 : 1,
+          transition: 'opacity 0.4s ease',
+          filter: isHovering ? 'blur(2px)' : 'none',
         }}
       />
-    </motion.div>
+      
+      {/* Particle overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+        }}
+      >
+        {particles.map((p) => (
+          <motion.div
+            key={p.id}
+            style={{
+              position: 'absolute',
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(226, 114, 91, 0.9) 0%, rgba(195, 72, 32, 0.6) 50%, transparent 100%)',
+              boxShadow: '0 0 8px rgba(226, 114, 91, 0.6)',
+              ...getParticleStyle(p),
+              transition: 'all 0.15s ease-out',
+            }}
+          />
+        ))}
+      </div>
+    </div>
   )
 }
 
-// ─── Three.js scene builder ───────────────────────────────────────────────────
-const NODE_COUNT   = 38
-const CONNECT_DIST = 5.5
-const SPREAD       = { x: 18, y: 11, z: 6 }
-const PULSE_NODES  = [2, 8, 15, 24, 33]
+const PARTICLES = [
+  { left: '5%',  size: 5,  delay: '0.0s', dur: '3.4s', drift: '14px'  },
+  { left: '10%', size: 4,  delay: '1.6s', dur: '2.8s', drift: '-9px'  },
+  { left: '16%', size: 7,  delay: '0.8s', dur: '4.0s', drift: '20px'  },
+  { left: '22%', size: 4,  delay: '2.3s', dur: '3.1s', drift: '-13px' },
+  { left: '28%', size: 6,  delay: '0.4s', dur: '3.7s', drift: '11px'  },
+  { left: '33%', size: 4,  delay: '1.9s', dur: '2.9s', drift: '-8px'  },
+  { left: '39%', size: 5,  delay: '1.1s', dur: '3.5s', drift: '17px'  },
+  { left: '45%', size: 4,  delay: '2.7s', dur: '3.0s', drift: '-15px' },
+  { left: '51%', size: 8,  delay: '0.6s', dur: '3.8s', drift: '10px'  },
+  { left: '56%', size: 4,  delay: '1.4s', dur: '2.7s', drift: '-7px'  },
+  { left: '62%', size: 6,  delay: '0.2s', dur: '4.1s', drift: '14px'  },
+  { left: '67%', size: 4,  delay: '2.0s', dur: '3.2s', drift: '-12px' },
+  { left: '73%', size: 5,  delay: '0.9s', dur: '3.6s', drift: '9px'   },
+  { left: '78%', size: 4,  delay: '1.7s', dur: '2.8s', drift: '-10px' },
+  { left: '83%', size: 7,  delay: '0.5s', dur: '3.9s', drift: '16px'  },
+  { left: '88%', size: 4,  delay: '2.4s', dur: '3.3s', drift: '-6px'  },
+  { left: '93%', size: 5,  delay: '1.2s', dur: '2.6s', drift: '12px'  },
+  { left: '37%', size: 4,  delay: '3.0s', dur: '3.4s', drift: '-18px' },
+  { left: '24%', size: 6,  delay: '3.5s', dur: '4.2s', drift: '8px'   },
+  { left: '71%', size: 4,  delay: '2.9s', dur: '3.1s', drift: '-14px' },
+]
 
-function buildScene(canvas) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true })
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-  renderer.setSize(window.innerWidth, window.innerHeight)
-  renderer.toneMapping         = THREE.ACESFilmicToneMapping
-  renderer.toneMappingExposure = 1.2
-  renderer.setClearColor(0x000000, 0)
-
-  const scene = new THREE.Scene()
-  scene.background = null
-  scene.fog        = new THREE.FogExp2('#0d0a05', 0.055)
-
-  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100)
-  camera.position.set(0, 0, 14)
-
-  // Lights
-  scene.add(new THREE.AmbientLight('#ff9944', 0.55))
-  const keyLight = new THREE.DirectionalLight('#ffaa44', 1.4)
-  keyLight.position.set(6, 8, 4); scene.add(keyLight)
-  const fillLight = new THREE.DirectionalLight('#ff7722', 0.6)
-  fillLight.position.set(-5, -4, 3); scene.add(fillLight)
-  const rimLight = new THREE.DirectionalLight('#ffeebb', 0.45)
-  rimLight.position.set(0, 0, -8); scene.add(rimLight)
-  const orb1 = new THREE.PointLight('#ffcc55', 2.2, 18)
-  const orb2 = new THREE.PointLight('#ff8833', 1.8, 18)
-  scene.add(orb1, orb2)
-
-  // Network group
-  const group = new THREE.Group()
-  scene.add(group)
-
-  const positions = Array.from({ length: NODE_COUNT }, () => new THREE.Vector3(
-    (Math.random() - 0.5) * SPREAD.x,
-    (Math.random() - 0.5) * SPREAD.y,
-    (Math.random() - 0.5) * SPREAD.z,
-  ))
-
-  const nodeMat = new THREE.MeshStandardMaterial({
-    color: '#d49030', metalness: 0.8, roughness: 0.2,
-    emissive: '#3a1a00', emissiveIntensity: 0.25,
-  })
-
-  const nodeMeshes = positions.map((pos) => {
-    const r    = 0.12 + Math.random() * 0.20
-    const mesh = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 12), nodeMat.clone())
-    mesh.position.copy(pos)
-    group.add(mesh)
-    return mesh
-  })
-
-  // Edges
-  const edgeVerts = []
-  for (let i = 0; i < NODE_COUNT; i++)
-    for (let j = i + 1; j < NODE_COUNT; j++)
-      if (positions[i].distanceTo(positions[j]) < CONNECT_DIST) {
-        edgeVerts.push(positions[i].x, positions[i].y, positions[i].z)
-        edgeVerts.push(positions[j].x, positions[j].y, positions[j].z)
-      }
-  const edgeGeo = new THREE.BufferGeometry()
-  edgeGeo.setAttribute('position', new THREE.Float32BufferAttribute(edgeVerts, 3))
-  group.add(new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({
-    color: '#cc8833', transparent: true, opacity: 0.35,
-  })))
-
-  // Pulse rings
-  const rings = []
-  PULSE_NODES.forEach(ni => {
-    const mat  = new THREE.MeshBasicMaterial({ color: '#ffdd88', transparent: true, opacity: 0.5, side: THREE.DoubleSide })
-    const ring = new THREE.Mesh(new THREE.RingGeometry(0.28, 0.38, 32), mat)
-    ring.position.copy(positions[ni])
-    group.add(ring)
-    rings.push(ring)
-    const tl = gsap.timeline({ repeat: -1, delay: Math.random() * 2 })
-    tl.fromTo(ring.scale,   { x:1, y:1, z:1 }, { x:3, y:3, z:3, duration:2.2, ease:'power2.out' }, 0)
-    tl.fromTo(mat,          { opacity:.5 },     { opacity:0, duration:2.2, ease:'power2.out' }, 0)
-  })
-
-  // Entry spring
-  group.scale.setScalar(0)
-  gsap.to(group.scale, { x:1, y:1, z:1, duration:2, ease:'elastic.out(1, 0.6)', delay:0.3 })
-
-  return { renderer, scene, camera, group, nodeMeshes, orb1, orb2, rings }
-}
-
-
-// ─── Main hero ────────────────────────────────────────────────────────────────
 export default function HeroSection() {
-  const canvasRef  = useRef(null)
-  const mouseRef   = useRef({ x: 0, y: 0 })
-  const camTarget  = useRef({ x: 0, y: 0 })
-  const rafRef     = useRef(null)
+  const [mounted, setMounted] = useState(false)
+  const [exitProgress, setExitProgress] = useState(0)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const [isHovering, setIsHovering] = useState(false)
 
-  const [frameIdx, setFrameIdx] = useState(0)
-  const [ready,    setReady]    = useState(false)
+  // GSAP-driven parallax and logo entrance refs
+  const gridRef  = useRef(null)   // inner grid container — GSAP applies 3D tilt here
+  const glowRef  = useRef(null)   // glow layer — GSAP translates with cursor
+  const logoRef  = useRef(null)   // logo wrapper — GSAP entrance animation
 
-  // ── Build Three.js scene ──
+  const handleMouseMove = useCallback((e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width - 0.5
+    const y = (e.clientY - rect.top) / rect.height - 0.5
+    setMousePos({ x: x * 20, y: y * -20 }) // max rotation degrees
+  }, [])
+
+  const handleMouseEnter = useCallback(() => setIsHovering(true), [])
+  const handleMouseLeave = useCallback(() => {
+    setIsHovering(false)
+    setMousePos({ x: 0, y: 0 })
+  }, [])
+
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+    const t = setTimeout(() => setMounted(true), 200)
+    return () => clearTimeout(t)
+  }, [])
 
-    const s = buildScene(canvas)
-    setTimeout(() => setReady(true), 500)
+  // GSAP cursor parallax — quickTo for buttery smooth 3D tilt + glow drift
+  useEffect(() => {
+    const grid = gridRef.current
+    const glow = glowRef.current
+    if (!grid || !glow) return
 
-    const onMouse = (e) => {
-      mouseRef.current.x =  (e.clientX / window.innerWidth  - 0.5) * 2
-      mouseRef.current.y = -(e.clientY / window.innerHeight - 0.5) * 2
+    // quickTo creates a cached setter with built-in lerp — no rAF boilerplate needed
+    const rotY   = gsap.quickTo(grid, 'rotateY',  { duration: 1.1, ease: 'power3.out' })
+    const rotX   = gsap.quickTo(grid, 'rotateX',  { duration: 1.1, ease: 'power3.out' })
+    const glowX  = gsap.quickTo(glow, 'x',        { duration: 1.5, ease: 'power2.out' })
+    const glowY  = gsap.quickTo(glow, 'y',        { duration: 1.5, ease: 'power2.out' })
+
+    const onMove = (e) => {
+      const x = (e.clientX / window.innerWidth  - 0.5) * 2  // −1 → +1
+      const y = (e.clientY / window.innerHeight - 0.5) * 2  // −1 → +1
+      rotY(x * 9)          // yaw: ±9° in perspective
+      rotX(y * -5)         // pitch: ±5° (neg → tilt toward viewer on down)
+      glowX(x * 36)        // glow drifts with cursor (opposite layer feels deeper)
+      glowY(y * 20)
     }
-    const onResize = () => {
-      s.camera.aspect = window.innerWidth / window.innerHeight
-      s.camera.updateProjectionMatrix()
-      s.renderer.setSize(window.innerWidth, window.innerHeight)
-    }
-    window.addEventListener('mousemove', onMouse, { passive: true })
-    window.addEventListener('resize',    onResize)
 
-    const animate = () => {
-      rafRef.current = requestAnimationFrame(animate)
-      const t = performance.now() * 0.001
-      const LF = 0.04
-      camTarget.current.x += (mouseRef.current.x * 2.8 - camTarget.current.x) * LF
-      camTarget.current.y += (mouseRef.current.y * 1.6 - camTarget.current.y) * LF
-      s.camera.position.x = camTarget.current.x
-      s.camera.position.y = camTarget.current.y
-      s.camera.lookAt(0, 0, 0)
-      s.group.rotation.y = t * 0.06 + mouseRef.current.x * 0.12
-      s.nodeMeshes.forEach((m, i) => m.scale.setScalar(1 + Math.sin(t * 1.1 + i * 0.7) * 0.06))
-      s.orb1.position.set(Math.sin(t * 0.55) * 9, Math.cos(t * 0.38) * 6,  5)
-      s.orb2.position.set(Math.cos(t * 0.42) * 8, Math.sin(t * 0.60) * 5, -4)
-      s.rings.forEach(r => r.lookAt(s.camera.position))
-      s.renderer.render(s.scene, s.camera)
-    }
-    animate()
-
+    window.addEventListener('mousemove', onMove, { passive: true })
     return () => {
-      cancelAnimationFrame(rafRef.current)
-      window.removeEventListener('mousemove', onMouse)
-      window.removeEventListener('resize',    onResize)
-      gsap.killTweensOf(s.group.scale)
-      s.renderer.dispose()
+      window.removeEventListener('mousemove', onMove)
+      gsap.killTweensOf([grid, glow])
     }
   }, [])
 
-  // ── Scroll → frame ──
+  // GSAP logo entrance — elastic spring on scale/Y, fast blur fade separately
+  useEffect(() => {
+    if (!mounted || !logoRef.current) return
+    const el = logoRef.current
+    // Blur + opacity: fast smooth fade
+    gsap.fromTo(el,
+      { opacity: 0, filter: 'blur(28px)' },
+      { opacity: 1, filter: 'blur(0px)', duration: 0.9, ease: 'power2.out', delay: 0.3,
+        onComplete: () => gsap.set(el, { clearProps: 'filter' }) }
+    )
+    // Scale + Y: elastic spring bounce
+    gsap.fromTo(el,
+      { scale: 0.52, y: 58 },
+      { scale: 1, y: 0, duration: 2.1, ease: 'elastic.out(1, 0.52)', delay: 0.3 }
+    )
+  }, [mounted])
+
   useEffect(() => {
     const onScroll = () => {
-      const idx = Math.min(
-        Math.max(Math.floor(window.scrollY / SCROLL_PER_FRAME), 0),
-        FRAMES.length - 1
-      )
-      setFrameIdx(idx)
+      const vh = window.innerHeight
+      const p = Math.max(0, Math.min(1, (window.scrollY - vh * 0.30) / (vh * 0.55)))
+      setExitProgress(p)
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     onScroll()
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  const exitStyle = {
+    opacity: Math.max(0, 1 - exitProgress * 1.3),
+    transform: `scale(${Math.max(0.92, 1 - exitProgress * 0.08)}) translateY(${-exitProgress * 38}px)`,
+    willChange: 'opacity, transform',
+    transformOrigin: 'center center',
+  }
+
   return (
-    <div id="home" style={{ height: `${FRAMES.length * SCROLL_PER_FRAME + window.innerHeight * 2}px`, position: 'relative', zIndex: 1, background: '#060503' }}>
+    <section id="home" style={{ minHeight: '100vh', position: 'relative', zIndex: 1 }}>
       <style>{`
-        @media (max-width: 768px) {
-          .hero-subtitle { margin-bottom: 8px !important; }
+        @keyframes glowBurst {
+          0%   { opacity: 0; transform: scale(0.5); }
+          28%  { opacity: 0.65; }
+          68%  { opacity: 0.22; transform: scale(1.5); }
+          100% { opacity: 0; transform: scale(2.0); }
         }
-        .seo-only {
+        .logo-glow-burst {
           position: absolute;
-          width: 1px; height: 1px;
-          overflow: hidden;
-          clip: rect(0 0 0 0);
-          white-space: nowrap;
-          border: 0;
+          inset: -15%;
+          border-radius: 50%;
+          background: radial-gradient(ellipse 60% 40% at 50% 60%, rgba(219,100,54,0.5) 0%, rgba(219,100,54,0.2) 40%, transparent 70%);
+          animation: glowBurst 1.8s ease-out 0.25s both;
+          pointer-events: none;
+          z-index: -1;
+        }
+        /* ── 3D grid ── */
+        @keyframes gridPulse {
+          0%   { opacity: 0.18; }
+          50%  { opacity: 0.32; }
+          100% { opacity: 0.18; }
+        }
+        @keyframes sweepLight {
+          0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+          10%  { opacity: 0.12; }
+          50%  { opacity: 0.06; }
+          90%  { opacity: 0; }
+          100% { transform: translateX(220%) skewX(-18deg); opacity: 0; }
+        }
+        .hero-sweep {
+          position: absolute;
+          top: 0; bottom: 0;
+          width: 30%;
+          background: linear-gradient(90deg, transparent 0%, rgba(255,120,60,0.08) 40%, rgba(255,120,60,0.12) 50%, rgba(255,120,60,0.08) 60%, transparent 100%);
+          animation: sweepLight 6s ease-in-out infinite;
+          animation-delay: 1.8s;
+          pointer-events: none;
+          z-index: 1;
+        }
+        /* ── Glow keyframes ── */
+        @keyframes tcPulseOuter {
+          0%   { opacity: 0.55; transform: translateX(-50%) scaleX(1)    scaleY(1);    filter: blur(32px); }
+          40%  { opacity: 0.95; transform: translateX(-50%) scaleX(1.08) scaleY(1.35); filter: blur(16px); }
+          70%  { opacity: 0.72; transform: translateX(-50%) scaleX(1.04) scaleY(1.15);  filter: blur(24px); }
+          100% { opacity: 0.55; transform: translateX(-50%) scaleX(1)    scaleY(1);    filter: blur(32px); }
+        }
+        @keyframes tcSway {
+          0%  { left: 46%; } 30% { left: 55%; } 58% { left: 49%; } 80% { left: 43%; } 100% { left: 46%; }
+        }
+        @keyframes tcPulseMid {
+          0%   { opacity: 0.65; transform: translateX(-50%) scaleX(1)    scaleY(1);    filter: blur(16px); }
+          35%  { opacity: 1.0;  transform: translateX(-50%) scaleX(1.18) scaleY(1.38); filter: blur(5px);  }
+          65%  { opacity: 0.78; transform: translateX(-50%) scaleX(1.08) scaleY(1.18); filter: blur(10px);  }
+          100% { opacity: 0.65; transform: translateX(-50%) scaleX(1)    scaleY(1);    filter: blur(16px); }
+        }
+        @keyframes tcSwaySlow {
+          0% { left: 49%; } 45% { left: 53%; } 100% { left: 49%; }
+        }
+        @keyframes tcCoreFlicker {
+          0%   { opacity: 0.45; transform: translateX(-50%) scaleX(1)    scaleY(1);    filter: blur(6px); }
+          22%  { opacity: 1.0;  transform: translateX(-50%) scaleX(1.28) scaleY(1.45); filter: blur(2px); }
+          55%  { opacity: 0.68; transform: translateX(-50%) scaleX(1.10) scaleY(1.20); filter: blur(4px); }
+          80%  { opacity: 0.95; transform: translateX(-50%) scaleX(1.32) scaleY(1.52); filter: blur(1px); }
+          100% { opacity: 0.45; transform: translateX(-50%) scaleX(1)    scaleY(1);    filter: blur(6px); }
+        }
+        /* ── Ember particle ── */
+        @keyframes emberRise {
+          0%   { opacity: 0;    transform: translateY(0px)    translateX(0px)               scale(1.0); }
+          12%  { opacity: 0.85; }
+          78%  { opacity: 0.30; }
+          100% { opacity: 0;    transform: translateY(-155px) translateX(var(--p-drift, 0)) scale(0.35); }
+        }
+        .hero-ember {
+          position: absolute;
+          border-radius: 50%;
+          background: radial-gradient(circle,
+            rgba(230, 108, 58, 0.95) 0%,
+            rgba(195, 72, 32, 0.55)  55%,
+            transparent 100%
+          );
+          animation: emberRise linear infinite;
+          will-change: transform, opacity;
+        }
+        /* ── Glow layers ── */
+        .hero-glow-outer {
+          position: absolute; bottom: -120px; left: 50%;
+          transform: translateX(-50%);
+          width: 140%; height: 680px;
+          background: radial-gradient(ellipse 75% 56% at 50% 92%,
+            rgba(195, 75, 40, 0.85) 0%,
+            rgba(145, 55, 25, 0.55) 32%,
+            rgba(85, 28, 12, 0.22)  58%,
+            transparent 82%
+          );
+          pointer-events: none;
+          animation: tcPulseOuter 4.8s cubic-bezier(0.45,0,0.55,1) infinite,
+                     tcSway       12s  cubic-bezier(0.37,0,0.63,1) infinite;
+        }
+        .hero-glow-mid {
+          position: absolute; bottom: -60px; left: 50%;
+          transform: translateX(-50%);
+          width: 100%; height: 480px;
+          background: radial-gradient(ellipse 70% 60% at 50% 94%,
+            rgba(225, 95, 55, 0.95) 0%,
+            rgba(175, 70, 35, 0.65) 28%,
+            rgba(115, 45, 20, 0.30) 56%,
+            transparent 70%
+          );
+          pointer-events: none;
+          animation: tcPulseMid  3.3s cubic-bezier(0.4,0,0.6,1) infinite,
+                     tcSwaySlow  9.8s ease-in-out              infinite;
+        }
+        .hero-glow-core {
+          position: absolute; bottom: -24px; left: 50%;
+          transform: translateX(-50%);
+          width: 62%; height: 300px;
+          background: radial-gradient(ellipse 64% 58% at 50% 98%,
+            rgba(240, 120, 75, 1)    0%,
+            rgba(205, 88, 48, 0.85)  25%,
+            rgba(155, 62, 28, 0.45)  50%,
+            transparent              68%
+          );
+          pointer-events: none;
+          animation: tcCoreFlicker 2.0s cubic-bezier(0.4,0,0.6,1) infinite;
+        }
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+          .hero-glow-outer { 
+            width: 160%; 
+            height: 520px;
+            bottom: -60px;
+            opacity: 0.9;
+          }
+          .hero-glow-mid {
+            width: 120%;
+            height: 380px;
+            bottom: -30px;
+            opacity: 0.95;
+          }
+          .hero-glow-core {
+            width: 80%;
+            height: 240px;
+            opacity: 1;
+          }
+          .hero-text-block { display: none !important; }
+          .hero-bottom-row { display: none !important; }
         }
       `}</style>
 
-      {/* SEO-only block — invisible to users, fully readable by crawlers */}
-      <div className="seo-only">
-        <h1>Yatharth — Brand Strategy &amp; Digital Marketing Agency India</h1>
-        <p>
-          Yatharth is a digital marketing and brand strategy agency founded by Eshwar Shetty,
-          helping businesses across India build a powerful digital presence. We specialise in
-          brand strategy, SEO, content creation, creative direction, and social media management.
-        </p>
-      </div>
-
-      <div style={{
-        position: 'sticky', top: 0,
-        width: '100%', height: '100vh',
-        overflow: 'hidden', background: '#0d0a05',
-      }}>
-        {/* Background image */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          backgroundImage: `url(${bgImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.18,
-        }} />
-
-        {/* Three.js canvas */}
-        <canvas
-          ref={canvasRef}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
-        />
-
-        {/* Dark gradient so text is always readable */}
-        <div style={{
-          position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-          background: 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(13,10,5,0.35) 0%, rgba(13,10,5,0.58) 100%)',
-        }} />
-
-        {/* Bottom fade to hide orange glow */}
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: '18%', zIndex: 1, pointerEvents: 'none',
-          background: 'linear-gradient(to bottom, transparent, #0d0a05)',
-        }} />
-
-        {/* ── Overlay ── */}
-        <div style={{
-          position: 'absolute', inset: 0, zIndex: 2,
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center',
-          padding: 'clamp(20px, 4vw, 52px)',
-        }}>
-          {/* Top label */}
-          <p className="hero-subtitle" style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontWeight: 400,
-            fontSize: 'clamp(0.42rem, 0.85vw, 0.65rem)',
-            letterSpacing: 'clamp(0.12em, 0.3vw, 0.3em)',
-            textTransform: 'uppercase',
-            color: 'rgba(212,144,48,0.6)',
-            margin: '0 0 clamp(8px, 8vh, 80px)',
-            textAlign: 'center',
-            whiteSpace: 'nowrap',
-            opacity: ready ? 1 : 0,
-            transition: 'opacity 1s ease 0.8s',
-          }}>
-            Digital Marketing &nbsp;·&nbsp; Brand Strategy &nbsp;·&nbsp; Creative Direction
-          </p>
-
-          {/* Typewriter area */}
-          <div style={{
-            position: 'relative',
-            width: '100%',
-            maxWidth: '900px',
-            height: 'clamp(100px, 18vh, 200px)',
-            opacity: ready ? 1 : 0,
-            transition: 'opacity 0.8s ease 0.4s',
-          }}>
-            <AnimatePresence mode="sync">
-              <StoryFrame key={frameIdx} frame={FRAMES[frameIdx]} />
-            </AnimatePresence>
-          </div>
-          {/* Simple Scroll to Explore text */}
+      {/* ── Hero viewport — normal scroll ── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          position: 'relative',
+          width: '100%', minHeight: '100vh',
+          overflow: 'hidden',
+          background: '#000',
+        }}
+      >
+        {/* Perspective wrapper — 3D context for children */}
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute', inset: '-5%', zIndex: 0, pointerEvents: 'none',
+            perspective: '520px',
+            perspectiveOrigin: '50% 42%',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Inner container — GSAP applies rotateX/Y here for real in-perspective 3D tilt */}
           <div
+            ref={gridRef}
             style={{
-              position: 'absolute',
-              left: '50%',
-              bottom: 'clamp(24px, 7vh, 54px)',
-              transform: 'translateX(-50%)',
-              zIndex: 3,
-              fontSize: 'clamp(0.50rem, 1.1vw, 0.70rem)',
-              color: 'rgba(245,240,235,0.7)',
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontWeight: 200,
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              background: 'rgba(13,10,5,0.32)',
-              borderRadius: '12px',
-              padding: '7px 18px 7px',
-              boxShadow: '0 2px 16px 0 rgba(0,0,0,0.08)',
-              pointerEvents: 'none',
-              userSelect: 'none',
+              position: 'absolute', inset: 0,
+              transformStyle: 'preserve-3d',
+              willChange: 'transform',
             }}
           >
-            Scroll to Explore
+            {/* Converging vertical lines */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              transform: 'rotateX(28deg)',
+              transformOrigin: '50% 60%',
+              display: 'flex',
+              animation: 'gridPulse 5s ease-in-out infinite',
+            }}>
+              {Array.from({ length: 26 }).map((_, i) => (
+                <div key={i} style={{ flex: 1, borderRight: '1px solid rgba(255,140,80,0.07)' }} />
+              ))}
+            </div>
+            {/* Horizontal lines on floor plane */}
+            <div style={{
+              position: 'absolute',
+              bottom: 0, left: 0, right: 0,
+              height: '58%',
+              transform: 'rotateX(58deg)',
+              transformOrigin: '50% 100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              animation: 'gridPulse 5s ease-in-out infinite',
+              animationDelay: '0.5s',
+            }}>
+              {Array.from({ length: 12 }).map((_, i) => (
+                <div key={i} style={{ width: '100%', height: '1px', background: 'rgba(255,140,80,0.06)' }} />
+              ))}
+            </div>
+            {/* Light sweep */}
+            <div className="hero-sweep" />
           </div>
         </div>
-      </div>
-    </div>
+
+        {/* ── Glow: staged fade-in, parallax layer (z:1) ── */}
+        <motion.div
+          ref={glowRef}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.8, ease: 'easeOut', delay: 0.6 }}
+          style={{ position: 'absolute', inset: '-5%', zIndex: 1, pointerEvents: 'none', willChange: 'transform' }}
+        >
+          <div className="hero-glow-outer" />
+          <div className="hero-glow-mid"   />
+          <div className="hero-glow-core"  />
+        </motion.div>
+
+        {/* ── Ember particles: appear last (z:2) ── */}
+        <motion.div
+          aria-hidden
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5, ease: 'easeOut', delay: 1.6 }}
+          style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0,
+            height: '55vh', zIndex: 2, pointerEvents: 'none', overflow: 'hidden',
+          }}
+        >
+          {PARTICLES.map((p, i) => (
+            <div
+              key={i}
+              className="hero-ember"
+              style={{
+                left: p.left,
+                bottom: `${(i % 5) * 3}%`,
+                width: p.size,
+                height: p.size,
+                animationDelay: p.delay,
+                animationDuration: p.dur,
+                '--p-drift': p.drift,
+              }}
+            />
+          ))}
+        </motion.div>
+
+        {/* ── Combined exit wrapper (z:10) ── */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 10, pointerEvents: 'none', ...exitStyle }}>
+
+          {/* Logo: dramatic cinematic pop-up entry ── */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <div
+              ref={logoRef}
+              style={{ flexShrink: 0, lineHeight: 0, position: 'relative', opacity: 0 }}
+            >
+              {/* Glow burst on reveal */}
+              {mounted && <div className="logo-glow-burst" />}
+              <ParticleLogo 
+                logo={logo} 
+                isHovering={isHovering} 
+                mousePos={mousePos}
+                onMouseMove={handleMouseMove}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              />
+            </div>
+          </div>
+
+          {/* Bottom row: both blocks on left side */}
+          <div className="hero-bottom-row" style={{
+            position: 'absolute',
+            bottom: 'clamp(24px, 4vh, 48px)',
+            left: 0, right: 0,
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'flex-start',
+            gap: 'clamp(24px, 4vw, 48px)',
+            padding: '0 clamp(16px, 2.8vw, 48px)',
+            pointerEvents: 'none',
+          }}>
+            {/* Left: Tagline - same font as before */}
+            <motion.div
+              initial={{ opacity: 0, y: 22 }}
+              animate={{ opacity: mounted ? 1 : 0, y: mounted ? 0 : 22 }}
+              transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1], delay: 0.85 }}
+              style={{ pointerEvents: 'auto' }}
+            >
+              <p style={{
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 300,
+                fontSize: 'clamp(1.3rem, 1.8vw, 1.6rem)',
+                color: 'rgba(255,255,255,0.9)',
+                lineHeight: 1.3,
+                margin: 0,
+              }}>
+                Where strategy<br />meets design.
+              </p>
+            </motion.div>
+
+            {/* Right of tagline: Description + Explore Work - smaller font */}
+            <motion.div
+              initial={{ opacity: 0, y: 22 }}
+              animate={{ opacity: mounted ? 1 : 0, y: mounted ? 0 : 22 }}
+              transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1], delay: 0.65 }}
+              style={{ pointerEvents: 'auto', textAlign: 'left' }}
+            >
+              <p style={{
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 300,
+                fontSize: 'clamp(0.55rem, 0.7vw, 0.65rem)',
+                color: 'rgba(255,255,255,0.65)',
+                lineHeight: 1.6,
+                margin: '0 0 6px',
+                maxWidth: '200px',
+              }}>
+                We are a branding studio<br />that helps businesses<br />build lasting impact.
+              </p>
+              <a
+                href="#clients"
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontWeight: 400,
+                  fontSize: 'clamp(0.55rem, 0.7vw, 0.65rem)',
+                  color: 'rgba(255,255,255,0.85)',
+                  textDecoration: 'underline',
+                  textUnderlineOffset: '4px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  cursor: 'pointer',
+                }}
+              >
+                Explore Work
+                <span style={{ fontSize: '1.1em' }}>→</span>
+              </a>
+            </motion.div>
+          </div>
+
+        </div>
+      </motion.div>
+    </section>
   )
 }
-

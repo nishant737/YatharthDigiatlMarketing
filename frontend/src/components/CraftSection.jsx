@@ -1,7 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import craftBg from '../asset/craft.jpeg'
-import goExtraBg from '../asset/GOO.jpeg'
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
@@ -72,7 +70,7 @@ export default function CraftSection() {
     <section
       id="craft"
       ref={sectionRef}
-      style={{ position: 'relative', height: `calc(${COUNT * 60}vh + 100vh)` }}
+      style={{ position: 'relative', height: `calc(${COUNT * 15}vh + 100vh)` }}
     >
       {/* SEO-only — invisible to users, readable by crawlers */}
       <div className="seo-only" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap' }}>
@@ -88,21 +86,8 @@ export default function CraftSection() {
         position: 'sticky', top: 0, height: '100vh',
         display: 'flex', flexDirection: 'column',
         justifyContent: 'center', alignItems: 'center',
-        background: '#0a0806', overflow: 'hidden', zIndex: 10,
+        background: '#000', overflow: 'hidden', zIndex: 10,
       }}>
-        {/* Background images — unchanged */}
-        <div aria-hidden style={{
-          position: 'absolute', inset: 0, zIndex: 0,
-          backgroundImage: `url(${craftBg})`,
-          backgroundSize: 'cover', backgroundPosition: 'center',
-          opacity: 0.04, pointerEvents: 'none',
-        }} />
-        <div aria-hidden style={{
-          position: 'absolute', inset: 0, zIndex: 0,
-          backgroundImage: `url(${goExtraBg})`,
-          backgroundSize: 'cover', backgroundPosition: 'center',
-          opacity: 0.07, pointerEvents: 'none',
-        }} />
 
         {/* Main two-column layout */}
         <div style={{
@@ -128,12 +113,12 @@ export default function CraftSection() {
             {/* Label */}
             <h2 style={{
               fontFamily: "'Inter', system-ui, sans-serif",
-              fontWeight: 300,
-              fontSize: isMobile ? '0.65rem' : '0.7rem',
-              letterSpacing: '0.24em',
+              fontWeight: 400,
+              fontSize: isMobile ? '0.8rem' : '1rem',
+              letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              color: `${current.accent}88`,
-              margin: '0 0 8px',
+              color: current.accent,
+              margin: '0 0 16px',
               transition: 'color 0.5s ease',
             }}>
               Our Services
@@ -145,7 +130,7 @@ export default function CraftSection() {
                 <motion.div
                   key={service.num}
                   animate={{
-                    opacity: isActive ? 1 : 0.22,
+                    opacity: isActive ? 1 : 0.45,
                     y: isActive ? 0 : 0,
                   }}
                   transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
