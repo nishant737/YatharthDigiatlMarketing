@@ -183,8 +183,9 @@ export default function OurWorkSection() {
   const rawScrollR   = useRef(0)
   const rafRef       = useRef(null)
   const totalScrollR = useRef(1)      // cached section scroll height — avoids offsetHeight read per scroll
-  const lastOutroT   = useRef(-1)     // dirty-check — skip DOM writes when unchanged
-  const lastCardsT   = useRef(-1)
+  const lastOutroT         = useRef(-1)     // dirty-check — skip DOM writes when unchanged
+  const lastCardsT         = useRef(-1)
+  const lastHeaderCollapsed = useRef(null)   // null=uninit, true/false
 
   // 100 vw per card, no gap — seamless full-screen gallery
   const CARD_VW = 100
@@ -236,6 +237,26 @@ export default function OurWorkSection() {
         })
       }
 
+      // Header collapse: enter (raw > 0.04) → collapse, exit (raw < 0.02) → expand
+      const shouldCollapse = rawScrollR.current > 0.04
+      if (lastHeaderCollapsed.current !== shouldCollapse) {
+        lastHeaderCollapsed.current = shouldCollapse
+        if (headerRef.current) {
+          if (shouldCollapse) {
+            headerRef.current.style.maxHeight   = '0'
+            headerRef.current.style.opacity     = '0'
+            headerRef.current.style.paddingTop  = '0'
+            headerRef.current.style.paddingBottom = '0'
+          } else {
+            headerRef.current.style.maxHeight   = '180px'
+            headerRef.current.style.opacity     = '1'
+            headerRef.current.style.paddingTop  = ''
+            headerRef.current.style.paddingBottom = ''
+          }
+        }
+        window.dispatchEvent(new CustomEvent('ourwork-active', { detail: { active: shouldCollapse } }))
+      }
+
       // Outro fade: raw 0.78 → 0.92 — only write DOM when value changes
       const outroT = Math.max(0, Math.min(1, (rawScrollR.current - 0.78) / 0.14))
       const cardsT = 1 - outroT
@@ -247,7 +268,6 @@ export default function OurWorkSection() {
           outroRef.current.style.opacity      = String(outroT)
           outroRef.current.style.pointerEvents = outroT > 0.1 ? 'auto' : 'none'
         }
-        if (headerRef.current)    headerRef.current.style.opacity    = String(cardsT)
         if (cardsZoneRef.current) cardsZoneRef.current.style.opacity = String(cardsT)
       }
 
@@ -331,10 +351,13 @@ export default function OurWorkSection() {
           style={{
             flexShrink: 0,
             padding: 'clamp(88px, 12vh, 112px) clamp(28px, 4vw, 56px) clamp(14px, 2vh, 22px)',
+            maxHeight: '180px',
+            overflow: 'hidden',
             background: '#000',
             zIndex: 2,
             position: 'relative',
-            willChange: 'opacity',
+            willChange: 'max-height, opacity',
+            transition: 'max-height 0.55s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease, padding 0.55s cubic-bezier(0.22,1,0.36,1)',
           }}
         >
           <h2 style={{
@@ -342,10 +365,10 @@ export default function OurWorkSection() {
             fontWeight: 300,
             fontSize: 'clamp(1.3rem, 2.2vw, 2.1rem)',
             letterSpacing: '-0.04em',
-            color: '#f5f0eb',
+            color: '#fff',
             lineHeight: 1.05,
             margin: 0,
-          }}>Success Stories</h2>
+          }}><span style={{ color: '#fff' }}>Success </span><span style={{ color: '#E3735E' }}>Stories</span></h2>
           <p style={{
             fontFamily: "'Inter', system-ui, sans-serif",
             fontWeight: 300,

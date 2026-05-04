@@ -526,8 +526,8 @@ export default function HeroSection() {
             display: 'flex',
             alignItems: 'flex-end',
             justifyContent: 'flex-start',
-            gap: 'clamp(24px, 4vw, 48px)',
-            padding: '0 clamp(16px, 2.8vw, 48px)',
+            gap: 'clamp(56px, 9vw, 140px)',
+            padding: '0 clamp(28px, 4.5vw, 72px)',
             pointerEvents: 'none',
           }}>
             {/* Left: Tagline - same font as before */}
@@ -559,11 +559,11 @@ export default function HeroSection() {
               <p style={{
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 300,
-                fontSize: 'clamp(0.55rem, 0.7vw, 0.65rem)',
+                fontSize: 'clamp(0.82rem, 1.05vw, 0.95rem)',
                 color: 'rgba(255,255,255,0.65)',
-                lineHeight: 1.6,
-                margin: '0 0 6px',
-                maxWidth: '200px',
+                lineHeight: 1.65,
+                margin: '0 0 8px',
+                maxWidth: '280px',
               }}>
                 We are a branding studio<br />that helps businesses<br />build lasting impact.
               </p>
@@ -572,7 +572,7 @@ export default function HeroSection() {
                 style={{
                   fontFamily: "'Inter', sans-serif",
                   fontWeight: 400,
-                  fontSize: 'clamp(0.55rem, 0.7vw, 0.65rem)',
+                  fontSize: 'clamp(0.78rem, 0.95vw, 0.88rem)',
                   color: 'rgba(255,255,255,0.85)',
                   textDecoration: 'underline',
                   textUnderlineOffset: '4px',

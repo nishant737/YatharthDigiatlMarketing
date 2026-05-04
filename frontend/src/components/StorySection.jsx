@@ -33,27 +33,20 @@ const STORY_CSS = `
     max-width: 600px;
   }
   .story-tagline {
-    font-size: clamp(1.5rem, 2.5vw, 2rem);
-    font-weight: 300;
+    font-size: clamp(0.95rem, 1.4vw, 1.2rem);
+    font-weight: 400;
     letter-spacing: -0.01em;
     color: #E3735E;
-    margin-bottom: 1.5rem;
-    will-change: opacity, transform;
-  }
-  .story-headline {
-    font-weight: 300;
-    font-size: clamp(1.5rem, 2.5vw, 2rem);
-    letter-spacing: -0.01em;
-    line-height: 1.4;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
     will-change: opacity, transform;
   }
   .story-body {
     font-weight: 300;
-    font-size: clamp(1.5rem, 2.5vw, 2rem);
-    line-height: 1.4;
-    color: rgba(255,255,255,0.9);
+    font-size: clamp(0.85rem, 1.2vw, 1.05rem);
+    line-height: 1.7;
+    color: rgba(255,255,255,0.88);
     will-change: opacity, transform;
+    margin: 0;
   }
 `
 
@@ -89,20 +82,19 @@ export default function StorySection() {
       }
     })
     
-    // Start fullscreen — only transform properties (no width/height → no layout reflow)
+    // Start fullscreen — uniform scale keeps video aspect ratio intact
     gsap.set(videoContainer, {
-      scaleX: 1, scaleY: 1,
+      scale: 1,
       x: 0, y: 0,
       borderRadius: '0px',
       transformOrigin: '50% 50%',
     })
     
-    // Compress to left using scale+translate only — GPU composited, zero reflow
+    // Shrink uniformly + translate left — no distortion, GPU composited
     tl.to(videoContainer, {
-      scaleX: 0.42,
-      scaleY: 0.55,
-      x: '-24vw',
-      borderRadius: '38px', // compensates for scaleX(0.42): 38×0.42≈16px visual radius
+      scale: 0.46,
+      x: '-27vw',
+      borderRadius: '34px', // 34 × 0.46 ≈ 16px visual radius
       ease: 'power2.out',
       duration: 0.6,
     }, 0)
@@ -174,22 +166,27 @@ export default function StorySection() {
             />
           </div>
           
-          {/* Content Container - Positioned on right with proper spacing */}
+          {/* Content Container - height clamped to video's scaled visual height (46vh) */}
           <div 
             ref={contentRef}
             style={{
               position: 'absolute',
-              right: '5vw',
-              top: '52%',
+              left: '50vw',
+              top: '50%',
               transform: 'translateY(-50%)',
-              maxWidth: '520px',
-              padding: '0 20px',
+              width: 'clamp(240px, 38vw, 520px)',
+              maxHeight: '46vh',
+              overflow: 'hidden',
+              padding: '0 clamp(12px, 2vw, 24px)',
               zIndex: 10,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
             }}
           >
             <div className="story-content">
               <div ref={taglineRef} className="story-tagline">{STORY_DATA.tagline}</div>
-              <p ref={paraRef} className="story-body" style={{ marginTop: '0.6rem' }}>{STORY_DATA.para}</p>
+              <p ref={paraRef} className="story-body">{STORY_DATA.para}</p>
             </div>
           </div>
         </div>

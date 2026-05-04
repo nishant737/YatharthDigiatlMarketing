@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion'
-import craftBg from '../asset/bg.jpeg'
 import imgPrakash from '../asset/Dr. K. Prakash Shetty.png'
 import imgBrijesh from '../asset/Captain Brijesh Chowta.png'
 import imgGurme   from '../asset/Gurme Suresh Shetty.png'
@@ -213,21 +212,10 @@ export default function TestimonialsSection() {
         minHeight: '100vh', overflow: 'hidden',
         display: 'flex', flexDirection: 'column',
         justifyContent: 'center', alignItems: 'center',
-        background: '#060503',
+        background: '#000',
         padding: 'clamp(60px, 8vh, 100px) clamp(16px, 4vw, 48px)',
       }}
     >
-      {/* bg.jpeg background */}
-      <div aria-hidden style={{
-        position: 'absolute', inset: 0, zIndex: 0,
-        backgroundImage: `url(${craftBg})`,
-        backgroundSize: 'cover', backgroundPosition: 'center',
-        opacity: 0.45,
-      }} />
-      <div aria-hidden style={{
-        position: 'absolute', inset: 0, zIndex: 1,
-        background: 'linear-gradient(180deg, rgba(6,5,3,0.72) 0%, rgba(6,5,3,0.52) 50%, rgba(6,5,3,0.72) 100%)',
-      }} />
       <div aria-hidden style={{
         position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
         width: '50%', height: '1px',

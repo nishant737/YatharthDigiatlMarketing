@@ -138,7 +138,7 @@ function DesktopIndicator({ active }) {
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 export default function Navbar() {
   const [activeSection, setActiveSection] = useState('home')
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen]   = useState(false)
   const isMobile = useIsMobile()
 
   useEffect(() => {
@@ -267,7 +267,7 @@ export default function Navbar() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 clamp(14px, 2.8vw, 48px)',
+          padding: '0 clamp(28px, 4.5vw, 72px)',
           background: 'transparent',
           boxSizing: 'border-box',
         }}
