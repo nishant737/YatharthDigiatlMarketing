@@ -183,9 +183,9 @@ export default function OurWorkSection() {
   const rawScrollR   = useRef(0)
   const rafRef       = useRef(null)
   const totalScrollR = useRef(1)      // cached section scroll height — avoids offsetHeight read per scroll
-  const lastOutroT         = useRef(-1)     // dirty-check — skip DOM writes when unchanged
-  const lastCardsT         = useRef(-1)
-  const lastHeaderCollapsed = useRef(null)   // null=uninit, true/false
+  const lastOutroT    = useRef(-1)   // dirty-check — skip DOM writes when unchanged
+  const lastCardsT    = useRef(-1)
+  const lastCollapseH = useRef(-1)   // dirty-check for scroll-linked header collapse
 
   // 100 vw per card, no gap — seamless full-screen gallery
   const CARD_VW = 100
@@ -237,24 +237,16 @@ export default function OurWorkSection() {
         })
       }
 
-      // Header collapse: enter (raw > 0.04) → collapse, exit (raw < 0.02) → expand
-      const shouldCollapse = rawScrollR.current > 0.04
-      if (lastHeaderCollapsed.current !== shouldCollapse) {
-        lastHeaderCollapsed.current = shouldCollapse
+      // Scroll-linked header fade: raw 0→0.06 → fully visible→fully hidden
+      const raw = rawScrollR.current
+      const collapseT  = Math.min(1, Math.max(0, raw / 0.06))
+      const headerOpac = Math.max(0, 1 - collapseT)
+      if (Math.abs(headerOpac - lastCollapseH.current) > 0.004) {
+        lastCollapseH.current = headerOpac
         if (headerRef.current) {
-          if (shouldCollapse) {
-            headerRef.current.style.maxHeight   = '0'
-            headerRef.current.style.opacity     = '0'
-            headerRef.current.style.paddingTop  = '0'
-            headerRef.current.style.paddingBottom = '0'
-          } else {
-            headerRef.current.style.maxHeight   = '180px'
-            headerRef.current.style.opacity     = '1'
-            headerRef.current.style.paddingTop  = ''
-            headerRef.current.style.paddingBottom = ''
-          }
+          headerRef.current.style.opacity       = String(headerOpac)
+          headerRef.current.style.pointerEvents = headerOpac < 0.05 ? 'none' : 'auto'
         }
-        window.dispatchEvent(new CustomEvent('ourwork-active', { detail: { active: shouldCollapse } }))
       }
 
       // Outro fade: raw 0.78 → 0.92 — only write DOM when value changes
@@ -349,15 +341,12 @@ export default function OurWorkSection() {
         <div
           ref={headerRef}
           style={{
-            flexShrink: 0,
+            position: 'absolute',
+            top: 0, left: 0, right: 0,
+            zIndex: 5,
             padding: 'clamp(88px, 12vh, 112px) clamp(28px, 4vw, 56px) clamp(14px, 2vh, 22px)',
-            maxHeight: '180px',
-            overflow: 'hidden',
             background: '#000',
-            zIndex: 2,
-            position: 'relative',
-            willChange: 'max-height, opacity',
-            transition: 'max-height 0.55s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease, padding 0.55s cubic-bezier(0.22,1,0.36,1)',
+            willChange: 'opacity',
           }}
         >
           <h2 style={{
