@@ -12,6 +12,7 @@ import TestimonialsSection from './components/TestimonialsSection'
 import FounderNote from './components/FounderNote'
 import FAQSection from './components/FAQSection'
 import JournalSection from './components/JournalSection'
+import ClosingSection from './components/ClosingSection'
 import ContactSection from './components/ContactSection'
 import ChatBot from './components/ChatBot'
 import MusicPlayer from './components/MusicPlayer'
@@ -50,6 +51,7 @@ export default function App() {
          
           <JournalSection />
            <FAQSection />
+          <ClosingSection />
           <ContactSection />
         </div>
       </main>

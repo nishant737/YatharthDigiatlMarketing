@@ -78,7 +78,7 @@ export default function StorySection() {
         trigger: section,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 1,
+        scrub: 0.6,
       }
     })
     
@@ -133,7 +133,7 @@ export default function StorySection() {
         id="story"
         ref={sectionRef}
         className="story-section"
-        style={{ minHeight: '220vh' }}
+        style={{ minHeight: '190vh' }}
       >
         <div style={{
           position: 'sticky',

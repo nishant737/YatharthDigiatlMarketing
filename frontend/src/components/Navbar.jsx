@@ -238,20 +238,23 @@ export default function Navbar() {
         }
         .menu-nav-link {
           font-family: 'Inter', sans-serif;
-          font-size: clamp(2.4rem, 6.5vw, 7rem);
-          font-weight: 700;
-          letter-spacing: -0.04em;
-          line-height: 1.05;
+          font-size: clamp(1.6rem, 4vw, 3.2rem);
+          font-weight: 600;
+          letter-spacing: -0.03em;
+          line-height: 1.1;
           text-decoration: none;
           display: block;
           cursor: pointer;
           background: none;
           border: none;
+          border-bottom: 1px solid rgba(255,255,255,0.15);
           text-align: left;
-          padding: 0;
+          padding: clamp(10px, 1.4vh, 16px) 0;
           transition: color 0.18s ease;
           will-change: transform, opacity;
+          width: 100%;
         }
+        .menu-nav-link:last-child { border-bottom: none; }
         .menu-nav-link:hover { color: #fff !important; }
       `}</style>
 

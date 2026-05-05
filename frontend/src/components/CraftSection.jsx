@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useRef, useEffect, useState } from 'react'
+import { motion, useInView } from 'framer-motion'
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
@@ -11,305 +11,298 @@ function useIsMobile() {
   return mobile
 }
 
+// ─── Service Data ─────────────────────────────────────────────────────────────
 const SERVICES = [
   {
-    num: '01', title: 'Brand Strategy',
-    desc: 'We define how you are seen. From positioning and identity to the story your brand tells the world — we craft the strategic foundation that makes everything else work.',
-    icon: '◎', accent: '#DB6436',
+    num: '01',
+    title: 'Brand Strategy',
+    brief: 'Positioning, identity & story — the foundation everything else builds on.',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+        <circle cx="15" cy="15" r="11" stroke="#E3735E" strokeWidth="1.5"/>
+        <circle cx="15" cy="15" r="6" stroke="#E3735E" strokeWidth="1.5"/>
+        <circle cx="15" cy="15" r="2" fill="#E3735E"/>
+      </svg>
+    ),
   },
   {
-    num: '02', title: 'Digital Marketing',
-    desc: 'We make sure you are found. Through SEO, paid campaigns, analytics, and smart targeting — we put your brand exactly where your audience is looking.',
-    icon: '◈', accent: '#C85A30',
+    num: '02',
+    title: 'Digital Marketing',
+    brief: 'SEO, paid campaigns & smart targeting to put you where your audience looks.',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+        <path d="M5 22L12 14l5 5 8-11" stroke="#E3735E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M20 10h5v5" stroke="#E3735E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
   },
   {
-    num: '03', title: 'Content & Storytelling',
-    desc: 'We give your brand a voice. Compelling copy, scroll-stopping visuals, and narratives that resonate — we create content that moves people to action.',
-    icon: '❖', accent: '#C85A30',
+    num: '03',
+    title: 'Content & Storytelling',
+    brief: 'Scroll-stopping copy & visuals that turn attention into lasting trust.',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+        <path d="M7 23l2-6L21 5l4 4-12 12-6 2z" stroke="#E3735E" strokeWidth="1.5" strokeLinejoin="round"/>
+        <path d="M17 9l4 4" stroke="#E3735E" strokeWidth="1.5"/>
+      </svg>
+    ),
   },
   {
-    num: '04', title: 'Creative Direction',
-    desc: 'We shape how it feels. From visual systems to campaign art direction — we ensure every touchpoint carries a cohesive, unforgettable creative vision.',
-    icon: '✦', accent: '#DB6436',
+    num: '04',
+    title: 'Creative Direction',
+    brief: 'Cohesive visual systems so every touchpoint feels unmistakably you.',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+        <path d="M15 3l3.5 8.5H28l-7 5.5 3 8.5-9-6-9 6 3-8.5-7-5.5h9.5z" stroke="#E3735E" strokeWidth="1.5" strokeLinejoin="round"/>
+      </svg>
+    ),
   },
   {
-    num: '05', title: 'Social Presence',
-    desc: 'We build how you show up daily. Strategy-led social content, community engagement, and platform growth — we turn followers into loyal fans.',
-    icon: '◇', accent: '#C85A30',
+    num: '05',
+    title: 'Social Presence',
+    brief: 'Strategy-led content & community growth that turns followers into fans.',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+        <circle cx="15" cy="10" r="4" stroke="#E3735E" strokeWidth="1.5"/>
+        <path d="M7 26c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="#E3735E" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    ),
   },
 ]
 
+// ─── Mobile Card ─────────────────────────────────────────────────────────────
+function MobileCard({ service, index }) {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-8% 0px' })
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 36 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: index * 0.04 }}
+      style={{
+        padding: '22px', borderRadius: '14px',
+        border: '1px solid rgba(255,255,255,0.08)',
+        background: 'rgba(255,255,255,0.02)',
+        display: 'flex', flexDirection: 'column', gap: '12px',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        <div style={{
+          width: 42, height: 42, borderRadius: '11px',
+          background: 'rgba(227,115,94,0.08)',
+          border: '1px solid rgba(227,115,94,0.18)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          flexShrink: 0,
+        }}>{service.icon}</div>
+        <h3 style={{
+          fontFamily: "'Inter', system-ui, sans-serif",
+          fontWeight: 500, fontSize: '1rem',
+          color: '#f5f0eb', margin: 0, letterSpacing: '-0.01em',
+        }}>{service.title}</h3>
+      </div>
+      <p style={{
+        fontFamily: "'Inter', system-ui, sans-serif",
+        fontWeight: 300, fontSize: '0.84rem',
+        color: 'rgba(245,240,235,0.45)', margin: 0, lineHeight: 1.6,
+      }}>{service.brief}</p>
+    </motion.div>
+  )
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 export default function CraftSection() {
   const sectionRef = useRef(null)
-  const [activeIndex, setActiveIndex] = useState(0)
-  const isMobile = useIsMobile()
-  const COUNT = SERVICES.length
+  const groupRef   = useRef(null)
+  const cardRefs   = useRef([])
+  const rafRef     = useRef(null)
+  const isMobile   = useIsMobile()
+  const COUNT      = SERVICES.length
 
   useEffect(() => {
-    const section = sectionRef.current
-    if (!section) return
+    if (isMobile) return
 
-    const handleScroll = () => {
-      const rect = section.getBoundingClientRect()
-      const sectionTop = -rect.top
-      const scrollableHeight = section.offsetHeight - window.innerHeight
-      if (scrollableHeight <= 0) return
-      const progress = Math.max(0, Math.min(1, sectionTop / scrollableHeight))
-      const idx = Math.min(COUNT - 1, Math.floor(progress * COUNT))
-      setActiveIndex(idx)
+    const tick = () => {
+      const section = sectionRef.current
+      if (!section) { rafRef.current = requestAnimationFrame(tick); return }
+
+      const totalScroll = Math.max(section.offsetHeight - window.innerHeight, 1)
+      const raw = Math.max(0, Math.min(1, -section.getBoundingClientRect().top / totalScroll))
+
+      // ── Staggered card entrance: raw 0 → 0.4 (one by one) ──
+      const CARD_START = 0.0
+      const CARD_END   = 0.4
+      const CARD_WINDOW = (CARD_END - CARD_START) / COUNT
+
+      cardRefs.current.forEach((card, i) => {
+        if (!card) return
+        const cStart = CARD_START + i * CARD_WINDOW
+        const t      = Math.max(0, Math.min(1, (raw - cStart) / (CARD_WINDOW * 1.3)))
+        const eased  = 1 - Math.pow(1 - t, 3)
+
+        card.style.opacity   = String(eased)
+        card.style.transform = `translateY(${(1 - eased) * 50}px)`
+      })
+
+      // ── Group exit drift: raw 0.55 → 1.0 ──
+      if (groupRef.current) {
+        const exitT = Math.max(0, Math.min(1, (raw - 0.55) / 0.45))
+        const exitE = 1 - Math.pow(1 - exitT, 2)
+        groupRef.current.style.transform = `translateY(${-exitE * 140}px)`
+      }
+
+      rafRef.current = requestAnimationFrame(tick)
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [COUNT])
+    rafRef.current = requestAnimationFrame(tick)
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
+  }, [isMobile])
 
-  const current = SERVICES[activeIndex]
+  // ── Mobile ──────────────────────────────────────────────────────────────────
+  if (isMobile) {
+    return (
+      <section id="craft" style={{ background: '#0a0806', padding: '72px 20px' }}>
+        <span style={{
+          fontFamily: "'Inter', system-ui, sans-serif",
+          fontSize: '0.72rem', fontWeight: 500,
+          letterSpacing: '0.12em', textTransform: 'uppercase',
+          color: '#E3735E', display: 'block', marginBottom: '14px',
+        }}>Our Services</span>
+        <h2 style={{
+          fontFamily: "'Inter', system-ui, sans-serif",
+          fontWeight: 300, fontSize: 'clamp(1.8rem, 7vw, 2.6rem)',
+          letterSpacing: '-0.04em', color: '#f5f0eb',
+          margin: '0 0 36px', lineHeight: 1.15,
+        }}>
+          What we <span style={{ color: '#E3735E', fontStyle: 'italic' }}>bring</span> to your brand.
+        </h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {SERVICES.map((s, i) => <MobileCard key={s.num} service={s} index={i} />)}
+        </div>
+      </section>
+    )
+  }
 
+  // ── Desktop ─────────────────────────────────────────────────────────────────
   return (
     <section
       id="craft"
       ref={sectionRef}
-      style={{ position: 'relative', height: `calc(${COUNT * 15}vh + 100vh)` }}
+      style={{ position: 'relative', height: '220vh' }}
     >
-      {/* SEO-only — invisible to users, readable by crawlers */}
-      <div className="seo-only" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap' }}>
+      {/* SEO-only */}
+      <div style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap' }}>
         <h2>Our Services</h2>
-        {SERVICES.map(s => (
-          <div key={s.num}>
-            <h3>{s.title}</h3>
-            <p>{s.desc}</p>
-          </div>
-        ))}
+        {SERVICES.map(s => <div key={s.num}><h3>{s.title}</h3><p>{s.brief}</p></div>)}
       </div>
+
+      {/* Sticky viewport frame */}
       <div style={{
         position: 'sticky', top: 0, height: '100vh',
         display: 'flex', flexDirection: 'column',
         justifyContent: 'center', alignItems: 'center',
-        background: '#000', overflow: 'hidden', zIndex: 10,
+        background: '#0a0806', overflow: 'hidden', zIndex: 10,
       }}>
-
-        {/* Main two-column layout */}
+        {/* Subtle background glow */}
         <div style={{
-          position: 'relative', zIndex: 1,
-          display: 'flex',
-          flexDirection: isMobile ? 'column' : 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: isMobile ? '32px' : 'clamp(60px, 9vw, 130px)',
-          width: '100%',
-          maxWidth: '1140px',
-          padding: isMobile ? '0 24px' : '0 clamp(32px, 5vw, 80px)',
-        }}>
+          position: 'absolute', top: '35%', left: '50%',
+          transform: 'translateX(-50%)',
+          width: '50vw', height: '30vh',
+          background: 'radial-gradient(ellipse at center, rgba(227,115,94,0.04) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }} />
 
-          {/* ── LEFT: stacked service list ── */}
-          <div style={{
-            flex: '1 1 0',
-            maxWidth: isMobile ? '100%' : '520px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: isMobile ? '20px' : '28px',
-          }}>
-            {/* Label */}
-            <h2 style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontWeight: 400,
-              fontSize: isMobile ? '0.8rem' : '1rem',
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              color: current.accent,
-              margin: '0 0 16px',
-              transition: 'color 0.5s ease',
-            }}>
-              Our Services
-            </h2>
-
-            {SERVICES.map((service, i) => {
-              const isActive = i === activeIndex
-              return (
-                <motion.div
-                  key={service.num}
-                  animate={{
-                    opacity: isActive ? 1 : 0.45,
-                    y: isActive ? 0 : 0,
-                  }}
-                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                  style={{ cursor: 'default' }}
-                >
-                  {/* Title row */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'baseline',
-                    gap: '14px',
-                    marginBottom: isActive ? (isMobile ? '8px' : '10px') : 0,
-                  }}>
-                    {/* Number */}
-                    <span style={{
-                      fontFamily: "'Inter', system-ui, sans-serif",
-                      fontWeight: 300,
-                      fontSize: isMobile ? '0.7rem' : '0.75rem',
-                      color: isActive ? service.accent : 'rgba(245,240,235,0.3)',
-                      letterSpacing: '0.08em',
-                      transition: 'color 0.5s ease',
-                      minWidth: '24px',
-                    }}>
-                      {service.num}
-                    </span>
-
-                    {/* Title */}
-                    <motion.h3
-                      animate={{
-                        fontSize: isActive
-                          ? (isMobile ? '1.55rem' : 'clamp(1.7rem, 2.8vw, 2.3rem)')
-                          : (isMobile ? '1.1rem' : 'clamp(1.1rem, 1.8vw, 1.4rem)'),
-                        color: isActive ? '#f5f0eb' : 'rgba(245,240,235,0.35)',
-                      }}
-                      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                      style={{
-                        fontFamily: "'Inter', system-ui, sans-serif",
-                        fontWeight: isActive ? 400 : 300,
-                        letterSpacing: '-0.025em',
-                        lineHeight: 1.15,
-                        margin: 0,
-                      }}
-                    >
-                      {service.title}
-                    </motion.h3>
-                  </div>
-
-                  {/* Description — only for active */}
-                  <AnimatePresence>
-                    {isActive && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                        style={{ overflow: 'hidden', paddingLeft: isMobile ? '0' : '38px' }}
-                      >
-                        {/* Divider */}
-                        <motion.div
-                          initial={{ scaleX: 0 }}
-                          animate={{ scaleX: 1 }}
-                          transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-                          style={{
-                            height: '1px',
-                            width: '48px',
-                            background: `linear-gradient(90deg, ${service.accent}cc, transparent)`,
-                            transformOrigin: 'left',
-                            marginBottom: '10px',
-                          }}
-                        />
-                        <p style={{
-                          fontFamily: "'Inter', system-ui, sans-serif",
-                          fontWeight: 300,
-                          fontSize: isMobile ? '0.9rem' : 'clamp(0.88rem, 1.1vw, 1rem)',
-                          lineHeight: 1.8,
-                          color: 'rgba(245,240,235,0.5)',
-                          margin: 0,
-                          maxWidth: '420px',
-                        }}>
-                          {service.desc}
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              )
-            })}
-          </div>
-
-          {/* ── RIGHT: clean portrait reel ── */}
-          {!isMobile && (
-            <div style={{
-              flex: '0 0 auto',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              {/* Clip container — same size as reel, hides slide travel */}
-              <div style={{
-                position: 'relative',
-                width: 'clamp(220px, 22vw, 290px)',
-                aspectRatio: '9 / 16',
-                borderRadius: '16px',
-                overflow: 'hidden',
-                boxShadow: `0 32px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.05)`,
-                background: '#000',
-              }}>
-                <AnimatePresence mode="popLayout">
-                  <motion.div
-                    key={activeIndex}
-                    initial={{ y: '100%' }}
-                    animate={{ y: '0%' }}
-                    exit={{ y: '-100%' }}
-                    transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-                    style={{ position: 'absolute', inset: 0 }}
-                  >
-                    <video
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                    >
-                      <source src="/asset/story.mp4" type="video/mp4" />
-                    </video>
-
-                    {/* Bottom fade */}
-                    <div style={{
-                      position: 'absolute', inset: 0, pointerEvents: 'none',
-                      background: 'linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.5) 100%)',
-                    }} />
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Accent glow at bottom edge */}
-                <motion.div
-                  animate={{ background: `radial-gradient(ellipse at 50% 110%, ${current.accent}22 0%, transparent 55%)` }}
-                  transition={{ duration: 1, ease: 'easeInOut' }}
-                  style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Scroll hint */}
-        {activeIndex === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ delay: 1.2, duration: 0.8 }}
-            style={{
-              position: 'absolute',
-              bottom: '40px', right: '40px',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
-              zIndex: 2,
-            }}
-          >
-            <motion.div
-              animate={{ y: [0, 6, 0] }}
-              transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
-              style={{
-                width: '16px', height: '24px', borderRadius: '10px',
-                border: '1.5px solid rgba(245,240,235,0.18)',
-                display: 'flex', justifyContent: 'center', paddingTop: '5px',
-              }}
-            >
-              <div style={{
-                width: '2px', height: '5px', borderRadius: '1px',
-                background: 'rgba(245,240,235,0.28)',
-              }} />
-            </motion.div>
+        <div
+          ref={groupRef}
+          style={{
+            position: 'relative', zIndex: 1,
+            width: '100%', maxWidth: '1440px',
+            padding: '0 clamp(28px, 4vw, 64px)',
+            willChange: 'transform',
+          }}
+        >
+          {/* ── Header ── */}
+          <div style={{ marginBottom: 'clamp(36px, 4.5vh, 56px)', textAlign: 'center' }}>
             <span style={{
               fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: '0.58rem', letterSpacing: '0.15em',
-              color: 'rgba(245,240,235,0.18)', textTransform: 'uppercase',
-            }}>Scroll</span>
-          </motion.div>
-        )}
+              fontSize: '0.72rem', fontWeight: 500,
+              letterSpacing: '0.12em', textTransform: 'uppercase',
+              color: '#E3735E', display: 'block', marginBottom: '12px',
+            }}>Our Services</span>
+            <h2 style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontWeight: 300,
+              fontSize: 'clamp(1.8rem, 3.2vw, 2.8rem)',
+              letterSpacing: '-0.04em', color: '#f5f0eb',
+              margin: 0, lineHeight: 1.1,
+            }}>
+              What we <span style={{ color: '#E3735E', fontStyle: 'italic' }}>bring</span> to your brand.
+            </h2>
+          </div>
+
+          {/* ── All 5 cards in one horizontal line ── */}
+          <div style={{
+            display: 'flex',
+            gap: 'clamp(10px, 1.2vw, 18px)',
+            justifyContent: 'center',
+          }}>
+            {SERVICES.map((service, i) => (
+              <div
+                key={service.num}
+                ref={el => { cardRefs.current[i] = el }}
+                style={{
+                  flex: '1 1 0',
+                  maxWidth: '260px',
+                  opacity: 0,
+                  willChange: 'opacity, transform',
+                  padding: 'clamp(20px, 2vw, 28px)',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  background: 'rgba(255,255,255,0.025)',
+                  display: 'flex', flexDirection: 'column',
+                  alignItems: 'center', gap: '14px',
+                  textAlign: 'center',
+                  cursor: 'default',
+                  transition: 'border-color 0.3s ease, background 0.3s ease',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = 'rgba(227,115,94,0.35)'
+                  e.currentTarget.style.background  = 'rgba(227,115,94,0.06)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'
+                  e.currentTarget.style.background  = 'rgba(255,255,255,0.025)'
+                }}
+              >
+                {/* Icon */}
+                <div style={{
+                  width: 48, height: 48, borderRadius: '13px',
+                  background: 'rgba(227,115,94,0.08)',
+                  border: '1px solid rgba(227,115,94,0.18)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>{service.icon}</div>
+
+                {/* Title */}
+                <h3 style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontWeight: 500,
+                  fontSize: 'clamp(0.88rem, 1.1vw, 1.05rem)',
+                  color: '#f5f0eb', margin: 0, lineHeight: 1.3,
+                  letterSpacing: '-0.01em',
+                }}>{service.title}</h3>
+
+                {/* Brief description */}
+                <p style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontWeight: 300,
+                  fontSize: 'clamp(0.72rem, 0.82vw, 0.8rem)',
+                  color: 'rgba(245,240,235,0.4)',
+                  margin: 0, lineHeight: 1.6,
+                }}>{service.brief}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   )
