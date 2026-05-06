@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -48,6 +48,38 @@ const STORY_CSS = `
     will-change: opacity, transform;
     margin: 0;
   }
+
+  @media (max-width: 768px) {
+    .story-mobile-wrap {
+      display: flex;
+      flex-direction: column;
+      min-height: auto !important;
+    }
+    .story-mobile-video {
+      width: 100%;
+      aspect-ratio: 16/10;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .story-mobile-video video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.5);
+    }
+    .story-content {
+      max-width: 100%;
+    }
+    .story-tagline {
+      font-size: 1rem;
+    }
+    .story-body {
+      font-size: 0.9rem;
+      line-height: 1.75;
+    }
+  }
 `
 
 // ─── Story Content Data (from reference) ──────────────────────────────────────
@@ -57,6 +89,16 @@ const STORY_DATA = {
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
+function useIsMobile() {
+  const [m, setM] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
+  useEffect(() => {
+    const h = () => setM(window.innerWidth < 768)
+    window.addEventListener('resize', h)
+    return () => window.removeEventListener('resize', h)
+  }, [])
+  return m
+}
+
 export default function StorySection() {
   const sectionRef = useRef(null)
   const videoContainerRef = useRef(null)
@@ -64,6 +106,7 @@ export default function StorySection() {
   const contentRef = useRef(null)
   const taglineRef = useRef(null)
   const paraRef    = useRef(null)
+  const isMobile   = useIsMobile()
   
   useEffect(() => {
     const section = sectionRef.current
@@ -71,6 +114,9 @@ export default function StorySection() {
     const video = videoRef.current
     
     if (!section || !videoContainer || !video) return
+
+    // Autoplay video
+    video.play().catch(() => {})
     
     // Create scroll timeline
     const tl = gsap.timeline({
@@ -82,32 +128,40 @@ export default function StorySection() {
       }
     })
     
-    // Start fullscreen — uniform scale keeps video aspect ratio intact
+    // Start fullscreen
     gsap.set(videoContainer, {
       scale: 1,
       x: 0, y: 0,
       borderRadius: '0px',
       transformOrigin: '50% 50%',
     })
-    
-    // Shrink uniformly + translate left — no distortion, GPU composited
-    tl.to(videoContainer, {
-      scale: 0.46,
-      x: '-27vw',
-      borderRadius: '34px', // 34 × 0.46 ≈ 16px visual radius
-      ease: 'power2.out',
-      duration: 0.6,
-    }, 0)
+
+    if (isMobile) {
+      // Mobile: shrink video upward, text appears below
+      tl.to(videoContainer, {
+        scale: 0.55,
+        y: '-18vh',
+        borderRadius: '24px',
+        ease: 'power2.out',
+        duration: 0.6,
+      }, 0)
+    } else {
+      // Desktop: shrink + translate left
+      tl.to(videoContainer, {
+        scale: 0.46,
+        x: '-27vw',
+        borderRadius: '34px',
+        ease: 'power2.out',
+        duration: 0.6,
+      }, 0)
+    }
     
     // Content reveal animation - staggered elements
     const tagline = taglineRef.current
-    
-    // Set initial hidden state
     const para = paraRef.current
     if (tagline) gsap.set(tagline, { opacity: 0, y: 12 })
     if (para)    gsap.set(para,    { opacity: 0, y: 20 })
     
-    // Animate in with stagger
     if (tagline) {
       tl.to(tagline, { opacity: 1, y: 0, duration: 0.15, ease: 'power2.out' }, 0.38)
     }
@@ -115,17 +169,42 @@ export default function StorySection() {
       tl.to(para, { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' }, 0.44)
     }
     
-    // Autoplay video immediately and loop continuously
-    video.play().catch(() => {})
-    
     return () => {
       tl.kill()
       ScrollTrigger.getAll().forEach(st => {
         if (st.vars.trigger === section) st.kill()
       })
     }
-  }, [])
+  }, [isMobile])
   
+  // Content positioning differs between mobile (below video) and desktop (right of video)
+  const contentStyle = isMobile
+    ? {
+        position: 'absolute',
+        left: '50%',
+        top: '62%',
+        transform: 'translateX(-50%)',
+        width: 'calc(100% - 48px)',
+        maxWidth: '400px',
+        padding: '0',
+        zIndex: 10,
+        textAlign: 'center',
+      }
+    : {
+        position: 'absolute',
+        left: '50vw',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        width: 'clamp(240px, 38vw, 520px)',
+        maxHeight: '46vh',
+        overflow: 'hidden',
+        padding: '0 clamp(12px, 2vw, 24px)',
+        zIndex: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }
+
   return (
     <>
       <style>{STORY_CSS}</style>
@@ -133,7 +212,7 @@ export default function StorySection() {
         id="story"
         ref={sectionRef}
         className="story-section"
-        style={{ minHeight: '190vh' }}
+        style={{ minHeight: isMobile ? '170vh' : '190vh' }}
       >
         <div style={{
           position: 'sticky',
@@ -145,7 +224,7 @@ export default function StorySection() {
           justifyContent: 'center',
           overflow: 'hidden',
         }}>
-          {/* Video Container - GSAP animated, settles on left */}
+          {/* Video Container - GSAP animated */}
           <div 
             ref={videoContainerRef}
             className="story-video-wrap"
@@ -166,23 +245,10 @@ export default function StorySection() {
             />
           </div>
           
-          {/* Content Container - height clamped to video's scaled visual height (46vh) */}
+          {/* Content Container */}
           <div 
             ref={contentRef}
-            style={{
-              position: 'absolute',
-              left: '50vw',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              width: 'clamp(240px, 38vw, 520px)',
-              maxHeight: '46vh',
-              overflow: 'hidden',
-              padding: '0 clamp(12px, 2vw, 24px)',
-              zIndex: 10,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
+            style={contentStyle}
           >
             <div className="story-content">
               <div ref={taglineRef} className="story-tagline">{STORY_DATA.tagline}</div>

@@ -195,20 +195,22 @@ export default function HeroSection() {
     }
   }, [])
 
-  // GSAP logo entrance — elastic spring on scale/Y, fast blur fade separately
+  // GSAP logo entrance — falls from above with bounce landing
   useEffect(() => {
     if (!mounted || !logoRef.current) return
     const el = logoRef.current
-    // Blur + opacity: fast smooth fade
+
+    // Blur + opacity: smooth reveal
     gsap.fromTo(el,
-      { opacity: 0, filter: 'blur(28px)' },
-      { opacity: 1, filter: 'blur(0px)', duration: 0.9, ease: 'power2.out', delay: 0.3,
+      { opacity: 0, filter: 'blur(18px)' },
+      { opacity: 1, filter: 'blur(0px)', duration: 0.7, ease: 'power2.out', delay: 0.15,
         onComplete: () => gsap.set(el, { clearProps: 'filter' }) }
     )
-    // Scale + Y: elastic spring bounce
+
+    // Fall from above: starts high + slightly rotated, lands with elastic bounce
     gsap.fromTo(el,
-      { scale: 0.52, y: 58 },
-      { scale: 1, y: 0, duration: 2.1, ease: 'elastic.out(1, 0.52)', delay: 0.3 }
+      { y: -180, scale: 0.88, rotation: -3 },
+      { y: 0, scale: 1, rotation: 0, duration: 1.6, ease: 'bounce.out', delay: 0.15 }
     )
   }, [mounted])
 

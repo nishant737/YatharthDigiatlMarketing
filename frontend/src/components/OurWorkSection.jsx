@@ -183,9 +183,10 @@ export default function OurWorkSection() {
   const rawScrollR   = useRef(0)
   const rafRef       = useRef(null)
   const totalScrollR = useRef(1)      // cached section scroll height — avoids offsetHeight read per scroll
-  const lastOutroT    = useRef(-1)   // dirty-check — skip DOM writes when unchanged
-  const lastCardsT    = useRef(-1)
+  const lastOutroT    = useRef(-1)   // (kept for compatibility)
   const lastCollapseH = useRef(-1)   // dirty-check for scroll-linked header collapse
+  const navbarRef      = useRef(null) // cached navbar DOM ref
+  const dividerRef     = useRef(null) // cached divider DOM ref
 
   // 100 vw per card, no gap — seamless full-screen gallery
   const CARD_VW = 100
@@ -204,23 +205,25 @@ export default function OurWorkSection() {
       if (!el) return
       const raw  = Math.max(0, Math.min(1, -el.getBoundingClientRect().top / totalScrollR.current))
       rawScrollR.current = raw
-      const hRaw = Math.min(1, raw / 0.78)
+      // Horizontal scroll now covers 5 cards + 1 outro slide = 6 items, 5 steps
+      const hRaw = Math.min(1, raw / 0.90)
       targetG.current = 1 - Math.pow(1 - hRaw, 2.5)
     }
 
     const tick = () => {
       const diff = targetG.current - currentG.current
+      const TOTAL_STEPS = PROJECTS.length  // 5 cards + 1 outro = 6 items, 5 steps
       if (Math.abs(diff) > 0.00004) {
-        currentG.current += diff * 0.15
+        currentG.current += diff * 0.18
 
         // Horizontal track (pure X, no Y)
         if (trackRef.current) {
-          const tx = -(currentG.current * (PROJECTS.length - 1) * STEP_VW)
+          const tx = -(currentG.current * TOTAL_STEPS * STEP_VW)
           trackRef.current.style.transform = `translate3d(${tx}vw, 0, 0)`
         }
 
         // Per-card parallax on images
-        const G = currentG.current * (PROJECTS.length - 1)
+        const G = currentG.current * TOTAL_STEPS
         imageRefs.current.forEach((img, i) => {
           if (!img) return
           const offset = Math.max(-1.5, Math.min(1.5, G - i))
@@ -230,44 +233,47 @@ export default function OurWorkSection() {
         // Footer reveal: slides up + fades in as card enters from the right
         footerRefs.current.forEach((footer, i) => {
           if (!footer) return
-          const G2 = currentG.current * (PROJECTS.length - 1)
+          const G2 = currentG.current * TOTAL_STEPS
           const enterT = Math.max(0, Math.min(1, -(G2 - i)))   // 1=offscreen-right, 0=active
           footer.style.transform = `translateY(${enterT * 52}px)`
           footer.style.opacity   = String(1 - enterT)
         })
       }
 
-      // Scroll-linked header fade: raw 0→0.06 → fully visible→fully hidden
+      // Scroll-linked header + navbar fade: raw 0→0.10 → fully visible→fully hidden
       const raw = rawScrollR.current
-      const collapseT  = Math.min(1, Math.max(0, raw / 0.06))
-      const headerOpac = Math.max(0, 1 - collapseT)
+      const collapseT  = Math.min(1, Math.max(0, raw / 0.10))
+      const eased      = collapseT * collapseT  // quadratic ease-in for smooth start
+      const headerOpac = Math.max(0, 1 - eased)
+      const headerY    = -(eased * 35)           // moves up 35px as it fades
       if (Math.abs(headerOpac - lastCollapseH.current) > 0.004) {
         lastCollapseH.current = headerOpac
         if (headerRef.current) {
           headerRef.current.style.opacity       = String(headerOpac)
+          headerRef.current.style.transform     = `translateY(${headerY}px)`
           headerRef.current.style.pointerEvents = headerOpac < 0.05 ? 'none' : 'auto'
         }
-      }
-
-      // Outro fade: raw 0.78 → 0.92 — only write DOM when value changes
-      const outroT = Math.max(0, Math.min(1, (rawScrollR.current - 0.78) / 0.14))
-      const cardsT = 1 - outroT
-
-      if (Math.abs(outroT - lastOutroT.current) > 0.002) {
-        lastOutroT.current = outroT
-        lastCardsT.current = cardsT
-        if (outroRef.current) {
-          outroRef.current.style.opacity      = String(outroT)
-          outroRef.current.style.pointerEvents = outroT > 0.1 ? 'auto' : 'none'
+        // Fade navbar (logo + hamburger) in sync
+        if (navbarRef.current) {
+          navbarRef.current.style.opacity       = String(headerOpac)
+          navbarRef.current.style.transform     = `translateY(${headerY * 0.5}px)`
+          navbarRef.current.style.pointerEvents = headerOpac < 0.05 ? 'none' : 'auto'
         }
-        if (cardsZoneRef.current) cardsZoneRef.current.style.opacity = String(cardsT)
+        // Fade divider line too
+        if (dividerRef.current) {
+          dividerRef.current.style.opacity = String(headerOpac)
+        }
       }
+
+      // (outro is now part of the horizontal track — no separate overlay logic needed)
 
       rafRef.current = requestAnimationFrame(tick)
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', () => { recacheTotalScroll(); onScroll() }, { passive: true })
+    navbarRef.current  = document.getElementById('main-navbar')
+    dividerRef.current = document.getElementById('navbar-divider')
     recacheTotalScroll()
     onScroll()
     rafRef.current = requestAnimationFrame(tick)
@@ -275,6 +281,15 @@ export default function OurWorkSection() {
     return () => {
       window.removeEventListener('scroll', onScroll)
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      // Restore navbar visibility when section unmounts
+      if (navbarRef.current) {
+        navbarRef.current.style.opacity       = '1'
+        navbarRef.current.style.transform     = 'translateY(0px)'
+        navbarRef.current.style.pointerEvents = 'auto'
+      }
+      if (dividerRef.current) {
+        dividerRef.current.style.opacity = '1'
+      }
     }
   }, [isMobile])
 
@@ -305,9 +320,11 @@ export default function OurWorkSection() {
           color: 'rgba(245,240,235,0.4)',
           margin: '0 0 48px',
         }}>See how we have helped businesses like yours</p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
           {PROJECTS.map((project, i) => (
-            <ProjectCard key={i} project={project} />
+            <div key={i} style={{ width: '100%', aspectRatio: '4/3', position: 'relative', borderRadius: '8px', overflow: 'hidden' }}>
+              <ProjectCard project={project} />
+            </div>
           ))}
         </div>
       </section>
@@ -320,7 +337,7 @@ export default function OurWorkSection() {
       id="our-work"
       ref={sectionRef}
       style={{
-        height: `${PROJECTS.length * 100 + 280}vh`,
+        height: `${(PROJECTS.length + 1) * 120 + 200}vh`,
         position: 'relative',
         zIndex: 80,
       }}
@@ -346,7 +363,7 @@ export default function OurWorkSection() {
             zIndex: 5,
             padding: 'clamp(88px, 12vh, 112px) clamp(28px, 4vw, 56px) clamp(14px, 2vh, 22px)',
             background: '#000',
-            willChange: 'opacity',
+            willChange: 'opacity, transform',
           }}
         >
           <h2 style={{
@@ -401,54 +418,50 @@ export default function OurWorkSection() {
                 />
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Outro panel — covers entire sticky frame */}
-        <style>{`
-          @keyframes bounceDown {
-            0%, 100% { transform: translateY(0); }
-            50%       { transform: translateY(7px); }
-          }
-        `}</style>
-        <div
-          ref={outroRef}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: '#000',
-            opacity: 0,
-            pointerEvents: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            padding: `0 clamp(28px, 6vw, 80px)`,
-            zIndex: 10,
-            willChange: 'opacity',
-          }}
-        >
-          <p style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontWeight: 700,
-            fontSize: 'clamp(1.8rem, 3.8vw, 4.2rem)',
-            color: '#ffffff',
-            lineHeight: 1.15,
-            letterSpacing: '-0.03em',
-            margin: 0,
-            maxWidth: '1100px',
-          }}>
-            These are not just projects, they are stories of our
-            clients, our work, and the impact we made.{' '}
-            <a
-              href="#our-work"
-              style={{ color: '#DB6436', textDecoration: 'none', whiteSpace: 'nowrap' }}
+            {/* Outro slide — part of the horizontal track, scrolls in naturally */}
+            <div
+              style={{
+                width: '100vw',
+                height: '100%',
+                flexShrink: 0,
+                display: 'flex',
+                alignItems: 'center',
+                padding: `0 clamp(48px, 8vw, 120px)`,
+                background: '#000',
+                boxSizing: 'border-box',
+              }}
             >
-              See More{' '}
-              <span style={{
-                display: 'inline-block',
-                animation: 'bounceDown 1.4s ease-in-out infinite',
-              }}>↓</span>
-            </a>
-          </p>
+              <style>{`
+                @keyframes bounceDown {
+                  0%, 100% { transform: translateY(0); }
+                  50%       { transform: translateY(7px); }
+                }
+              `}</style>
+              <p style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontWeight: 700,
+                fontSize: 'clamp(1.8rem, 3.8vw, 4.2rem)',
+                color: '#ffffff',
+                lineHeight: 1.15,
+                letterSpacing: '-0.03em',
+                margin: 0,
+                maxWidth: '1100px',
+              }}>
+                These are not just projects, they are stories of our
+                clients, our work, and the impact we made.{' '}
+                <a
+                  href="#our-work"
+                  style={{ color: '#DB6436', textDecoration: 'none', whiteSpace: 'nowrap' }}
+                >
+                  See More{' '}
+                  <span style={{
+                    display: 'inline-block',
+                    animation: 'bounceDown 1.4s ease-in-out infinite',
+                  }}>↓</span>
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
 
       </div>

@@ -38,7 +38,7 @@ export default function ClosingSection() {
 
     // Initial state — each word offset to the right + invisible
     wordEls.forEach((el, i) => {
-      gsap.set(el, { opacity: 0, x: 60 + i * 8 })
+      gsap.set(el, { opacity: 0, x: 80 + i * 10 })
     })
 
     const tl = gsap.timeline({
@@ -46,20 +46,20 @@ export default function ClosingSection() {
         trigger: section,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 0.7,
+        scrub: 1.0,
       },
     })
 
     // Background dark → white
     tl.fromTo(bg,
       { backgroundColor: '#0a0806' },
-      { backgroundColor: '#ffffff', duration: 0.1, ease: 'power2.inOut' },
+      { backgroundColor: '#ffffff', duration: 0.3, ease: 'power1.inOut' },
       0
     )
 
     // Each word floats in from right → center, staggered
-    const wordDuration = 0.04
-    const totalWordTime = 0.55
+    const wordDuration = 0.06
+    const totalWordTime = 0.5
     const stagger = count > 1 ? (totalWordTime - wordDuration) / (count - 1) : 0
 
     wordEls.forEach((el, i) => {
@@ -67,7 +67,7 @@ export default function ClosingSection() {
         opacity: 1, x: 0,
         duration: wordDuration,
         ease: 'power3.out',
-      }, 0.08 + i * stagger)
+      }, 0.12 + i * stagger)
     })
 
     // Hold visible, then exit upward
@@ -76,7 +76,7 @@ export default function ClosingSection() {
       duration: 0.2,
       ease: 'power2.in',
       stagger: 0.008,
-    }, 0.72)
+    }, 0.78)
 
     return () => {
       tl.kill()
@@ -88,40 +88,14 @@ export default function ClosingSection() {
 
   const words = TEXT.split(' ')
 
-  // ── Mobile ──────────────────────────────────────────────────────────────────
-  if (isMobile) {
-    return (
-      <section style={{
-        background: '#fff',
-        padding: 'clamp(80px, 14vh, 120px) 24px',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        textAlign: 'center',
-      }}>
-        <p style={{
-          fontFamily: "'Inter', system-ui, sans-serif",
-          fontWeight: 600,
-          fontSize: 'clamp(1.5rem, 6vw, 2.2rem)',
-          letterSpacing: '-0.03em',
-          lineHeight: 1.3,
-          color: '#0a0806',
-          margin: 0,
-          maxWidth: '440px',
-        }}>
-          {words.map((w, i) => (
-            <span key={i} style={{ color: w === ACCENT_WORD ? '#E3735E' : undefined }}>
-              {w}{' '}
-            </span>
-          ))}
-        </p>
-      </section>
-    )
-  }
+  // ── Mobile: hidden entirely ─────────────────────────────────────────────────
+  if (isMobile) return null
 
   // ── Desktop ─────────────────────────────────────────────────────────────────
   return (
     <section
       ref={sectionRef}
-      style={{ position: 'relative', height: '280vh' }}
+      style={{ position: 'relative', height: '380vh' }}
     >
       <div
         ref={bgRef}

@@ -140,6 +140,7 @@ export default function ContactSection() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
+          paddingBottom: 'clamp(80px, 12vh, 120px)',
         }}
       >
         {/* Ambient glows */}

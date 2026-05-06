@@ -316,7 +316,7 @@ export default function ChatBot({ loaded }) {
           <div style={{
             position: 'fixed',
             bottom: isMobile ? '16px' : '24px',
-            right: isMobile ? '10px' : '24px',
+            right: isMobile ? '12px' : '24px',
             zIndex: 99998,
             display: 'flex',
             alignItems: 'center',
@@ -347,6 +347,7 @@ export default function ChatBot({ loaded }) {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '7px',
+                ...(isMobile ? { display: 'none' } : {}),
               }}
               whileHover={{ scale: 1.04, borderColor: 'rgba(219,100,54,0.65)' }}
               whileTap={{ scale: 0.96 }}
@@ -374,14 +375,20 @@ export default function ChatBot({ loaded }) {
               animate="visible"
               exit="exit"
               onClick={() => { setOpen(true); if (messages.length === 0) setMessages([{ from: 'bot', text: QUESTIONS[0].text }]) }}
-              style={st.fab}
+              style={{
+                ...st.fab,
+                ...(isMobile ? { width: '46px', height: '46px', fontSize: '1.08rem' } : {}),
+              }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.91 }}
               aria-label="Open chat"
             >
               💬
               <motion.span
-                style={st.badge}
+                style={{
+                  ...st.badge,
+                  ...(isMobile ? { width: '16px', height: '16px', fontSize: '0.55rem' } : {}),
+                }}
                 animate={{ scale: [1, 1.28, 1] }}
                 transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
               >1</motion.span>

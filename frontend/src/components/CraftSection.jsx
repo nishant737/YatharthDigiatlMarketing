@@ -16,55 +16,63 @@ const SERVICES = [
   {
     num: '01',
     title: 'Brand Strategy',
-    brief: 'Positioning, identity & story — the foundation everything else builds on.',
+    brief: 'We define how the world sees you — from positioning and messaging to visual identity. A strong brand strategy is the foundation every campaign builds on.',
     icon: (
       <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
-        <circle cx="15" cy="15" r="11" stroke="#E3735E" strokeWidth="1.5"/>
-        <circle cx="15" cy="15" r="6" stroke="#E3735E" strokeWidth="1.5"/>
-        <circle cx="15" cy="15" r="2" fill="#E3735E"/>
+        <path d="M15 3L5 10v8c0 5.25 4.25 10.14 10 11 5.75-.86 10-5.75 10-11v-8L15 3z" stroke="#E3735E" strokeWidth="1.5" strokeLinejoin="round"/>
+        <path d="M11 15l3 3 5-6" stroke="#E3735E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     ),
   },
   {
     num: '02',
     title: 'Digital Marketing',
-    brief: 'SEO, paid campaigns & smart targeting to put you where your audience looks.',
+    brief: 'From SEO and Google Ads to social campaigns and analytics — we build data-driven strategies that put your brand exactly where your audience is looking.',
     icon: (
       <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
-        <path d="M5 22L12 14l5 5 8-11" stroke="#E3735E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M20 10h5v5" stroke="#E3735E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M6 18V8l10-4 10 4v10" stroke="#E3735E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M16 14v10" stroke="#E3735E" strokeWidth="1.5" strokeLinecap="round"/>
+        <circle cx="16" cy="12" r="3" stroke="#E3735E" strokeWidth="1.5"/>
+        <path d="M10 22l3-4 3 2 4-5 4 3" stroke="#E3735E" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     ),
   },
   {
     num: '03',
     title: 'Content & Storytelling',
-    brief: 'Scroll-stopping copy & visuals that turn attention into lasting trust.',
+    brief: 'Compelling copy, scroll-stopping visuals, and authentic narratives that cut through the noise and turn casual attention into lasting trust and action.',
     icon: (
       <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
-        <path d="M7 23l2-6L21 5l4 4-12 12-6 2z" stroke="#E3735E" strokeWidth="1.5" strokeLinejoin="round"/>
-        <path d="M17 9l4 4" stroke="#E3735E" strokeWidth="1.5"/>
+        <path d="M6 6h12l6 6v14a2 2 0 01-2 2H8a2 2 0 01-2-2V6z" stroke="#E3735E" strokeWidth="1.5" strokeLinejoin="round"/>
+        <path d="M18 6v6h6" stroke="#E3735E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M10 16h10M10 20h6" stroke="#E3735E" strokeWidth="1.5" strokeLinecap="round"/>
       </svg>
     ),
   },
   {
     num: '04',
     title: 'Creative Direction',
-    brief: 'Cohesive visual systems so every touchpoint feels unmistakably you.',
+    brief: 'From campaign art direction to complete visual systems — we ensure every touchpoint carries a cohesive, memorable creative vision that feels unmistakably you.',
     icon: (
       <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
-        <path d="M15 3l3.5 8.5H28l-7 5.5 3 8.5-9-6-9 6 3-8.5-7-5.5h9.5z" stroke="#E3735E" strokeWidth="1.5" strokeLinejoin="round"/>
+        <circle cx="10" cy="12" r="3" stroke="#E3735E" strokeWidth="1.5"/>
+        <circle cx="20" cy="10" r="3" stroke="#E3735E" strokeWidth="1.5"/>
+        <circle cx="15" cy="22" r="3" stroke="#E3735E" strokeWidth="1.5"/>
+        <path d="M12.5 13.5l1.5 6M17.5 13l-1.5 6" stroke="#E3735E" strokeWidth="1.2" strokeLinecap="round"/>
       </svg>
     ),
   },
   {
     num: '05',
     title: 'Social Presence',
-    brief: 'Strategy-led content & community growth that turns followers into fans.',
+    brief: 'Strategy-led social content, community engagement, and platform growth — we turn passive followers into loyal advocates who champion your brand daily.',
     icon: (
       <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
-        <circle cx="15" cy="10" r="4" stroke="#E3735E" strokeWidth="1.5"/>
-        <path d="M7 26c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="#E3735E" strokeWidth="1.5" strokeLinecap="round"/>
+        <circle cx="9" cy="12" r="3" stroke="#E3735E" strokeWidth="1.5"/>
+        <circle cx="21" cy="12" r="3" stroke="#E3735E" strokeWidth="1.5"/>
+        <circle cx="15" cy="8" r="3" stroke="#E3735E" strokeWidth="1.5"/>
+        <path d="M12 9.5l-1.5 1M18 9.5l1.5 1" stroke="#E3735E" strokeWidth="1.2" strokeLinecap="round"/>
+        <path d="M9 15v3a6 6 0 0012 0v-3" stroke="#E3735E" strokeWidth="1.5" strokeLinecap="round"/>
       </svg>
     ),
   },
@@ -129,24 +137,24 @@ export default function CraftSection() {
       const totalScroll = Math.max(section.offsetHeight - window.innerHeight, 1)
       const raw = Math.max(0, Math.min(1, -section.getBoundingClientRect().top / totalScroll))
 
-      // ── Staggered card entrance: raw 0 → 0.4 (one by one) ──
-      const CARD_START = 0.0
-      const CARD_END   = 0.4
+      // ── Staggered card entrance: raw 0.05 → 0.55 (one by one, slower) ──
+      const CARD_START = 0.05
+      const CARD_END   = 0.55
       const CARD_WINDOW = (CARD_END - CARD_START) / COUNT
 
       cardRefs.current.forEach((card, i) => {
         if (!card) return
         const cStart = CARD_START + i * CARD_WINDOW
-        const t      = Math.max(0, Math.min(1, (raw - cStart) / (CARD_WINDOW * 1.3)))
-        const eased  = 1 - Math.pow(1 - t, 3)
+        const t      = Math.max(0, Math.min(1, (raw - cStart) / (CARD_WINDOW * 1.5)))
+        const eased  = 1 - Math.pow(1 - t, 2.5)
 
         card.style.opacity   = String(eased)
-        card.style.transform = `translateY(${(1 - eased) * 50}px)`
+        card.style.transform = `translateY(${(1 - eased) * 40}px)`
       })
 
-      // ── Group exit drift: raw 0.55 → 1.0 ──
+      // ── Group exit drift: raw 0.62 → 1.0 ──
       if (groupRef.current) {
-        const exitT = Math.max(0, Math.min(1, (raw - 0.55) / 0.45))
+        const exitT = Math.max(0, Math.min(1, (raw - 0.62) / 0.38))
         const exitE = 1 - Math.pow(1 - exitT, 2)
         groupRef.current.style.transform = `translateY(${-exitE * 140}px)`
       }
@@ -188,7 +196,7 @@ export default function CraftSection() {
     <section
       id="craft"
       ref={sectionRef}
-      style={{ position: 'relative', height: '220vh' }}
+      style={{ position: 'relative', height: '280vh' }}
     >
       {/* SEO-only */}
       <div style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap' }}>
@@ -216,7 +224,7 @@ export default function CraftSection() {
           ref={groupRef}
           style={{
             position: 'relative', zIndex: 1,
-            width: '100%', maxWidth: '1440px',
+            width: '100%', maxWidth: '1540px',
             padding: '0 clamp(28px, 4vw, 64px)',
             willChange: 'transform',
           }}
@@ -243,7 +251,7 @@ export default function CraftSection() {
           {/* ── All 5 cards in one horizontal line ── */}
           <div style={{
             display: 'flex',
-            gap: 'clamp(10px, 1.2vw, 18px)',
+            gap: 'clamp(12px, 1.5vw, 22px)',
             justifyContent: 'center',
           }}>
             {SERVICES.map((service, i) => (
@@ -252,15 +260,15 @@ export default function CraftSection() {
                 ref={el => { cardRefs.current[i] = el }}
                 style={{
                   flex: '1 1 0',
-                  maxWidth: '260px',
+                  maxWidth: '320px',
                   opacity: 0,
                   willChange: 'opacity, transform',
-                  padding: 'clamp(20px, 2vw, 28px)',
+                  padding: 'clamp(24px, 2.5vw, 36px)',
                   borderRadius: '16px',
                   border: '1px solid rgba(255,255,255,0.07)',
                   background: 'rgba(255,255,255,0.025)',
                   display: 'flex', flexDirection: 'column',
-                  alignItems: 'center', gap: '14px',
+                  alignItems: 'center', gap: '18px',
                   textAlign: 'center',
                   cursor: 'default',
                   transition: 'border-color 0.3s ease, background 0.3s ease',
@@ -276,7 +284,7 @@ export default function CraftSection() {
               >
                 {/* Icon */}
                 <div style={{
-                  width: 48, height: 48, borderRadius: '13px',
+                  width: 54, height: 54, borderRadius: '14px',
                   background: 'rgba(227,115,94,0.08)',
                   border: '1px solid rgba(227,115,94,0.18)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -286,7 +294,7 @@ export default function CraftSection() {
                 <h3 style={{
                   fontFamily: "'Inter', system-ui, sans-serif",
                   fontWeight: 500,
-                  fontSize: 'clamp(0.88rem, 1.1vw, 1.05rem)',
+                  fontSize: 'clamp(0.92rem, 1.15vw, 1.1rem)',
                   color: '#f5f0eb', margin: 0, lineHeight: 1.3,
                   letterSpacing: '-0.01em',
                 }}>{service.title}</h3>
@@ -295,9 +303,9 @@ export default function CraftSection() {
                 <p style={{
                   fontFamily: "'Inter', system-ui, sans-serif",
                   fontWeight: 300,
-                  fontSize: 'clamp(0.72rem, 0.82vw, 0.8rem)',
-                  color: 'rgba(245,240,235,0.4)',
-                  margin: 0, lineHeight: 1.6,
+                  fontSize: 'clamp(0.78rem, 0.88vw, 0.86rem)',
+                  color: 'rgba(245,240,235,0.45)',
+                  margin: 0, lineHeight: 1.65,
                 }}>{service.brief}</p>
               </div>
             ))}

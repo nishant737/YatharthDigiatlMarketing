@@ -48,6 +48,7 @@ function MusicNoteIcon() {
 export default function MusicPlayer({ loaded }) {
   const [playing, setPlaying] = useState(false)
   const [visible, setVisible] = useState(false)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 480)
   const audioRef = useRef(null)
 
   useEffect(() => {
@@ -65,6 +66,12 @@ export default function MusicPlayer({ loaded }) {
       audio.pause()
       audio.src = ''
     }
+  }, [])
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 480)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
   }, [])
 
   const toggle = () => {
@@ -92,8 +99,8 @@ export default function MusicPlayer({ loaded }) {
           transition={{ type: 'spring', stiffness: 360, damping: 24 }}
           style={{
             position: 'fixed',
-            bottom: '96px',
-            right: '24px',
+            bottom: isMobile ? '16px' : '96px',
+            right: isMobile ? '70px' : '24px',
             zIndex: 99997,
             display: 'flex',
             flexDirection: 'column',
@@ -103,7 +110,7 @@ export default function MusicPlayer({ loaded }) {
         >
           {/* Tooltip label */}
           <AnimatePresence>
-            {!playing && (
+            {!playing && !isMobile && (
               <motion.span
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -127,7 +134,11 @@ export default function MusicPlayer({ loaded }) {
           </AnimatePresence>
 
           {/* Button wrapper — ripple rings behind it */}
-          <div style={{ position: 'relative', width: '48px', height: '48px' }}>
+          <div style={{
+            position: 'relative',
+            width: isMobile ? '46px' : '48px',
+            height: isMobile ? '46px' : '48px',
+          }}>
 
             {/* Ripple rings — only when playing */}
             {playing && [0, 0.4, 0.8].map((delay, i) => (
@@ -152,8 +163,8 @@ export default function MusicPlayer({ loaded }) {
               aria-label={playing ? 'Pause music' : 'Play ambient music'}
               style={{
                 position: 'relative',
-                width: '48px',
-                height: '48px',
+                width: isMobile ? '46px' : '48px',
+                height: isMobile ? '46px' : '48px',
                 borderRadius: '50%',
                 border: playing
                   ? '1.5px solid rgba(219,100,54,0.6)'

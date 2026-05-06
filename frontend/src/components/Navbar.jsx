@@ -260,6 +260,7 @@ export default function Navbar() {
 
       {/* ── Main navbar ── */}
       <motion.nav
+        id="main-navbar"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
@@ -273,6 +274,7 @@ export default function Navbar() {
           padding: '0 clamp(28px, 4.5vw, 72px)',
           background: 'transparent',
           boxSizing: 'border-box',
+          willChange: 'opacity, transform',
         }}
       >
         {/* Left: logo image */}
@@ -382,6 +384,25 @@ export default function Navbar() {
           </button>
         )}
       </motion.nav>
+
+      {/* ── Subtle divider below navbar (hidden on hero) ── */}
+      <motion.div
+        id="navbar-divider"
+        initial={{ opacity: 0, scaleX: 0 }}
+        animate={{ opacity: isHome ? 0 : 1, scaleX: isHome ? 0 : 1 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          position: 'fixed',
+          top: 'clamp(64px, 9vh, 82px)',
+          left: 'clamp(28px, 4.5vw, 72px)',
+          right: 'clamp(28px, 4.5vw, 72px)',
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.08) 85%, transparent 100%)',
+          zIndex: 1001,
+          pointerEvents: 'none',
+          transformOrigin: 'center',
+        }}
+      />
 
       {/* ── Full-screen hamburger menu (mobile + desktop) ── */}
       <AnimatePresence>
