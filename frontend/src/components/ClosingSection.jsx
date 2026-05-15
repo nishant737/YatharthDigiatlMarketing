@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useTheme } from '../ThemeContext'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -24,6 +25,8 @@ export default function ClosingSection() {
   const bgRef      = useRef(null)
   const wordsRef   = useRef(null)
   const isMobile   = useIsMobile()
+  const { dark }   = useTheme()
+  const accentWord = dark ? '#E3735E' : '#0A5675'
 
   useEffect(() => {
     if (isMobile) return
@@ -51,8 +54,9 @@ export default function ClosingSection() {
     })
 
     // Background dark → white
+    const startColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-section').trim() || '#0a0806'
     tl.fromTo(bg,
-      { backgroundColor: '#0a0806' },
+      { backgroundColor: startColor },
       { backgroundColor: '#ffffff', duration: 0.3, ease: 'power1.inOut' },
       0
     )
@@ -103,7 +107,7 @@ export default function ClosingSection() {
           position: 'sticky', top: 0, height: '100vh',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           overflow: 'hidden',
-          backgroundColor: '#0a0806',
+          backgroundColor: 'var(--bg-section)',
         }}
       >
         <p
@@ -128,7 +132,7 @@ export default function ClosingSection() {
               style={{
                 display: 'inline-block',
                 marginRight: '0.3em',
-                color: w === ACCENT_WORD ? '#E3735E' : undefined,
+                color: w === ACCENT_WORD ? accentWord : undefined,
                 willChange: 'transform, opacity',
               }}
             >

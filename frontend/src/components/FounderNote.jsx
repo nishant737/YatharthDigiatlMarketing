@@ -2,7 +2,8 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import lpBg from '../asset/pagenote.jpg'
 import founderImg from '../asset/final1.png'
-const FOUNDER_CSS = `
+import { useTheme } from '../ThemeContext'
+const makeFounderCSS = (accent, accentHalf, accentFull) => `
 .founder-lp-bg {
   position: absolute;
   inset: 0;
@@ -22,7 +23,7 @@ const FOUNDER_CSS = `
 }
 
 .founder-section {
-  background: #060503;
+  background: var(--bg-primary);
   padding: clamp(72px, 16vh, 200px) clamp(24px, 8vw, 120px);
   position: relative;
   overflow: hidden;
@@ -71,7 +72,7 @@ const FOUNDER_CSS = `
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(0.95rem, 1.5vw, 1.1rem);
   font-weight: 400;
-  color: #f5f0eb;
+  color: var(--text-primary);
   margin: 0 0 4px 0;
   letter-spacing: -0.01em;
 }
@@ -97,8 +98,8 @@ const FOUNDER_CSS = `
   font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(245,240,235,0.4);
-  border: 1px solid rgba(245,240,235,0.12);
+  color: var(--text-faint);
+  border: 1px solid var(--border-medium);
   padding: 6px 14px;
   border-radius: 100px;
   margin-bottom: 24px;
@@ -108,7 +109,7 @@ const FOUNDER_CSS = `
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(1.9rem, 4vw, 3rem);
   font-weight: 300;
-  color: #f5f0eb;
+  color: var(--text-primary);
   letter-spacing: -0.03em;
   line-height: 1.12;
   margin: 0 0 24px 0;
@@ -123,7 +124,7 @@ const FOUNDER_CSS = `
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(0.85rem, 1.4vw, 1rem);
   font-weight: 300;
-  color: rgba(245,240,235,0.55);
+  color: var(--text-55);
   line-height: 1.8;
   margin: 0 0 32px 0;
   letter-spacing: -0.005em;
@@ -166,14 +167,14 @@ const FOUNDER_CSS = `
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 300;
-  color: rgba(245,240,235,0.38);
+  color: var(--text-38);
   letter-spacing: 0.01em;
 }
 
 .founder-divider {
   width: 1px;
   height: 28px;
-  background: rgba(245,240,235,0.1);
+  background: var(--border-subtle);
   align-self: center;
 }
 
@@ -191,20 +192,20 @@ const FOUNDER_CSS = `
   padding: 14px 32px;
   border-radius: 100px;
   background: none;
-  color: #f5f0eb;
+  color: var(--text-primary);
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(0.68rem, 1vw, 0.78rem);
   font-weight: 400;
   text-decoration: none;
-  border: 1px solid rgba(219,100,54,0.45);
+  border: 1px solid ${accentHalf};
   cursor: pointer;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   transition: background 0.35s ease, border-color 0.35s ease, transform 0.25s ease;
 }
 .founder-btn-primary:hover {
-  background: rgba(219,100,54,0.1);
-  border-color: #DB6436;
+  background: ${accentHalf};
+  border-color: ${accentFull};
   transform: translateY(-1px);
 }
 
@@ -215,20 +216,20 @@ const FOUNDER_CSS = `
   padding: 14px 28px;
   border-radius: 100px;
   background: transparent;
-  color: rgba(245,240,235,0.55);
+  color: var(--text-55);
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(0.68rem, 1vw, 0.78rem);
   font-weight: 400;
   text-decoration: none;
-  border: 1px solid rgba(245,240,235,0.12);
+  border: 1px solid var(--border-medium);
   cursor: pointer;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   transition: border-color 0.3s ease, color 0.3s ease, transform 0.25s ease;
 }
 .founder-btn-outline:hover {
-  border-color: rgba(245,240,235,0.3);
-  color: #f5f0eb;
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
   transform: translateY(-1px);
 }
 
@@ -295,6 +296,12 @@ const fadeUp = (delay = 0) => ({
 })
 
 export default function FounderNote() {
+  const { dark } = useTheme()
+  const accent     = dark ? '#DB6436' : '#0A5675'
+  const accentHalf = dark ? 'rgba(219,100,54,0.45)' : 'rgba(10,86,117,0.45)'
+  const accentFull = accent
+  const FOUNDER_CSS = makeFounderCSS(accent, accentHalf, accentFull)
+
   return (
     <>
       <style>{FOUNDER_CSS}</style>
@@ -306,7 +313,7 @@ export default function FounderNote() {
         {/* Dark warm overlay to blend with site color */}
         <div aria-hidden style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: 'linear-gradient(135deg, rgba(10,8,6,0.72) 0%, rgba(219,100,54,0.04) 100%)',
+          background: 'var(--founder-overlay)',
         }} />
 
         {/* Ambient orange glow */}
@@ -346,8 +353,10 @@ export default function FounderNote() {
                   objectPosition: 'top center',
                   display: 'block',
                   borderRadius: '16px',
-                  border: '1px solid rgba(219,100,54,0.35)',
-                  boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(219,100,54,0.1), 0 20px 60px rgba(219,100,54,0.15)',
+                  border: dark ? '1px solid rgba(219,100,54,0.35)' : '1px solid rgba(10,86,117,0.35)',
+                  boxShadow: dark
+                    ? '0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(219,100,54,0.1), 0 20px 60px rgba(219,100,54,0.15)'
+                    : '0 8px 32px rgba(0,0,0,0.15), 0 0 0 1px rgba(10,86,117,0.1), 0 20px 60px rgba(10,86,117,0.1)',
                 }} />
               </div>
             </div>

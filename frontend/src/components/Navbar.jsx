@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import logo from '../asset/l90.png'
+import logoDark from '../asset/amanlogo.png'
+import logoLight from '../asset/finalblue.png'
+import { useTheme } from '../ThemeContext'
 
 function smoothScrollTo(targetY, duration = 900) {
   const startY = window.scrollY
@@ -71,8 +73,9 @@ const MENU_LINKS = [
 ]
 
 // ─── Desktop section indicator dots (right side, shown when off home) ────────
-function DesktopIndicator({ active }) {
+function DesktopIndicator({ active, dark }) {
   const [hovered, setHovered] = useState(null)
+  const indicatorAccent = dark ? '#d49030' : '#0A5675'
 
   const handleClick = useCallback((id) => {
     if (id === 'home') { smoothScrollTo(0); return }
@@ -86,7 +89,7 @@ function DesktopIndicator({ active }) {
       right: 'clamp(10px, 1vw, 18px)',
       top: '50%',
       transform: 'translateY(-50%)',
-      zIndex: 1000,
+      zIndex: 99990,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-end',
@@ -111,7 +114,7 @@ function DesktopIndicator({ active }) {
                 fontSize: '0.5rem',
                 letterSpacing: '0.15em',
                 textTransform: 'uppercase',
-                color: isActive ? '#d49030' : 'rgba(240,230,208,0.6)',
+                color: isActive ? indicatorAccent : 'var(--section-label)',
                 whiteSpace: 'nowrap',
                 pointerEvents: 'none',
                 userSelect: 'none',
@@ -124,7 +127,7 @@ function DesktopIndicator({ active }) {
                 height: isActive ? 20 : 5,
                 width: isActive ? 2 : 5,
                 borderRadius: isActive ? '1px' : '50%',
-                background: isActive ? '#d49030' : isHovered ? 'rgba(212,144,48,0.6)' : 'rgba(240,230,208,0.3)',
+                background: isActive ? indicatorAccent : isHovered ? (dark ? 'rgba(212,144,48,0.6)' : 'rgba(10,86,117,0.6)') : 'var(--section-dot)',
               }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             />
@@ -140,6 +143,8 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState('home')
   const [menuOpen, setMenuOpen]   = useState(false)
   const isMobile = useIsMobile()
+  const { dark } = useTheme()
+  const logo = dark ? logoDark : logoLight
 
   useEffect(() => {
     const onScroll = () => {
@@ -180,7 +185,7 @@ export default function Navbar() {
           font-family: 'Inter', sans-serif;
           font-weight: 300;
           font-size: clamp(0.58rem, 0.72vw, 0.68rem);
-          color: rgba(255,255,255,0.52);
+          color: var(--nav-link);
           text-decoration: none;
           transition: color 0.2s ease;
           white-space: nowrap;
@@ -190,7 +195,7 @@ export default function Navbar() {
           padding: 0;
           line-height: 1.8;
         }
-        .nav-link:hover { color: #E2725B ; }
+        .nav-link:hover { color: ${dark ? '#E2725B' : '#0A5675'}; }
         .nav-col-link {
           position: relative;
         }
@@ -201,30 +206,31 @@ export default function Navbar() {
           left: 0;
           width: 0;
           height: 1px;
-          background: #fff;
+          background: var(--text-primary);
           transition: width 0.3s ease;
         }
-        .nav-col-link:hover { color: #fff; }
+        .nav-col-link:hover { color: var(--text-primary); }
         .nav-col-link:hover::after { width: 100%; }
         .nav-letstalk:hover {
-          background: #E2725B;
+          background: ${dark ? '#E2725B' : '#0A5675'};
           color: #fff;
-          box-shadow: 0 0 24px rgba(226, 114, 91, 0.35);
+          box-shadow: 0 0 24px ${dark ? 'rgba(226,114,91,0.35)' : 'rgba(10,86,117,0.35)'};
         }
         @media (max-width: 768px) {
-          .mobile-logo { height: clamp(64px, 14vw, 90px) !important; }
+          .mobile-logo { height: clamp(28px, 8vw, 44px) !important; }
         }
         .nav-letstalk {
           display: inline-flex; align-items: center; gap: 6px;
           font-family: 'Inter', sans-serif; font-weight: 500;
           font-size: clamp(0.62rem, 0.78vw, 0.72rem);
           letter-spacing: 0.02em;
-          color: #000; background: #fff;
+          color: ${dark ? '#000' : '#0A5675'}; background: ${dark ? '#fff' : '#e8f4f8'};
+          border: ${dark ? 'none' : '1px solid rgba(10,86,117,0.3)'};
           padding: 8px 20px; border-radius: 100px;
           text-decoration: none; white-space: nowrap;
-          border: none; cursor: pointer;
+          cursor: pointer;
           box-shadow: 0 0 0 0 rgba(255,255,255,0);
-          transition: box-shadow 0.3s ease;
+          transition: box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
         }
         .nav-hamburger {
           background: none; border: none; cursor: pointer;
@@ -233,7 +239,7 @@ export default function Navbar() {
         }
         .nav-hamburger span {
           display: block; width: 22px; height: 1.5px;
-          background: #fff; border-radius: 2px;
+          background: var(--hamburger-color); border-radius: 2px;
           transition: transform 0.3s ease, opacity 0.3s ease;
         }
         .menu-nav-link {
@@ -247,7 +253,7 @@ export default function Navbar() {
           cursor: pointer;
           background: none;
           border: none;
-          border-bottom: 1px solid rgba(255,255,255,0.15);
+          border-bottom: 1px solid ${dark ? 'rgba(255,255,255,0.25)' : 'rgba(10,86,117,0.15)'};
           text-align: left;
           padding: clamp(10px, 1.4vh, 16px) 0;
           transition: color 0.18s ease;
@@ -255,7 +261,7 @@ export default function Navbar() {
           width: 100%;
         }
         .menu-nav-link:last-child { border-bottom: none; }
-        .menu-nav-link:hover { color: #fff !important; }
+        .menu-nav-link:hover { color: ${dark ? '#fff' : '#0A5675'} !important; }
       `}</style>
 
       {/* ── Main navbar ── */}
@@ -266,7 +272,7 @@ export default function Navbar() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
         style={{
           position: 'fixed', top: 0, left: 0, right: 0,
-          zIndex: 1001,
+          zIndex: 99990,
           height: 'clamp(64px, 9vh, 82px)',
           display: 'flex',
           alignItems: 'center',
@@ -286,6 +292,7 @@ export default function Navbar() {
             display: 'flex',
             alignItems: 'center',
             flexShrink: 0,
+            position: 'relative',
           }}
         >
           <img
@@ -293,7 +300,7 @@ export default function Navbar() {
             src={logo}
             alt="Yatharth"
             style={{
-              height: 'clamp(56px, 8vw, 110px)', //logo size changes make it here 
+              height: 'clamp(36px, 4.5vw, 62px)',
               width: 'auto',
               objectFit: 'contain',
               display: 'block',
@@ -303,12 +310,12 @@ export default function Navbar() {
           />
         </a>
 
-        {/* Center: 4-column nav grid (desktop) - absolute centered, hidden when not on home */}
+        {/* Center: 4-column nav grid (desktop, home only) */}
         {!isMobile && isHome && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: isHome ? 1 : 0 }}
-            transition={{ duration: 0.3 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
             style={{
               position: 'absolute',
               left: '50%',
@@ -335,7 +342,7 @@ export default function Navbar() {
                       fontFamily: "'Inter', sans-serif",
                       fontWeight: 400,
                       fontSize: 'clamp(0.75rem, 0.95vw, 0.88rem)',
-                      color: 'rgba(255,255,255,0.7)',
+                      color: 'var(--nav-col-link)',
                       textDecoration: 'none',
                       cursor: 'pointer',
                       transition: 'color 0.2s ease',
@@ -350,39 +357,40 @@ export default function Navbar() {
           </motion.div>
         )}
 
-        {/* Right: Let's Talk (desktop, only on home) or Hamburger (when not on home) */}
-        {!isMobile && isHome && (
-          <motion.button
-            className="nav-letstalk"
-            onClick={() => scrollTo('contact')}
-            initial={{ opacity: 0, x: 22 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
-            whileHover={{
-              scale: 1.07,
-              boxShadow: '0 0 22px rgba(255,255,255,0.28), 0 0 8px rgba(255,255,255,0.14)',
-            }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Let&rsquo;s Talk
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <path d="M1.5 1.5h7v7M1.5 8.5l7-7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </motion.button>
-        )}
+        {/* Right side: always visible — Let's Talk on desktop home, hamburger everywhere else */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
+          {!isMobile && isHome && (
+            <motion.button
+              className="nav-letstalk"
+              onClick={() => scrollTo('contact')}
+              initial={{ opacity: 0, x: 22 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
+              whileHover={{
+                scale: 1.07,
+                boxShadow: '0 0 22px rgba(255,255,255,0.28), 0 0 8px rgba(255,255,255,0.14)',
+              }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Let&rsquo;s Talk
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <path d="M1.5 1.5h7v7M1.5 8.5l7-7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </motion.button>
+          )}
 
-        {/* Hamburger menu (mobile OR when not on home) */}
-        {(isMobile || (!isMobile && !isHome)) && (
+          {/* Hamburger — always rendered on mobile; on desktop always rendered too */}
           <button
             className="nav-hamburger"
             onClick={() => setMenuOpen(v => !v)}
-            aria-label="Open menu"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            style={{ display: 'flex' }}
           >
             <span style={{ transform: menuOpen ? 'translateY(6.5px) rotate(45deg)' : 'none' }} />
             <span style={{ opacity: menuOpen ? 0 : 1 }} />
             <span style={{ transform: menuOpen ? 'translateY(-6.5px) rotate(-45deg)' : 'none' }} />
           </button>
-        )}
+        </div>
       </motion.nav>
 
       {/* ── Subtle divider below navbar (hidden on hero) ── */}
@@ -397,8 +405,8 @@ export default function Navbar() {
           left: 'clamp(28px, 4.5vw, 72px)',
           right: 'clamp(28px, 4.5vw, 72px)',
           height: '1px',
-          background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.08) 85%, transparent 100%)',
-          zIndex: 1001,
+          background: 'linear-gradient(90deg, transparent 0%, var(--divider-nav) 15%, var(--divider-nav) 85%, transparent 100%)',
+          zIndex: 99990,
           pointerEvents: 'none',
           transformOrigin: 'center',
         }}
@@ -416,8 +424,8 @@ export default function Navbar() {
             style={{
               position: 'fixed',
               inset: 0,
-              zIndex: 1000,
-              background: '#E35336',
+              zIndex: 99989,
+              background: dark ? '#E35336' : '#ffffff',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
@@ -439,7 +447,9 @@ export default function Navbar() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1], delay: 0.06 + i * 0.055 }}
                     style={{
-                      color: isActive ? '#ffffff' : 'rgba(255,255,255,0.32)',
+                      color: dark
+                        ? (isActive ? '#ffffff' : 'rgba(255,255,255,0.32)')
+                        : (isActive ? '#0A5675' : 'rgba(10,86,117,0.32)'),
                     }}
                   >
                     {link.label}
@@ -459,7 +469,7 @@ export default function Navbar() {
                 alignItems: 'flex-end',
                 flexWrap: 'wrap',
                 gap: '16px',
-                borderTop: '1px solid rgba(255,255,255,0.22)',
+                borderTop: dark ? '1px solid rgba(255,255,255,0.22)' : '1px solid rgba(10,86,117,0.15)',
                 paddingTop: 'clamp(16px, 2.5vh, 28px)',
               }}
             >
@@ -467,7 +477,7 @@ export default function Navbar() {
                 fontFamily: "'Inter', sans-serif",
                 fontSize: 'clamp(0.65rem, 0.9vw, 0.82rem)',
                 fontWeight: 400,
-                color: 'rgba(255,255,255,0.55)',
+                color: dark ? 'rgba(255,255,255,0.55)' : 'rgba(10,86,117,0.55)',
                 letterSpacing: '0.02em',
               }}>Yatharth Digital Marketing.</span>
 
@@ -485,13 +495,13 @@ export default function Navbar() {
                       fontFamily: "'Inter', sans-serif",
                       fontSize: 'clamp(0.65rem, 0.9vw, 0.82rem)',
                       fontWeight: 400,
-                      color: 'rgba(255,255,255,0.55)',
+                      color: dark ? 'rgba(255,255,255,0.55)' : 'rgba(10,86,117,0.55)',
                       textDecoration: 'none',
                       letterSpacing: '0.02em',
                       transition: 'color 0.2s',
                     }}
-                    onMouseEnter={e => e.currentTarget.style.color = '#fff'}
-                    onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.55)'}
+                    onMouseEnter={e => e.currentTarget.style.color = dark ? '#fff' : '#0A5675'}
+                    onMouseLeave={e => e.currentTarget.style.color = dark ? 'rgba(255,255,255,0.55)' : 'rgba(10,86,117,0.55)'}
                   >
                     {s.label}
                   </a>

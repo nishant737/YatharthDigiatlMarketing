@@ -1,7 +1,9 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import gsap from 'gsap'
-import logo from '../asset/l90.png'
+import logoDark from '../asset/amanlogo.png'
+import logoLight from '../asset/finalblue.png'
+import { useTheme } from '../ThemeContext'
 
 // Particle Logo Component with dispersion effect
 function ParticleLogo({ logo, isHovering, mousePos, onMouseMove, onMouseEnter, onMouseLeave }) {
@@ -82,8 +84,8 @@ function ParticleLogo({ logo, isHovering, mousePos, onMouseMove, onMouseEnter, o
           pointerEvents: 'none',
           display: 'block',
           opacity: isHovering ? 0.3 : 1,
-          transition: 'opacity 0.4s ease',
           filter: isHovering ? 'blur(2px)' : 'none',
+          transition: 'opacity 0.4s ease, filter 0.4s ease',
         }}
       />
       
@@ -143,6 +145,8 @@ export default function HeroSection() {
   const [exitProgress, setExitProgress] = useState(0)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [isHovering, setIsHovering] = useState(false)
+  const { dark } = useTheme()
+  const logo = dark ? logoDark : logoLight
 
   // GSAP-driven parallax and logo entrance refs
   const gridRef  = useRef(null)   // inner grid container — GSAP applies 3D tilt here
@@ -320,7 +324,7 @@ export default function HeroSection() {
           animation: emberRise linear infinite;
           will-change: transform, opacity;
         }
-        /* ── Glow layers ── */
+        /* ── Glow layers — dark (orange) ── */
         .hero-glow-outer {
           position: absolute; bottom: -120px; left: 50%;
           width: 140%; height: 680px;
@@ -365,21 +369,66 @@ export default function HeroSection() {
           will-change: transform, opacity;
           animation: tcCoreFlicker 2.0s cubic-bezier(0.4,0,0.6,1) infinite;
         }
+        /* ── Glow layers — light (blue) ── */
+        .hero-glow-outer-blue {
+          position: absolute; bottom: -120px; left: 50%;
+          width: 140%; height: 680px;
+          background: radial-gradient(ellipse 75% 56% at 50% 92%,
+            rgba(59, 130, 246, 0.50) 0%,
+            rgba(37,  99, 235, 0.28) 32%,
+            rgba(29,  78, 216, 0.10) 58%,
+            transparent 82%
+          );
+          filter: blur(28px);
+          pointer-events: none;
+          will-change: transform, opacity;
+          animation: tcPulseOuter 4.8s cubic-bezier(0.45,0,0.55,1) infinite,
+                     tcSway       12s  cubic-bezier(0.37,0,0.63,1) infinite;
+        }
+        .hero-glow-mid-blue {
+          position: absolute; bottom: -60px; left: 50%;
+          width: 100%; height: 480px;
+          background: radial-gradient(ellipse 70% 60% at 50% 94%,
+            rgba(59, 130, 246, 0.65) 0%,
+            rgba(37,  99, 235, 0.35) 28%,
+            rgba(29,  78, 216, 0.12) 56%,
+            transparent 70%
+          );
+          filter: blur(10px);
+          pointer-events: none;
+          will-change: transform, opacity;
+          animation: tcPulseMid  3.3s cubic-bezier(0.4,0,0.6,1) infinite,
+                     tcSwaySlow  9.8s ease-in-out              infinite;
+        }
+        .hero-glow-core-blue {
+          position: absolute; bottom: -24px; left: 50%;
+          width: 62%; height: 300px;
+          background: radial-gradient(ellipse 64% 58% at 50% 98%,
+            rgba(96, 165, 250, 0.85) 0%,
+            rgba(59, 130, 246, 0.60) 25%,
+            rgba(37,  99, 235, 0.25) 50%,
+            transparent              68%
+          );
+          filter: blur(4px);
+          pointer-events: none;
+          will-change: transform, opacity;
+          animation: tcCoreFlicker 2.0s cubic-bezier(0.4,0,0.6,1) infinite;
+        }
         /* ── Responsive ── */
         @media (max-width: 768px) {
-          .hero-glow-outer { 
-            width: 160%; 
+          .hero-glow-outer, .hero-glow-outer-blue {
+            width: 160%;
             height: 520px;
             bottom: -60px;
             opacity: 0.9;
           }
-          .hero-glow-mid {
+          .hero-glow-mid, .hero-glow-mid-blue {
             width: 120%;
             height: 380px;
             bottom: -30px;
             opacity: 0.95;
           }
-          .hero-glow-core {
+          .hero-glow-core, .hero-glow-core-blue {
             width: 80%;
             height: 240px;
             opacity: 1;
@@ -398,7 +447,7 @@ export default function HeroSection() {
           position: 'relative',
           width: '100%', minHeight: '100vh',
           overflow: 'hidden',
-          background: '#000',
+          background: 'var(--bg-section)',
         }}
       >
         {/* Perspective wrapper — 3D context for children */}
@@ -427,9 +476,14 @@ export default function HeroSection() {
               transformOrigin: '50% 60%',
               display: 'flex',
               animation: 'gridPulse 5s ease-in-out infinite',
+              transition: 'opacity 0.7s ease',
             }}>
               {Array.from({ length: 26 }).map((_, i) => (
-                <div key={i} style={{ flex: 1, borderRight: '1px solid rgba(255,140,80,0.07)' }} />
+                <div key={i} style={{
+                  flex: 1,
+                  borderRight: `1px solid ${dark ? 'rgba(255,140,80,0.07)' : 'rgba(59,130,246,0.07)'}`,
+                  transition: 'border-color 0.7s ease',
+                }} />
               ))}
             </div>
             {/* Horizontal lines on floor plane */}
@@ -446,7 +500,11 @@ export default function HeroSection() {
               animationDelay: '0.5s',
             }}>
               {Array.from({ length: 12 }).map((_, i) => (
-                <div key={i} style={{ width: '100%', height: '1px', background: 'rgba(255,140,80,0.06)' }} />
+                <div key={i} style={{
+                  width: '100%', height: '1px',
+                  background: dark ? 'rgba(255,140,80,0.06)' : 'rgba(59,130,246,0.06)',
+                  transition: 'background 0.7s ease',
+                }} />
               ))}
             </div>
             {/* Light sweep */}
@@ -454,7 +512,7 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* ── Glow: staged fade-in, parallax layer (z:1) ── */}
+        {/* ── Glow: dual-layer crossfade for smooth theme transition ── */}
         <motion.div
           ref={glowRef}
           initial={{ opacity: 0 }}
@@ -462,17 +520,26 @@ export default function HeroSection() {
           transition={{ duration: 1.8, ease: 'easeOut', delay: 0.6 }}
           style={{ position: 'absolute', inset: '-5%', zIndex: 1, pointerEvents: 'none', willChange: 'transform' }}
         >
-          <div className="hero-glow-outer" />
-          <div className="hero-glow-mid"   />
-          <div className="hero-glow-core"  />
+          {/* Orange layer — visible in dark mode */}
+          <div style={{ position: 'absolute', inset: 0, opacity: dark ? 1 : 0, transition: 'opacity 0.7s ease' }}>
+            <div className="hero-glow-outer" />
+            <div className="hero-glow-mid"   />
+            <div className="hero-glow-core"  />
+          </div>
+          {/* Blue layer — visible in light mode */}
+          <div style={{ position: 'absolute', inset: 0, opacity: dark ? 0 : 1, transition: 'opacity 0.7s ease' }}>
+            <div className="hero-glow-outer-blue" />
+            <div className="hero-glow-mid-blue"   />
+            <div className="hero-glow-core-blue"  />
+          </div>
         </motion.div>
 
         {/* ── Ember particles: appear last (z:2) ── */}
         <motion.div
           aria-hidden
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.5, ease: 'easeOut', delay: 1.6 }}
+          animate={{ opacity: dark ? 1 : 0 }}
+          transition={{ duration: dark ? 1.5 : 0.7, ease: 'easeOut', delay: dark ? 1.6 : 0 }}
           style={{
             position: 'absolute', bottom: 0, left: 0, right: 0,
             height: '55vh', zIndex: 2, pointerEvents: 'none', overflow: 'hidden',
@@ -543,7 +610,7 @@ export default function HeroSection() {
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 300,
                 fontSize: 'clamp(1.3rem, 1.8vw, 1.6rem)',
-                color: 'rgba(255,255,255,0.9)',
+                color: 'var(--text-dim)',
                 lineHeight: 1.3,
                 margin: 0,
               }}>
@@ -562,7 +629,7 @@ export default function HeroSection() {
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 300,
                 fontSize: 'clamp(0.82rem, 1.05vw, 0.95rem)',
-                color: 'rgba(255,255,255,0.65)',
+                color: 'var(--text-secondary)',
                 lineHeight: 1.65,
                 margin: '0 0 8px',
                 maxWidth: '280px',
@@ -575,7 +642,7 @@ export default function HeroSection() {
                   fontFamily: "'Inter', sans-serif",
                   fontWeight: 400,
                   fontSize: 'clamp(0.78rem, 0.95vw, 0.88rem)',
-                  color: 'rgba(255,255,255,0.85)',
+                  color: 'var(--text-dim)',
                   textDecoration: 'underline',
                   textUnderlineOffset: '4px',
                   display: 'inline-flex',

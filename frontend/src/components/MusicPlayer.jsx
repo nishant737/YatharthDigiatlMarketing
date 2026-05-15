@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import musicSrc from '../asset/flawed-mangoes---swimming-made-with-Voicemod.mp3'
+import { useTheme } from '../ThemeContext'
 
 const CSS = `
   @keyframes musicRipple {
@@ -15,7 +16,7 @@ const CSS = `
   .music-bar-3 { animation: barBounce3 0.7s ease-in-out infinite 0.3s; }
 `
 
-function PlayingBars() {
+function PlayingBars({ color }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '3px', height: '16px' }}>
       {['music-bar-1', 'music-bar-2', 'music-bar-3'].map(cls => (
@@ -25,7 +26,7 @@ function PlayingBars() {
           style={{
             width: '3px',
             borderRadius: '2px',
-            background: '#DB6436',
+            background: color,
             alignSelf: 'center',
           }}
         />
@@ -45,11 +46,38 @@ function MusicNoteIcon() {
   )
 }
 
+function SunIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/>
+      <line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/>
+      <line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+  )
+}
+
+function MoonIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  )
+}
+
 export default function MusicPlayer({ loaded }) {
   const [playing, setPlaying] = useState(false)
   const [visible, setVisible] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 480)
   const audioRef = useRef(null)
+  const { dark, toggle: toggleTheme } = useTheme()
 
   useEffect(() => {
     if (!loaded) return
@@ -88,6 +116,29 @@ export default function MusicPlayer({ loaded }) {
 
   if (!visible) return null
 
+  const accent       = dark ? '#DB6436'                  : '#0A5675'
+  const accentBorder = dark ? 'rgba(219,100,54,0.6)'     : 'rgba(10,86,117,0.6)'
+  const accentBg     = dark ? 'rgba(219,100,54,0.12)'    : 'rgba(10,86,117,0.12)'
+  const accentGlow   = dark ? 'rgba(219,100,54,0.3)'     : 'rgba(10,86,117,0.3)'
+  const accentRipple = dark ? 'rgba(219,100,54,0.5)'     : 'rgba(10,86,117,0.5)'
+  const btnBorder    = dark ? 'rgba(245,240,235,0.12)'   : 'rgba(10,86,117,0.35)'
+  const btnBg        = dark ? 'rgba(15,10,6,0.82)'       : 'rgba(240,235,228,0.92)'
+  const btnColor     = dark ? 'rgba(245,240,235,0.6)'    : 'rgba(10,86,117,0.7)'
+  const btnSize = isMobile ? '46px' : '48px'
+  const sharedBtnStyle = {
+    width: btnSize,
+    height: btnSize,
+    borderRadius: '50%',
+    backdropFilter: 'blur(12px)',
+    WebkitBackdropFilter: 'blur(12px)',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    outline: 'none',
+    transition: 'border-color 0.3s, background 0.3s, box-shadow 0.3s, color 0.3s',
+  }
+
   return (
     <>
       <style>{CSS}</style>
@@ -99,13 +150,13 @@ export default function MusicPlayer({ loaded }) {
           transition={{ type: 'spring', stiffness: 360, damping: 24 }}
           style={{
             position: 'fixed',
-            bottom: isMobile ? '16px' : '96px',
-            right: isMobile ? '70px' : '24px',
+            bottom: isMobile ? '74px' : '96px',
+            right: isMobile ? '12px' : '24px',
             zIndex: 99997,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '6px',
+            gap: isMobile ? '6px' : '8px',
           }}
         >
           {/* Tooltip label */}
@@ -120,7 +171,7 @@ export default function MusicPlayer({ loaded }) {
                   fontFamily: "'Inter', system-ui, sans-serif",
                   fontSize: '0.64rem',
                   fontWeight: 500,
-                  color: 'rgba(245,240,235,0.45)',
+                  color: 'var(--text-muted)',
                   letterSpacing: '0.04em',
                   textTransform: 'uppercase',
                   pointerEvents: 'none',
@@ -133,11 +184,28 @@ export default function MusicPlayer({ loaded }) {
             )}
           </AnimatePresence>
 
-          {/* Button wrapper — ripple rings behind it */}
+          {/* Theme toggle button */}
+          <motion.button
+            onClick={toggleTheme}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+            style={{
+              ...sharedBtnStyle,
+              border: `1.5px solid ${btnBorder}`,
+              background: btnBg,
+              color: btnColor,
+              boxShadow: '0 4px 16px rgba(0,0,0,0.35)',
+            }}
+          >
+            {dark ? <SunIcon /> : <MoonIcon />}
+          </motion.button>
+
+          {/* Music button wrapper — ripple rings behind it */}
           <div style={{
             position: 'relative',
-            width: isMobile ? '46px' : '48px',
-            height: isMobile ? '46px' : '48px',
+            width: btnSize,
+            height: btnSize,
           }}>
 
             {/* Ripple rings — only when playing */}
@@ -148,45 +216,34 @@ export default function MusicPlayer({ loaded }) {
                   position: 'absolute',
                   inset: 0,
                   borderRadius: '50%',
-                  border: '1.5px solid rgba(219,100,54,0.5)',
+                  border: `1.5px solid ${accentRipple}`,
                   animation: `musicRipple 1.6s ease-out ${delay}s infinite`,
                   pointerEvents: 'none',
                 }}
               />
             ))}
 
-            {/* Main button */}
+            {/* Main music button */}
             <motion.button
               onClick={toggle}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label={playing ? 'Pause music' : 'Play ambient music'}
               style={{
+                ...sharedBtnStyle,
                 position: 'relative',
-                width: isMobile ? '46px' : '48px',
-                height: isMobile ? '46px' : '48px',
-                borderRadius: '50%',
                 border: playing
-                  ? '1.5px solid rgba(219,100,54,0.6)'
-                  : '1.5px solid rgba(245,240,235,0.12)',
-                background: playing
-                  ? 'rgba(219,100,54,0.12)'
-                  : 'rgba(15,10,6,0.82)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: playing ? '#DB6436' : 'rgba(245,240,235,0.6)',
+                  ? `1.5px solid ${accentBorder}`
+                  : `1.5px solid ${btnBorder}`,
+                background: playing ? accentBg : btnBg,
+                color: playing ? accent : btnColor,
                 boxShadow: playing
-                  ? '0 0 18px rgba(219,100,54,0.3), 0 4px 16px rgba(0,0,0,0.5)'
-                  : '0 4px 16px rgba(0,0,0,0.45)',
-                transition: 'border-color 0.3s, background 0.3s, box-shadow 0.3s, color 0.3s',
+                  ? `0 0 18px ${accentGlow}, 0 4px 16px rgba(0,0,0,0.5)`
+                  : '0 4px 16px rgba(0,0,0,0.35)',
                 zIndex: 1,
               }}
             >
-              {playing ? <PlayingBars /> : <MusicNoteIcon />}
+              {playing ? <PlayingBars color={accent} /> : <MusicNoteIcon />}
             </motion.button>
           </div>
         </motion.div>

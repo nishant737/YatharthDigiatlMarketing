@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTheme } from '../ThemeContext'
 
 const FAQ_CSS = `
 .faq-section {
-  background: #060503;
+  background: var(--bg-primary);
   padding: clamp(80px, 14vh, 160px) clamp(24px, 8vw, 120px);
   position: relative;
   overflow: hidden;
@@ -26,8 +27,8 @@ const FAQ_CSS = `
   font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(245,240,235,0.4);
-  border: 1px solid rgba(245,240,235,0.12);
+  color: var(--text-faint);
+  border: 1px solid var(--border-medium);
   padding: 6px 14px;
   border-radius: 100px;
   margin-bottom: 24px;
@@ -37,7 +38,7 @@ const FAQ_CSS = `
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(2.6rem, 6vw, 5rem);
   font-weight: 300;
-  color: #f5f0eb;
+  color: var(--text-primary);
   letter-spacing: -0.04em;
   line-height: 1.0;
   margin: 0 0 16px 0;
@@ -47,7 +48,7 @@ const FAQ_CSS = `
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(0.85rem, 1.4vw, 1rem);
   font-weight: 300;
-  color: rgba(245,240,235,0.42);
+  color: var(--text-42);
   line-height: 1.7;
   margin: 0 0 clamp(48px, 7vh, 80px) 0;
 }
@@ -56,11 +57,11 @@ const FAQ_CSS = `
   display: flex;
   flex-direction: column;
   gap: 0;
-  border-top: 1px solid rgba(245,240,235,0.08);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .faq-item {
-  border-bottom: 1px solid rgba(245,240,235,0.08);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .faq-question-btn {
@@ -86,7 +87,7 @@ const FAQ_CSS = `
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(0.95rem, 1.6vw, 1.15rem);
   font-weight: 300;
-  color: #f5f0eb;
+  color: var(--text-primary);
   line-height: 1.4;
   letter-spacing: -0.01em;
   transition: color 0.3s ease;
@@ -101,7 +102,7 @@ const FAQ_CSS = `
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  border: 1px solid rgba(245,240,235,0.15);
+  border: 1px solid var(--border-15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -117,7 +118,7 @@ const FAQ_CSS = `
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(0.88rem, 1.2vw, 1rem);
   font-weight: 300;
-  color: rgba(245,240,235,0.55);
+  color: var(--text-55);
   line-height: 1.85;
   padding: 0 48px clamp(18px, 2.5vh, 28px) 0;
   margin: 0;
@@ -183,7 +184,9 @@ const fadeUp = (delay = 0) => ({
 })
 
 export default function FAQSection() {
+  const { dark } = useTheme()
   const [openIdx, setOpenIdx] = useState(null)
+  const accentColor = dark ? '#DB6436' : '#0A5675'
 
   const toggle = (i) => setOpenIdx(prev => prev === i ? null : i)
 
@@ -245,8 +248,8 @@ export default function FAQSection() {
                       animate={{ rotate: isOpen ? 45 : 0 }}
                       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      <line x1="6" y1="1" x2="6" y2="11" stroke={isOpen ? '#DB6436' : 'rgba(245,240,235,0.5)'} strokeWidth="1.2" strokeLinecap="round" />
-                      <line x1="1" y1="6" x2="11" y2="6" stroke={isOpen ? '#DB6436' : 'rgba(245,240,235,0.5)'} strokeWidth="1.2" strokeLinecap="round" />
+                      <line x1="6" y1="1" x2="6" y2="11" stroke={isOpen ? accentColor : 'var(--text-secondary)'} strokeWidth="1.2" strokeLinecap="round" />
+                      <line x1="1" y1="6" x2="11" y2="6" stroke={isOpen ? accentColor : 'var(--text-secondary)'} strokeWidth="1.2" strokeLinecap="round" />
                     </motion.svg>
                   </span>
                 </button>

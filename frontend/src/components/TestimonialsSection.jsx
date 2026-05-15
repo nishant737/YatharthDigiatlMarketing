@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
+import { useTheme } from '../ThemeContext'
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion'
 import imgPrakash from '../asset/Dr. K. Prakash Shetty.png'
 import imgBrijesh from '../asset/Captain Brijesh Chowta.png'
@@ -34,11 +35,11 @@ const TESTIMONIALS = [
 
 const N = TESTIMONIALS.length
 
-function StarRow() {
+function StarRow({ accent }) {
   return (
     <div style={{ display: 'flex', gap: '3px' }}>
       {[...Array(5)].map((_, i) => (
-        <svg key={i} width="14" height="14" viewBox="0 0 16 16" fill="#DB6436">
+        <svg key={i} width="14" height="14" viewBox="0 0 16 16" fill={accent}>
           <path d="M8 1l1.8 3.6L14 5.3l-3 2.9.7 4.1L8 10.4l-3.7 1.9.7-4.1L2 5.3l4.2-.7z" />
         </svg>
       ))}
@@ -46,18 +47,18 @@ function StarRow() {
   )
 }
 
-function QuoteIcon({ size = 28, opacity = 0.9 }) {
+function QuoteIcon({ size = 28, opacity = 0.9, accent }) {
   return (
     <svg width={size} height={size * 0.75} viewBox="0 0 32 24" fill="none" style={{ opacity }}>
       <path
         d="M0 24V14.4C0 10.56 1.04 7.28 3.12 4.56 5.2 1.84 8.24 0.16 12.24 0L13.44 2.16C11.04 2.64 9.12 3.76 7.68 5.52 6.32 7.28 5.6 9.28 5.52 11.52H10.56V24H0ZM18.56 24V14.4C18.56 10.56 19.6 7.28 21.68 4.56 23.76 1.84 26.8 0.16 30.8 0L32 2.16C29.6 2.64 27.68 3.76 26.24 5.52 24.88 7.28 24.16 9.28 24.08 11.52H29.12V24H18.56Z"
-        fill="#DB6436"
+        fill={accent}
       />
     </svg>
   )
 }
 
-function CardContent({ t, isActive, direction }) {
+function CardContent({ t, isActive, direction, accent }) {
   return (
     <AnimatePresence mode="wait" custom={direction}>
       <motion.div
@@ -70,8 +71,8 @@ function CardContent({ t, isActive, direction }) {
         style={{ display: 'flex', flexDirection: 'column', gap: isActive ? '20px' : '14px', height: '100%' }}
       >
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-          <QuoteIcon size={isActive ? 28 : 20} opacity={isActive ? 0.9 : 0.45} />
-          {isActive && <StarRow />}
+          <QuoteIcon size={isActive ? 28 : 20} opacity={isActive ? 0.9 : 0.45} accent={accent} />
+          {isActive && <StarRow accent={accent} />}
         </div>
 
         <p style={{
@@ -79,7 +80,7 @@ function CardContent({ t, isActive, direction }) {
           fontWeight: 300,
           fontSize: isActive ? 'clamp(0.92rem, 1.5vw, 1.08rem)' : 'clamp(0.78rem, 1.1vw, 0.86rem)',
           lineHeight: 1.82,
-          color: isActive ? 'rgba(245,240,235,0.88)' : 'rgba(245,240,235,0.42)',
+          color: isActive ? 'var(--text-dim)' : 'var(--text-42)',
           margin: 0,
           letterSpacing: '-0.01em',
           display: '-webkit-box',
@@ -93,7 +94,7 @@ function CardContent({ t, isActive, direction }) {
         <div style={{
           display: 'flex', alignItems: 'center', gap: '12px',
           paddingTop: isActive ? '12px' : '8px',
-          borderTop: `1px solid ${isActive ? 'rgba(219,100,54,0.15)' : 'rgba(219,100,54,0.06)'}`,
+          borderTop: `1px solid ${isActive ? (accent === '#DB6436' ? 'rgba(219,100,54,0.15)' : 'rgba(10,86,117,0.15)') : (accent === '#DB6436' ? 'rgba(219,100,54,0.06)' : 'rgba(10,86,117,0.06)')}`,
           marginTop: 'auto',
         }}>
           <div style={{
@@ -112,7 +113,7 @@ function CardContent({ t, isActive, direction }) {
               fontFamily: '"Inter", system-ui, sans-serif',
               fontWeight: 500,
               fontSize: isActive ? 'clamp(0.85rem, 1.2vw, 0.96rem)' : '0.76rem',
-              color: isActive ? '#f5f0eb' : 'rgba(245,240,235,0.45)',
+              color: isActive ? 'var(--text-primary)' : 'var(--text-muted)',
               marginBottom: '3px',
               overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
             }}>{t.name}</div>
@@ -120,7 +121,7 @@ function CardContent({ t, isActive, direction }) {
               fontFamily: '"Inter", system-ui, sans-serif',
               fontWeight: 300,
               fontSize: isActive ? 'clamp(0.68rem, 0.9vw, 0.78rem)' : '0.64rem',
-              color: isActive ? 'rgba(219,100,54,0.8)' : 'rgba(219,100,54,0.35)',
+              color: isActive ? (accent === '#DB6436' ? 'rgba(219,100,54,0.8)' : 'rgba(10,86,117,0.8)') : (accent === '#DB6436' ? 'rgba(219,100,54,0.35)' : 'rgba(10,86,117,0.35)'),
               letterSpacing: '0.02em',
               overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
             }}>{t.role}</div>
@@ -131,7 +132,7 @@ function CardContent({ t, isActive, direction }) {
   )
 }
 
-function CardSlot({ position, t, direction, onClick }) {
+function CardSlot({ position, t, direction, onClick, accent, ab42, ab1, ab07 }) {
   const isActive = position === 0
   return (
     <motion.div
@@ -148,14 +149,10 @@ function CardSlot({ position, t, direction, onClick }) {
         transition: 'flex 0.7s cubic-bezier(0.22,1,0.36,1)',
         borderRadius: '22px',
         padding: isActive ? 'clamp(28px, 3vw, 42px)' : 'clamp(20px, 2.5vw, 30px)',
-        background: isActive
-          ? 'linear-gradient(145deg, rgba(34,26,20,0.98) 0%, rgba(16,11,8,0.99) 100%)'
-          : 'linear-gradient(145deg, rgba(20,16,12,0.85) 0%, rgba(10,8,6,0.88) 100%)',
-        border: isActive
-          ? '1px solid rgba(219,100,54,0.42)'
-          : '1px solid rgba(219,100,54,0.1)',
+        background: isActive ? 'var(--card-bg)' : 'var(--card-bg2)',
+        border: isActive ? `1px solid ${ab42}` : `1px solid ${ab1}`,
         boxShadow: isActive
-          ? '0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(219,100,54,0.1), 0 4px 24px rgba(219,100,54,0.07)'
+          ? `0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px ${ab1}, 0 4px 24px ${ab07}`
           : '0 4px 16px rgba(0,0,0,0.28)',
         cursor: isActive ? 'default' : 'pointer',
         overflow: 'hidden',
@@ -164,12 +161,21 @@ function CardSlot({ position, t, direction, onClick }) {
         minHeight: isActive ? '320px' : '280px',
       }}
     >
-      <CardContent t={t} isActive={isActive} direction={direction} />
+      <CardContent t={t} isActive={isActive} direction={direction} accent={accent} />
     </motion.div>
   )
 }
 
 export default function TestimonialsSection() {
+  const { dark } = useTheme()
+  const accent = dark ? '#DB6436' : '#0A5675'
+  const ab42   = dark ? 'rgba(219,100,54,0.42)' : 'rgba(10,86,117,0.42)'
+  const ab1    = dark ? 'rgba(219,100,54,0.1)'  : 'rgba(10,86,117,0.1)'
+  const ab07   = dark ? 'rgba(219,100,54,0.07)' : 'rgba(10,86,117,0.07)'
+  const ab4    = dark ? 'rgba(219,100,54,0.4)'  : 'rgba(10,86,117,0.4)'
+  const ab65   = dark ? 'rgba(219,100,54,0.65)' : 'rgba(10,86,117,0.65)'
+  const ab25   = dark ? 'rgba(219,100,54,0.25)' : 'rgba(10,86,117,0.25)'
+
   const sectionRef = useRef(null)
   const [active, setActive]       = useState(0)
   const [direction, setDirection] = useState(1)
@@ -212,14 +218,14 @@ export default function TestimonialsSection() {
         minHeight: '100vh', overflow: 'hidden',
         display: 'flex', flexDirection: 'column',
         justifyContent: 'center', alignItems: 'center',
-        background: '#000',
+        background: 'var(--bg-section)',
         padding: 'clamp(60px, 8vh, 100px) clamp(16px, 4vw, 48px)',
       }}
     >
       <div aria-hidden style={{
         position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
         width: '50%', height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(219,100,54,0.4), transparent)',
+        background: `linear-gradient(90deg, transparent, ${ab4}, transparent)`,
         zIndex: 2,
       }} />
 
@@ -240,19 +246,19 @@ export default function TestimonialsSection() {
             fontFamily: '"Inter", system-ui, sans-serif',
             fontWeight: 400, fontSize: 'clamp(0.54rem, 0.9vw, 0.66rem)',
             letterSpacing: '0.32em', textTransform: 'uppercase',
-            color: 'rgba(219,100,54,0.65)', margin: '0 0 14px',
+            color: ab65, margin: '0 0 14px',
           }}>Client Feedback</p>
           <h2 style={{
             fontFamily: '"Inter", system-ui, sans-serif',
             fontWeight: 300, fontSize: 'clamp(1.6rem, 4vw, 2.8rem)',
-            letterSpacing: '-0.03em', color: '#f5f0eb', margin: '0 0 10px',
+            letterSpacing: '-0.03em', color: 'var(--text-primary)', margin: '0 0 10px',
           }}>
-            Words from the <span style={{ color: '#DB6436' }}>brands we've built</span>
+            Words from the <span style={{ color: accent }}>brands we've built</span>
           </h2>
           <p style={{
             fontFamily: '"Inter", system-ui, sans-serif',
             fontWeight: 300, fontSize: 'clamp(0.8rem, 1.4vw, 0.96rem)',
-            color: 'rgba(245,240,235,0.38)', margin: 0,
+            color: 'var(--text-38)', margin: 0,
           }}>
             Real stories, real results — straight from our clients.
           </p>
@@ -278,9 +284,9 @@ export default function TestimonialsSection() {
                   style={{
                     borderRadius: '20px',
                     padding: '28px 24px',
-                    background: 'linear-gradient(145deg, rgba(30,24,18,0.95), rgba(14,10,7,0.98))',
-                    border: '1px solid rgba(219,100,54,0.35)',
-                    boxShadow: '0 8px 40px rgba(0,0,0,0.5)',
+                    background: 'var(--card-bg)',
+                    border: `1px solid ${dark ? 'rgba(219,100,54,0.35)' : 'rgba(10,86,117,0.35)'}`,
+                    boxShadow: '0 8px 40px rgba(0,0,0,0.25)',
                     display: 'flex', flexDirection: 'column', gap: '18px',
                   }}
                 >
@@ -291,26 +297,26 @@ export default function TestimonialsSection() {
                   <p style={{
                     fontFamily: '"Inter", system-ui, sans-serif',
                     fontWeight: 300, fontSize: '0.95rem', lineHeight: 1.8,
-                    color: 'rgba(245,240,235,0.88)', margin: 0, letterSpacing: '-0.01em',
+                    color: 'var(--text-dim)', margin: 0, letterSpacing: '-0.01em',
                   }}>
                     "{TESTIMONIALS[active].quote}"
                   </p>
                   <div style={{
                     display: 'flex', alignItems: 'center', gap: '12px',
-                    paddingTop: '12px', borderTop: '1px solid rgba(219,100,54,0.12)',
+                    paddingTop: '12px', borderTop: `1px solid ${dark ? 'rgba(219,100,54,0.12)' : 'rgba(10,86,117,0.12)'}`,
                   }}>
                     <div style={{
                       width: '52px', height: '52px', borderRadius: '10px', flexShrink: 0,
-                      overflow: 'hidden', border: '1.5px solid rgba(219,100,54,0.4)',
+                      overflow: 'hidden', border: `1.5px solid ${ab4}`,
                     }}>
                       <img src={TESTIMONIALS[active].img} alt={TESTIMONIALS[active].name}
                         style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', display: 'block' }} />
                     </div>
                     <div>
-                      <div style={{ fontFamily: '"Inter", system-ui, sans-serif', fontWeight: 500, fontSize: '0.92rem', color: '#f5f0eb', marginBottom: '3px' }}>
+                      <div style={{ fontFamily: '"Inter", system-ui, sans-serif', fontWeight: 500, fontSize: '0.92rem', color: 'var(--text-primary)', marginBottom: '3px' }}>
                         {TESTIMONIALS[active].name}
                       </div>
-                      <div style={{ fontFamily: '"Inter", system-ui, sans-serif', fontWeight: 300, fontSize: '0.72rem', color: 'rgba(219,100,54,0.8)' }}>
+                      <div style={{ fontFamily: '"Inter", system-ui, sans-serif', fontWeight: 300, fontSize: '0.72rem', color: dark ? 'rgba(219,100,54,0.8)' : 'rgba(10,86,117,0.8)' }}>
                         {TESTIMONIALS[active].role}
                       </div>
                     </div>
@@ -341,7 +347,7 @@ export default function TestimonialsSection() {
                 style={{
                   width: i === active ? '28px' : '8px',
                   height: '8px', borderRadius: '4px', border: 'none', padding: 0, outline: 'none',
-                  background: i === active ? '#DB6436' : 'rgba(219,100,54,0.25)',
+                  background: i === active ? accent : ab25,
                   cursor: 'pointer',
                   transition: 'all 0.4s cubic-bezier(0.22,1,0.36,1)',
                 }}
@@ -358,15 +364,23 @@ export default function TestimonialsSection() {
                 onClick={fn}
                 style={{
                   width: '44px', height: '44px', borderRadius: '50%',
-                  border: '1px solid rgba(219,100,54,0.3)',
-                  background: 'rgba(219,100,54,0.06)',
-                  color: 'rgba(245,240,235,0.6)',
+                  border: dark ? '1px solid rgba(219,100,54,0.3)' : '1px solid rgba(10,86,117,0.3)',
+                  background: dark ? 'rgba(219,100,54,0.06)' : 'rgba(10,86,117,0.06)',
+                  color: 'var(--text-secondary)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   cursor: 'pointer', outline: 'none',
                   transition: 'all 0.25s ease',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(219,100,54,0.7)'; e.currentTarget.style.color = '#DB6436'; e.currentTarget.style.background = 'rgba(219,100,54,0.12)' }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(219,100,54,0.3)'; e.currentTarget.style.color = 'rgba(245,240,235,0.6)'; e.currentTarget.style.background = 'rgba(219,100,54,0.06)' }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = dark ? 'rgba(219,100,54,0.7)' : 'rgba(10,86,117,0.7)'
+                  e.currentTarget.style.color = dark ? '#DB6436' : '#0A5675'
+                  e.currentTarget.style.background = dark ? 'rgba(219,100,54,0.12)' : 'rgba(10,86,117,0.12)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = dark ? 'rgba(219,100,54,0.3)' : 'rgba(10,86,117,0.3)'
+                  e.currentTarget.style.color = ''
+                  e.currentTarget.style.background = dark ? 'rgba(219,100,54,0.06)' : 'rgba(10,86,117,0.06)'
+                }}
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   {dir === 'prev'

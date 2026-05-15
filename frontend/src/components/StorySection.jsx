@@ -7,10 +7,10 @@ gsap.registerPlugin(ScrollTrigger)
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const STORY_CSS = `
-  .story-section { 
+  .story-section {
     position: relative;
     width: 100%;
-    background: #0a0806;
+    background: var(--bg-section);
   }
   .story-video-wrap {
     position: relative;
@@ -29,7 +29,7 @@ const STORY_CSS = `
   }
   .story-content {
     font-family: 'Inter', system-ui, sans-serif;
-    color: #fff;
+    color: var(--text-primary);
     max-width: 600px;
   }
   .story-tagline {
@@ -44,7 +44,7 @@ const STORY_CSS = `
     font-weight: 300;
     font-size: clamp(0.85rem, 1.2vw, 1.05rem);
     line-height: 1.7;
-    color: rgba(255,255,255,0.88);
+    color: var(--text-dim);
     will-change: opacity, transform;
     margin: 0;
   }
@@ -137,36 +137,36 @@ export default function StorySection() {
     })
 
     if (isMobile) {
-      // Mobile: shrink video upward, text appears below
+      // Mobile: fullscreen → compress to upper portion, stays below navbar
       tl.to(videoContainer, {
-        scale: 0.55,
-        y: '-18vh',
-        borderRadius: '24px',
-        ease: 'power2.out',
-        duration: 0.6,
+        scale: 0.50,
+        y: '-14vh',
+        borderRadius: '20px',
+        ease: 'power2.inOut',
+        duration: 0.7,
       }, 0)
     } else {
       // Desktop: shrink + translate left
       tl.to(videoContainer, {
         scale: 0.46,
-        x: '-27vw',
+        x: '-24vw',
         borderRadius: '34px',
         ease: 'power2.out',
         duration: 0.6,
       }, 0)
     }
-    
+
     // Content reveal animation - staggered elements
     const tagline = taglineRef.current
     const para = paraRef.current
-    if (tagline) gsap.set(tagline, { opacity: 0, y: 12 })
-    if (para)    gsap.set(para,    { opacity: 0, y: 20 })
-    
+    if (tagline) gsap.set(tagline, { opacity: 0, y: 28 })
+    if (para)    gsap.set(para,    { opacity: 0, y: 36 })
+
     if (tagline) {
-      tl.to(tagline, { opacity: 1, y: 0, duration: 0.15, ease: 'power2.out' }, 0.38)
+      tl.to(tagline, { opacity: 1, y: 0, duration: isMobile ? 0.2 : 0.15, ease: 'power2.out' }, isMobile ? 0.42 : 0.38)
     }
     if (para) {
-      tl.to(para, { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' }, 0.44)
+      tl.to(para, { opacity: 1, y: 0, duration: isMobile ? 0.22 : 0.2, ease: 'power2.out' }, isMobile ? 0.52 : 0.44)
     }
     
     return () => {
@@ -182,10 +182,10 @@ export default function StorySection() {
     ? {
         position: 'absolute',
         left: '50%',
-        top: '62%',
+        top: '65%',
         transform: 'translateX(-50%)',
         width: 'calc(100% - 48px)',
-        maxWidth: '400px',
+        maxWidth: '420px',
         padding: '0',
         zIndex: 10,
         textAlign: 'center',
@@ -212,7 +212,7 @@ export default function StorySection() {
         id="story"
         ref={sectionRef}
         className="story-section"
-        style={{ minHeight: isMobile ? '170vh' : '190vh' }}
+        style={{ minHeight: isMobile ? '210vh' : '190vh' }}
       >
         <div style={{
           position: 'sticky',

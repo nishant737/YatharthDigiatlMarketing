@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
+import { useTheme } from '../ThemeContext'
 
 export default function CustomCursor() {
-  const isTouch = typeof window !== 'undefined' &&
-    (window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window)
-  if (isTouch) return null
+  const { dark } = useTheme()
   const mouseX = useMotionValue(-200)
   const mouseY = useMotionValue(-200)
 
@@ -19,6 +18,9 @@ export default function CustomCursor() {
   const [state, setState] = useState('default') // 'default' | 'hover' | 'click'
   const [visible, setVisible] = useState(false)
   const clickTimeout = useRef(null)
+
+  const isTouch = typeof window !== 'undefined' &&
+    (window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window)
 
   useEffect(() => {
     document.documentElement.style.cursor = 'none'
@@ -69,8 +71,15 @@ export default function CustomCursor() {
     }
   }, []) // eslint-disable-line
 
+  if (isTouch) return null
+
   const isHover = state === 'hover'
   const isClick = state === 'click'
+  const cursorColor = dark ? 'rgba(219,100,54,1)' : 'rgba(10,86,117,1)'
+  const cursorBorder = dark ? 'rgba(219,100,54,0.85)' : 'rgba(10,86,117,0.85)'
+  const cursorGlow   = dark ? 'rgba(219,100,54,0.2)' : 'rgba(10,86,117,0.2)'
+  const cursorGlow2  = dark ? 'rgba(219,100,54,0.6)' : 'rgba(10,86,117,0.6)'
+  const cursorRipple = dark ? 'rgba(219,100,54,0.75)' : 'rgba(10,86,117,0.75)'
 
   return (
     <AnimatePresence>
@@ -102,10 +111,10 @@ export default function CustomCursor() {
               }}
               transition={{ type: 'spring', stiffness: 300, damping: 26 }}
               style={{
-                border: '1.5px solid rgba(219,100,54,0.85)',
+                border: `1.5px solid ${cursorBorder}`,
                 translateX: '-50%',
                 translateY: '-50%',
-                boxShadow: '0 0 10px rgba(219,100,54,0.2)',
+                boxShadow: `0 0 10px ${cursorGlow}`,
               }}
             />
           </motion.div>
@@ -135,10 +144,10 @@ export default function CustomCursor() {
               transition={{ type: 'spring', stiffness: 600, damping: 30 }}
               style={{
                 borderRadius: '50%',
-                background: 'rgba(219,100,54,1)',
+                background: cursorColor,
                 translateX: '-50%',
                 translateY: '-50%',
-                boxShadow: '0 0 8px rgba(219,100,54,0.6)',
+                boxShadow: `0 0 8px ${cursorGlow2}`,
               }}
             />
 
@@ -155,7 +164,7 @@ export default function CustomCursor() {
                     position: 'absolute',
                     top: 0, left: 0,
                     borderRadius: '50%',
-                    border: '1.5px solid rgba(219,100,54,0.75)',
+                    border: `1.5px solid ${cursorRipple}`,
                     translateX: '-50%',
                     translateY: '-50%',
                     pointerEvents: 'none',

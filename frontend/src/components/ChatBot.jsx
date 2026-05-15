@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import arthLogo from '../asset/Arth_Logo.png'
+import { useTheme } from '../ThemeContext'
 
 const SERVICE_OPTIONS = ['Website', 'Branding', 'Social Media', 'Logo', 'Other']
 
@@ -25,6 +26,7 @@ export default function ChatBot({ loaded }) {
   const [sending, setSending]       = useState(false)
   const [serviceOther, setServiceOther] = useState(false)
   const [isMobile, setIsMobile]     = useState(window.innerWidth <= 480)
+  const [inputFocused, setInputFocused] = useState(false)
   const bottomRef               = useRef(null)
   const inputRef                = useRef(null)
 
@@ -147,6 +149,9 @@ export default function ChatBot({ loaded }) {
                transition: { type: 'spring', stiffness: 380, damping: 28 } },
   }
 
+  const { dark } = useTheme()
+  const st = makeStyles(dark)
+
   if (!visible) return null
 
   return (
@@ -160,8 +165,19 @@ export default function ChatBot({ loaded }) {
             initial="hidden"
             animate="visible"
             exit="exit"
+            className={dark ? '' : 'chatbot-light'}
             style={{ ...st.wrapper, ...chatStyle, position: 'fixed', zIndex: 99998 }}
           >
+            {/* Scoped light-mode hover overrides */}
+            {!dark && (
+              <style>{`
+                .chatbot-light button:hover { filter: brightness(1.08); }
+                .chatbot-light *:focus-visible { outline-color: rgba(10,86,117,0.6) !important; }
+                .chatbot-light input::placeholder { color: rgba(30,58,95,0.4); }
+                .chatbot-light input:hover { border-color: rgba(10,86,117,0.45) !important; }
+              `}</style>
+            )}
+
             {/* Header */}
             <div style={st.header}>
               <div style={st.headerLeft}>
@@ -257,7 +273,7 @@ export default function ChatBot({ loaded }) {
                       key={s}
                       style={st.serviceBtn}
                       onClick={() => handleServiceSelect(s)}
-                      whileHover={{ scale: 1.06, background: 'rgba(219,100,54,0.15)', borderColor: '#DB6436' }}
+                      whileHover={{ scale: 1.06, background: dark ? 'rgba(219,100,54,0.15)' : 'rgba(10,86,117,0.12)', borderColor: dark ? '#DB6436' : '#0A5675' }}
                       whileTap={{ scale: 0.93 }}
                     >{s}</motion.button>
                   ))}
@@ -272,10 +288,18 @@ export default function ChatBot({ loaded }) {
                 >
                   <input
                     ref={inputRef}
-                    style={st.input}
+                    style={{
+                      ...st.input,
+                      borderColor: inputFocused
+                        ? (dark ? 'rgba(219,100,54,0.6)' : 'rgba(10,86,117,0.6)')
+                        : undefined,
+                      outline: 'none',
+                    }}
                     value={input}
                     onChange={e => setInput(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleSend()}
+                    onFocus={() => setInputFocused(true)}
+                    onBlur={() => setInputFocused(false)}
                     placeholder={serviceOther && step === 0 ? 'Describe your service…' : 'Type your answer…'}
                     disabled={sending}
                     autoComplete="off"
@@ -284,7 +308,7 @@ export default function ChatBot({ loaded }) {
                     style={{ ...st.sendBtn, opacity: input.trim() && !sending ? 1 : 0.38 }}
                     onClick={handleSend}
                     disabled={!input.trim() || sending}
-                    whileHover={{ scale: 1.07 }}
+                    whileHover={{ scale: 1.07, boxShadow: dark ? '0 2px 12px rgba(219,100,54,0.5)' : '0 2px 12px rgba(10,86,117,0.5)' }}
                     whileTap={{ scale: 0.91 }}
                     aria-label="Send"
                   >➤</motion.button>
@@ -300,7 +324,7 @@ export default function ChatBot({ loaded }) {
                   <motion.button
                     style={{ ...st.sendBtn, flex: 1, fontSize: '0.8rem', borderRadius: '12px' }}
                     onClick={handleRestart}
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ scale: 1.02, boxShadow: dark ? '0 2px 12px rgba(219,100,54,0.5)' : '0 2px 12px rgba(10,86,117,0.5)' }}
                     whileTap={{ scale: 0.97 }}
                   >Start a new enquiry</motion.button>
                 </motion.div>
@@ -332,24 +356,24 @@ export default function ChatBot({ loaded }) {
               transition={{ type: 'spring', stiffness: 340, damping: 26, delay: 0.12 }}
               onClick={() => { setOpen(true); if (messages.length === 0) setMessages([{ from: 'bot', text: QUESTIONS[0].text }]) }}
               style={{
-                background: '#1a1108',
-                border: '1px solid rgba(219,100,54,0.35)',
+                background: dark ? '#1a1108' : '#e8f4f8',
+                border: dark ? '1px solid rgba(219,100,54,0.35)' : '1px solid rgba(10,86,117,0.35)',
                 borderRadius: '100px',
                 padding: isMobile ? '7px 12px' : '9px 16px',
-                color: '#f5f0eb',
+                color: dark ? '#f5f0eb' : '#0A5675',
                 fontSize: isMobile ? '0.72rem' : '0.78rem',
                 fontWeight: 500,
                 fontFamily: "'Inter', system-ui, sans-serif",
                 letterSpacing: '0.01em',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.45)',
+                boxShadow: dark ? '0 4px 20px rgba(0,0,0,0.45)' : '0 4px 20px rgba(10,86,117,0.2)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '7px',
                 ...(isMobile ? { display: 'none' } : {}),
               }}
-              whileHover={{ scale: 1.04, borderColor: 'rgba(219,100,54,0.65)' }}
+              whileHover={{ scale: 1.04, borderColor: dark ? 'rgba(219,100,54,0.65)' : 'rgba(10,86,117,0.65)' }}
               whileTap={{ scale: 0.96 }}
             >
               {/* Pulsing dot */}
@@ -401,185 +425,202 @@ export default function ChatBot({ loaded }) {
 }
 
 // ── Styles ────────────────────────────────────────────────────────────────────
-const st = {
-  wrapper: {
-    display:         'flex',
-    flexDirection:   'column',
-    background:      '#111',
-    boxShadow:       '0 24px 64px rgba(0,0,0,0.7), 0 2px 8px rgba(219,100,54,0.1)',
-    overflow:        'hidden',
-    border:          '1px solid rgba(255,255,255,0.06)',
-    fontFamily:      "'Inter', system-ui, sans-serif",
-    transformOrigin: 'bottom right',
-    boxSizing:       'border-box',
-  },
-  header: {
-    background:     'linear-gradient(135deg, #DB6436 0%, #c9522a 100%)',
-    padding:        '14px 16px',
-    display:        'flex',
-    justifyContent: 'space-between',
-    alignItems:     'center',
-    color:          '#fff',
-    flexShrink:     0,
-  },
-  headerLeft:   { display: 'flex', alignItems: 'center', gap: '11px' },
-  avatar: {
-    width:          '46px',
-    height:         '46px',
-    borderRadius:   '50%',
-    background:     'rgba(255,255,255,0.2)',
-    display:        'flex',
-    alignItems:     'center',
-    justifyContent: 'center',
-    fontWeight:     700,
-    fontSize:       '1rem',
-    border:         '1.5px solid rgba(255,255,255,0.3)',
-    flexShrink:     0,
-  },
-  headerName:   { fontWeight: 700, fontSize: '0.88rem', letterSpacing: '-0.01em' },
-  headerStatus: { display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.68rem', opacity: 0.82, marginTop: '1px' },
-  onlineDot: {
-    width: '6px', height: '6px', borderRadius: '50%',
-    background: '#4ade80', display: 'inline-block',
-    boxShadow: '0 0 6px rgba(74,222,128,0.8)',
-  },
-  closeBtn: {
-    background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff',
-    cursor: 'pointer', fontSize: '0.85rem', padding: '6px 9px',
-    borderRadius: '8px', lineHeight: 1,
-  },
-  progressTrack: { height: '3px', background: 'rgba(255,255,255,0.06)', flexShrink: 0 },
-  progressFill:  { height: '100%', background: 'linear-gradient(90deg, #DB6436, #f0845a)' },
-  serviceBtnArea: {
-    display:    'flex',
-    flexWrap:   'wrap',
-    gap:        '8px',
-    padding:    '12px 12px 16px',
-    borderTop:  '1px solid rgba(255,255,255,0.06)',
-    background: '#111',
-    flexShrink: 0,
-  },
-  serviceBtn: {
-    background:   'transparent',
-    border:       '1px solid rgba(219,100,54,0.45)',
-    color:        '#DB6436',
-    borderRadius: '20px',
-    padding:      '7px 15px',
-    fontSize:     '0.8rem',
-    cursor:       'pointer',
-    fontFamily:   "'Inter', system-ui, sans-serif",
-    fontWeight:   500,
-  },
-  messages: {
-    flex:           1,
-    overflowY:      'auto',
-    padding:        '16px 13px 8px',
-    display:        'flex',
-    flexDirection:  'column',
-    gap:            '10px',
-    scrollbarWidth: 'thin',
-    scrollbarColor: 'rgba(255,255,255,0.08) transparent',
-  },
-  botRow:  { display: 'flex', alignItems: 'flex-start', gap: '9px' },
-  userRow: { display: 'flex', justifyContent: 'flex-end' },
-  botAvatar: {
-    width:          '36px',
-    height:         '36px',
-    borderRadius:   '50%',
-    background:     'linear-gradient(135deg, #DB6436, #c9522a)',
-    color:          '#fff',
-    fontSize:       '0.72rem',
-    fontWeight:     700,
-    display:        'flex',
-    alignItems:     'center',
-    justifyContent: 'center',
-    flexShrink:     0,
-    marginTop:      '2px',
-  },
-  botBubble: {
-    background:   '#1e1e1e',
-    color:        '#ede9e5',
-    padding:      '10px 13px',
-    borderRadius: '4px 14px 14px 14px',
-    fontSize:     '0.82rem',
-    lineHeight:   1.65,
-    maxWidth:     '80%',
-    border:       '1px solid rgba(255,255,255,0.05)',
-  },
-  userBubble: {
-    background:   'linear-gradient(135deg, #DB6436, #c9522a)',
-    color:        '#fff',
-    padding:      '10px 13px',
-    borderRadius: '14px 4px 14px 14px',
-    fontSize:     '0.82rem',
-    lineHeight:   1.65,
-    maxWidth:     '80%',
-  },
-  typingBubble: { display: 'flex', alignItems: 'center', gap: '5px', padding: '12px 16px' },
-  typingDot:    { display: 'inline-block', width: '7px', height: '7px', borderRadius: '50%', background: '#DB6436' },
-  inputRow: {
-    display:    'flex',
-    padding:    '10px 12px 14px',
-    borderTop:  '1px solid rgba(255,255,255,0.06)',
-    gap:        '8px',
-    flexShrink: 0,
-    background: '#111',
-    boxSizing:  'border-box',
-    width:      '100%',
-  },
-  input: {
-    flex:         1,
-    minWidth:     0,
-    background:   '#1e1e1e',
-    border:       '1px solid rgba(255,255,255,0.08)',
-    borderRadius: '12px',
-    padding:      '11px 14px',
-    color:        '#fff',
-    fontSize:     '0.83rem',
-    outline:      'none',
-    fontFamily:   'inherit',
-    boxSizing:    'border-box',
-  },
-  sendBtn: {
-    background:   'linear-gradient(135deg, #DB6436, #c9522a)',
-    border:       'none',
-    color:        '#fff',
-    borderRadius: '12px',
-    padding:      '11px 16px',
-    cursor:       'pointer',
-    fontWeight:   700,
-    fontSize:     '0.9rem',
-    flexShrink:   0,
-  },
-  fab: {
-    position:       'relative',
-    background:     'linear-gradient(135deg, #DB6436, #c9522a)',
-    border:         'none',
-    borderRadius:   '50%',
-    width:          '56px',
-    height:         '56px',
-    fontSize:       '1.3rem',
-    cursor:         'pointer',
-    zIndex:         99998,
-    boxShadow:      '0 4px 24px rgba(219,100,54,0.55)',
-    display:        'flex',
-    alignItems:     'center',
-    justifyContent: 'center',
-  },
-  badge: {
-    position:       'absolute',
-    top:            '-2px',
-    right:          '-2px',
-    width:          '18px',
-    height:         '18px',
-    borderRadius:   '50%',
-    background:     '#ef4444',
-    color:          '#fff',
-    fontSize:       '0.6rem',
-    fontWeight:     700,
-    display:        'flex',
-    alignItems:     'center',
-    justifyContent: 'center',
-    border:         '2px solid #111',
-  },
+function makeStyles(dark) {
+  const accent     = dark ? '#DB6436' : '#0A5675'
+  const accentEnd  = dark ? '#c9522a' : '#083f56'
+  const accentProg = dark ? '#f0845a' : '#0A5675'
+  const bg         = dark ? '#111'    : '#e8f4f8'
+  const bgBubble   = dark ? '#1e1e1e' : '#ddf0f7'
+  const textMain   = dark ? '#fff'    : '#0A5675'
+  const textBubble = dark ? '#ede9e5' : '#0A5675'
+  const border     = dark ? 'rgba(255,255,255,0.06)' : 'rgba(10,86,117,0.12)'
+  const borderFaint= dark ? 'rgba(255,255,255,0.05)' : 'rgba(10,86,117,0.1)'
+  const borderInput= dark ? 'rgba(255,255,255,0.08)' : 'rgba(10,86,117,0.2)'
+
+  return {
+    wrapper: {
+      display:         'flex',
+      flexDirection:   'column',
+      background:      bg,
+      boxShadow:       dark
+        ? '0 24px 64px rgba(0,0,0,0.55), 0 2px 8px rgba(219,100,54,0.1)'
+        : '0 24px 64px rgba(10,86,117,0.18), 0 2px 8px rgba(10,86,117,0.1)',
+      overflow:        'hidden',
+      border:          `1px solid ${border}`,
+      fontFamily:      "'Inter', system-ui, sans-serif",
+      transformOrigin: 'bottom right',
+      boxSizing:       'border-box',
+    },
+    header: {
+      background:     `linear-gradient(135deg, ${accent} 0%, ${accentEnd} 100%)`,
+      padding:        '14px 16px',
+      display:        'flex',
+      justifyContent: 'space-between',
+      alignItems:     'center',
+      color:          '#fff',
+      flexShrink:     0,
+    },
+    headerLeft:   { display: 'flex', alignItems: 'center', gap: '11px' },
+    avatar: {
+      width:          '46px',
+      height:         '46px',
+      borderRadius:   '50%',
+      background:     'rgba(255,255,255,0.2)',
+      display:        'flex',
+      alignItems:     'center',
+      justifyContent: 'center',
+      fontWeight:     700,
+      fontSize:       '1rem',
+      border:         '1.5px solid rgba(255,255,255,0.3)',
+      flexShrink:     0,
+    },
+    headerName:   { fontWeight: 700, fontSize: '0.88rem', letterSpacing: '-0.01em' },
+    headerStatus: { display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.68rem', opacity: 0.82, marginTop: '1px' },
+    onlineDot: {
+      width: '6px', height: '6px', borderRadius: '50%',
+      background: '#4ade80', display: 'inline-block',
+      boxShadow: '0 0 6px rgba(74,222,128,0.8)',
+    },
+    closeBtn: {
+      background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff',
+      cursor: 'pointer', fontSize: '0.85rem', padding: '6px 9px',
+      borderRadius: '8px', lineHeight: 1,
+    },
+    progressTrack: { height: '3px', background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(10,86,117,0.1)', flexShrink: 0 },
+    progressFill:  { height: '100%', background: `linear-gradient(90deg, ${accent}, ${accentProg})` },
+    serviceBtnArea: {
+      display:    'flex',
+      flexWrap:   'wrap',
+      gap:        '8px',
+      padding:    '12px 12px 16px',
+      borderTop:  `1px solid ${border}`,
+      background: bg,
+      flexShrink: 0,
+    },
+    serviceBtn: {
+      background:   'transparent',
+      border:       `1px solid ${dark ? 'rgba(219,100,54,0.45)' : 'rgba(10,86,117,0.45)'}`,
+      color:        accent,
+      borderRadius: '20px',
+      padding:      '7px 15px',
+      fontSize:     '0.8rem',
+      cursor:       'pointer',
+      fontFamily:   "'Inter', system-ui, sans-serif",
+      fontWeight:   500,
+    },
+    messages: {
+      flex:           1,
+      overflowY:      'auto',
+      padding:        '16px 13px 8px',
+      display:        'flex',
+      flexDirection:  'column',
+      gap:            '10px',
+      scrollbarWidth: 'thin',
+      scrollbarColor: dark ? 'rgba(255,255,255,0.08) transparent' : 'rgba(10,86,117,0.15) transparent',
+    },
+    botRow:  { display: 'flex', alignItems: 'flex-start', gap: '9px' },
+    userRow: { display: 'flex', justifyContent: 'flex-end' },
+    botAvatar: {
+      width:          '36px',
+      height:         '36px',
+      borderRadius:   '50%',
+      background:     `linear-gradient(135deg, ${accent}, ${accentEnd})`,
+      color:          '#fff',
+      fontSize:       '0.72rem',
+      fontWeight:     700,
+      display:        'flex',
+      alignItems:     'center',
+      justifyContent: 'center',
+      flexShrink:     0,
+      marginTop:      '2px',
+    },
+    botBubble: {
+      background:   bgBubble,
+      color:        textBubble,
+      padding:      '10px 13px',
+      borderRadius: '4px 14px 14px 14px',
+      fontSize:     '0.82rem',
+      lineHeight:   1.65,
+      maxWidth:     '80%',
+      border:       `1px solid ${borderFaint}`,
+    },
+    userBubble: {
+      background:   `linear-gradient(135deg, ${accent}, ${accentEnd})`,
+      color:        '#fff',
+      padding:      '10px 13px',
+      borderRadius: '14px 4px 14px 14px',
+      fontSize:     '0.82rem',
+      lineHeight:   1.65,
+      maxWidth:     '80%',
+    },
+    typingBubble: { display: 'flex', alignItems: 'center', gap: '5px', padding: '12px 16px' },
+    typingDot:    { display: 'inline-block', width: '7px', height: '7px', borderRadius: '50%', background: accent },
+    inputRow: {
+      display:    'flex',
+      padding:    '10px 12px 14px',
+      borderTop:  `1px solid ${border}`,
+      gap:        '8px',
+      flexShrink: 0,
+      background: bg,
+      boxSizing:  'border-box',
+      width:      '100%',
+    },
+    input: {
+      flex:         1,
+      minWidth:     0,
+      background:   bgBubble,
+      border:       `1px solid ${borderInput}`,
+      borderRadius: '12px',
+      padding:      '11px 14px',
+      color:        textMain,
+      fontSize:     '0.83rem',
+      outline:      'none',
+      fontFamily:   'inherit',
+      boxSizing:    'border-box',
+    },
+    sendBtn: {
+      background:   `linear-gradient(135deg, ${accent}, ${accentEnd})`,
+      border:       'none',
+      color:        '#fff',
+      borderRadius: '12px',
+      padding:      '11px 16px',
+      cursor:       'pointer',
+      fontWeight:   700,
+      fontSize:     '0.9rem',
+      flexShrink:   0,
+    },
+    fab: {
+      position:       'relative',
+      background:     `linear-gradient(135deg, ${accent}, ${accentEnd})`,
+      border:         'none',
+      borderRadius:   '50%',
+      width:          '56px',
+      height:         '56px',
+      fontSize:       '1.3rem',
+      cursor:         'pointer',
+      zIndex:         99998,
+      boxShadow:      dark
+        ? '0 4px 24px rgba(219,100,54,0.55)'
+        : '0 4px 24px rgba(10,86,117,0.45)',
+      display:        'flex',
+      alignItems:     'center',
+      justifyContent: 'center',
+    },
+    badge: {
+      position:       'absolute',
+      top:            '-2px',
+      right:          '-2px',
+      width:          '18px',
+      height:         '18px',
+      borderRadius:   '50%',
+      background:     '#ef4444',
+      color:          '#fff',
+      fontSize:       '0.6rem',
+      fontWeight:     700,
+      display:        'flex',
+      alignItems:     'center',
+      justifyContent: 'center',
+      border:         `2px solid ${bg}`,
+    },
+  }
 }

@@ -5,9 +5,155 @@
   --accent-glow:     rgba(219, 100, 54, 0.35);
   --neutral:         #A1958C;
   --neutral-dim:     rgba(161, 149, 140, 0.15);
+
+  /* ── Theme: Dark (default) ── */
+  --bg-primary:      #060503;
+  --bg-section:      #0a0806;
   --bg:              #0e0b09;
+  --text-primary:    #f5f0eb;
   --text:            #f5f0eb;
-  --text-muted:      rgba(245, 240, 235, 0.45);
+  --text-dim:        rgba(245,240,235,0.88);
+  --text-secondary:  rgba(245,240,235,0.65);
+  --text-muted:      rgba(245,240,235,0.45);
+  --text-faint:      rgba(245,240,235,0.4);
+  --text-faintest:   rgba(245,240,235,0.28);
+  --text-55:         rgba(245,240,235,0.55);
+  --text-42:         rgba(245,240,235,0.42);
+  --text-38:         rgba(245,240,235,0.38);
+  --text-32:         rgba(245,240,235,0.32);
+  --text-16:         rgba(245,240,235,0.16);
+  --border-subtle:   rgba(245,240,235,0.08);
+  --border-medium:   rgba(245,240,235,0.12);
+  --border-faint:    rgba(245,240,235,0.06);
+  --border-15:       rgba(245,240,235,0.15);
+  --card-bg:         rgba(255,255,255,0.025);
+  --card-bg2:        rgba(255,255,255,0.02);
+  --card-border:     rgba(255,255,255,0.07);
+  --card-border2:    rgba(255,255,255,0.08);
+  --card-border3:    rgba(255,255,255,0.1);
+  --nav-link:        rgba(255,255,255,0.52);
+  --nav-col-link:    rgba(255,255,255,0.7);
+  --nav-col-dim:     rgba(255,255,255,0.32);
+  --section-dot:     rgba(240,230,208,0.3);
+  --section-label:   rgba(240,230,208,0.6);
+  --music-btn-bg:    rgba(15,10,6,0.82);
+  --music-btn-border:rgba(245,240,235,0.12);
+  --music-btn-color: rgba(245,240,235,0.6);
+  --hamburger-color: #fff;
+  --divider-nav:     rgba(255,255,255,0.08);
+  --journal-card-bg: linear-gradient(160deg, rgba(18,14,10,0.9), rgba(10,8,6,0.98));
+  --contact-card-bg: linear-gradient(145deg, rgba(22,18,14,0.9), rgba(12,9,6,0.95));
+  --contact-consult-bg: linear-gradient(145deg, rgba(26,20,14,0.95), rgba(14,10,6,0.98));
+  --founder-overlay: linear-gradient(135deg, rgba(10,8,6,0.72) 0%, rgba(219,100,54,0.04) 100%);
+}
+
+/* ── Theme: Light ─────────────────────────────────────────────────────────── */
+[data-theme="light"] {
+  --accent:          #0A5675;
+  --accent-dim:      rgba(10,86,117,0.18);
+  --accent-glow:     rgba(10,86,117,0.35);
+  --bg-primary:      #faf8f5;
+  --bg-section:      #f0ebe4;
+  --bg:              #ede8e2;
+  --text-primary:    #1a0f06;
+  --text:            #1a0f06;
+  --text-dim:        rgba(26,15,6,0.88);
+  --text-secondary:  rgba(26,15,6,0.65);
+  --text-muted:      rgba(26,15,6,0.5);
+  --text-faint:      rgba(26,15,6,0.45);
+  --text-faintest:   rgba(26,15,6,0.3);
+  --text-55:         rgba(26,15,6,0.55);
+  --text-42:         rgba(26,15,6,0.44);
+  --text-38:         rgba(26,15,6,0.4);
+  --text-32:         rgba(26,15,6,0.35);
+  --text-16:         rgba(26,15,6,0.22);
+  --border-subtle:   rgba(26,15,6,0.09);
+  --border-medium:   rgba(26,15,6,0.13);
+  --border-faint:    rgba(26,15,6,0.06);
+  --border-15:       rgba(26,15,6,0.15);
+  --card-bg:         rgba(255,255,255,0.7);
+  --card-bg2:        rgba(255,255,255,0.5);
+  --card-border:     rgba(26,15,6,0.09);
+  --card-border2:    rgba(26,15,6,0.09);
+  --card-border3:    rgba(26,15,6,0.12);
+  --nav-link:        rgba(26,15,6,0.55);
+  --nav-col-link:    rgba(26,15,6,0.75);
+  --nav-col-dim:     rgba(26,15,6,0.35);
+  --section-dot:     rgba(26,15,6,0.25);
+  --section-label:   rgba(26,15,6,0.55);
+  --music-btn-bg:    rgba(240,235,228,0.92);
+  --music-btn-border:rgba(10,86,117,0.35);
+  --music-btn-color: rgba(10,86,117,0.7);
+  --hamburger-color: #1a0f06;
+  --divider-nav:     rgba(26,15,6,0.08);
+  --journal-card-bg: linear-gradient(160deg, rgba(255,252,248,0.9), rgba(245,240,235,0.98));
+  --contact-card-bg: linear-gradient(145deg, rgba(255,252,248,0.92), rgba(245,240,235,0.96));
+  --contact-consult-bg: linear-gradient(145deg, rgba(255,253,250,0.95), rgba(245,240,235,0.98));
+  --founder-overlay: linear-gradient(135deg, rgba(250,248,245,0.55) 0%, rgba(219,100,54,0.03) 100%);
+}
+
+/* ── Light mode CSS class overrides ──────────────────────────────────────── */
+[data-theme="light"] body {
+  background-color: #faf8f5;
+  color: #1a0f06;
+}
+[data-theme="light"] .contact-info-card {
+  background: var(--contact-card-bg) !important;
+  border-color: rgba(219,100,54,0.18) !important;
+}
+[data-theme="light"] .contact-consult-card {
+  background: var(--contact-consult-bg) !important;
+}
+[data-theme="light"] .journal-card {
+  background: var(--journal-card-bg) !important;
+  border-color: rgba(26,15,6,0.09) !important;
+}
+[data-theme="light"] .journal-card-featured {
+  border-color: rgba(219,100,54,0.2) !important;
+}
+[data-theme="light"] .journal-card:hover {
+  border-color: rgba(219,100,54,0.35) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.12), 0 0 0 1px rgba(219,100,54,0.08) !important;
+}
+[data-theme="light"] .founder-btn-outline {
+  color: rgba(26,15,6,0.6) !important;
+  border-color: rgba(26,15,6,0.15) !important;
+}
+[data-theme="light"] .founder-btn-outline:hover {
+  color: #1a0f06 !important;
+  border-color: rgba(26,15,6,0.35) !important;
+}
+[data-theme="light"] .contact-info-card { border-color: rgba(10,86,117,0.18) !important; }
+[data-theme="light"] .journal-card-featured { border-color: rgba(10,86,117,0.2) !important; }
+[data-theme="light"] .journal-card:hover {
+  border-color: rgba(10,86,117,0.35) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.12), 0 0 0 1px rgba(10,86,117,0.08) !important;
+}
+[data-theme="light"] .nav-link { color: rgba(26,15,6,0.55) !important; }
+[data-theme="light"] .nav-link:hover { color: #0A5675 !important; }
+[data-theme="light"] .nav-col-link { color: rgba(26,15,6,0.75) !important; }
+[data-theme="light"] .nav-hamburger span { background: #1a0f06 !important; }
+
+/* ── Light mode: orange text/accent → teal ───────────────────────────────── */
+[data-theme="light"] .story-tagline { color: #0A5675 !important; }
+
+[data-theme="light"] .founder-role { color: #0A5675 !important; }
+[data-theme="light"] .founder-heading-accent { color: #0A5675 !important; }
+[data-theme="light"] .founder-year { color: #0A5675 !important; }
+[data-theme="light"] .founder-btn-primary:hover { border-color: #0A5675 !important; background: rgba(10,86,117,0.08) !important; }
+
+[data-theme="light"] .faq-item.open .faq-question-text { color: #0A5675 !important; }
+[data-theme="light"] .faq-item.open .faq-icon { border-color: rgba(10,86,117,0.5) !important; background: rgba(10,86,117,0.08) !important; }
+[data-theme="light"] .faq-divider { background: linear-gradient(90deg, #0A5675, transparent) !important; }
+
+[data-theme="light"] .journal-card-tag { color: #0A5675 !important; border-color: rgba(10,86,117,0.3) !important; }
+[data-theme="light"] .journal-card-arrow { color: rgba(10,86,117,0.5) !important; }
+[data-theme="light"] .journal-card:hover .journal-card-arrow { color: #0A5675 !important; }
+[data-theme="light"] .journal-divider { background: linear-gradient(to bottom, transparent, rgba(10,86,117,0.2), transparent) !important; }
+
+/* Hero glow theme switching is handled via React crossfade in HeroSection.jsx */
+[data-theme="light"] .logo-glow-burst {
+  background: radial-gradient(ellipse 60% 40% at 50% 60%, rgba(59,130,246,0.35) 0%, rgba(59,130,246,0.12) 40%, transparent 70%) !important;
 }
 
 *, *::before, *::after {
@@ -15,6 +161,8 @@
   margin: 0;
   padding: 0;
 }
+
+/* Theme transitions handled by overlay in ThemeContext — no CSS transitions needed */
 
 html {
   scroll-behavior: auto;
@@ -70,7 +218,7 @@ main {
   height: 0px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg);
+  background: var(--bg-section);
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(161,149,140,0.3);

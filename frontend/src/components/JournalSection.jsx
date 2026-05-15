@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 
 const JOURNAL_CSS = `
 .journal-section {
-  background: #060503;
+  background: var(--bg-primary);
   padding: clamp(80px, 14vh, 160px) clamp(24px, 8vw, 120px);
   position: relative;
   overflow: hidden;
@@ -34,8 +34,8 @@ const JOURNAL_CSS = `
   font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(245,240,235,0.4);
-  border: 1px solid rgba(245,240,235,0.12);
+  color: var(--text-faint);
+  border: 1px solid var(--border-medium);
   padding: 6px 14px;
   border-radius: 100px;
   margin-bottom: 24px;
@@ -45,7 +45,7 @@ const JOURNAL_CSS = `
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(2.6rem, 6vw, 5rem);
   font-weight: 300;
-  color: #f5f0eb;
+  color: var(--text-primary);
   letter-spacing: -0.04em;
   line-height: 1.0;
   margin: 0 0 16px 0;
@@ -55,7 +55,7 @@ const JOURNAL_CSS = `
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(0.85rem, 1.4vw, 1rem);
   font-weight: 300;
-  color: rgba(245,240,235,0.42);
+  color: var(--text-42);
   line-height: 1.7;
   margin: 0;
   max-width: 480px;
@@ -69,8 +69,8 @@ const JOURNAL_CSS = `
 }
 
 .journal-card {
-  background: linear-gradient(160deg, rgba(18,14,10,0.9), rgba(10,8,6,0.98));
-  border: 1px solid rgba(245,240,235,0.07);
+  background: var(--journal-card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 16px;
   padding: clamp(24px, 3vw, 36px);
   cursor: pointer;
@@ -89,7 +89,7 @@ const JOURNAL_CSS = `
 
 .journal-card-featured {
   grid-column: span 2;
-  background: linear-gradient(160deg, rgba(22,16,10,0.95), rgba(10,8,6,0.98));
+  background: var(--journal-card-bg);
   border-color: rgba(219,100,54,0.18);
 }
 
@@ -111,7 +111,7 @@ const JOURNAL_CSS = `
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(1rem, 1.6vw, 1.3rem);
   font-weight: 300;
-  color: #f5f0eb;
+  color: var(--text-primary);
   letter-spacing: -0.02em;
   line-height: 1.3;
   margin: 0;
@@ -126,7 +126,7 @@ const JOURNAL_CSS = `
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(0.78rem, 1.1vw, 0.88rem);
   font-weight: 300;
-  color: rgba(245,240,235,0.38);
+  color: var(--text-38);
   line-height: 1.75;
   margin: 0;
   letter-spacing: -0.005em;
@@ -138,14 +138,14 @@ const JOURNAL_CSS = `
   justify-content: space-between;
   margin-top: auto;
   padding-top: 16px;
-  border-top: 1px solid rgba(245,240,235,0.06);
+  border-top: 1px solid var(--border-faint);
 }
 
 .journal-card-date {
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 0.72rem;
   font-weight: 300;
-  color: rgba(245,240,235,0.28);
+  color: var(--text-faintest);
   letter-spacing: 0.04em;
 }
 
