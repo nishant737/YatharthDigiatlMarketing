@@ -476,13 +476,11 @@ export default function HeroSection() {
               transformOrigin: '50% 60%',
               display: 'flex',
               animation: 'gridPulse 5s ease-in-out infinite',
-              transition: 'opacity 0.7s ease',
             }}>
               {Array.from({ length: 26 }).map((_, i) => (
                 <div key={i} style={{
                   flex: 1,
                   borderRight: `1px solid ${dark ? 'rgba(255,140,80,0.07)' : 'rgba(59,130,246,0.07)'}`,
-                  transition: 'border-color 0.7s ease',
                 }} />
               ))}
             </div>
@@ -503,7 +501,6 @@ export default function HeroSection() {
                 <div key={i} style={{
                   width: '100%', height: '1px',
                   background: dark ? 'rgba(255,140,80,0.06)' : 'rgba(59,130,246,0.06)',
-                  transition: 'background 0.7s ease',
                 }} />
               ))}
             </div>
@@ -521,13 +518,13 @@ export default function HeroSection() {
           style={{ position: 'absolute', inset: '-5%', zIndex: 1, pointerEvents: 'none', willChange: 'transform' }}
         >
           {/* Orange layer — visible in dark mode */}
-          <div style={{ position: 'absolute', inset: 0, opacity: dark ? 1 : 0, transition: 'opacity 0.7s ease' }}>
+          <div style={{ position: 'absolute', inset: 0, opacity: dark ? 1 : 0 }}>
             <div className="hero-glow-outer" />
             <div className="hero-glow-mid"   />
             <div className="hero-glow-core"  />
           </div>
           {/* Blue layer — visible in light mode */}
-          <div style={{ position: 'absolute', inset: 0, opacity: dark ? 0 : 1, transition: 'opacity 0.7s ease' }}>
+          <div style={{ position: 'absolute', inset: 0, opacity: dark ? 0 : 1 }}>
             <div className="hero-glow-outer-blue" />
             <div className="hero-glow-mid-blue"   />
             <div className="hero-glow-core-blue"  />
@@ -535,11 +532,9 @@ export default function HeroSection() {
         </motion.div>
 
         {/* ── Ember particles: appear last (z:2) ── */}
-        <motion.div
+        <div
           aria-hidden
-          initial={{ opacity: 0 }}
-          animate={{ opacity: dark ? 1 : 0 }}
-          transition={{ duration: dark ? 1.5 : 0.7, ease: 'easeOut', delay: dark ? 1.6 : 0 }}
+          style={{ opacity: dark ? 1 : 0 }}
           style={{
             position: 'absolute', bottom: 0, left: 0, right: 0,
             height: '55vh', zIndex: 2, pointerEvents: 'none', overflow: 'hidden',
@@ -560,7 +555,7 @@ export default function HeroSection() {
               }}
             />
           ))}
-        </motion.div>
+        </div>
 
         {/* ── Combined exit wrapper (z:10) ── */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 10, pointerEvents: 'none', ...exitStyle }}>
