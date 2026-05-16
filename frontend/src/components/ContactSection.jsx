@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import logoDark from '../asset/l90.png'
+import logoDark from '../asset/amanlogo.png'
 import logoLight from '../asset/finalblue.png'
 import { useTheme } from '../ThemeContext'
 
@@ -126,7 +126,6 @@ export default function ContactSection() {
   const ref    = useRef(null)
   const inView = useInView(ref, { once: false, margin: '-10% 0px' })
   const { dark } = useTheme()
-  const logo = dark ? logoDark : logoLight
 
   const accent   = dark ? '#DB6436' : '#0A5675'
   const a06      = dark ? 'rgba(219,100,54,0.06)' : 'rgba(10,86,117,0.06)'
@@ -463,7 +462,7 @@ export default function ContactSection() {
           transition={{ duration: 1, delay: 0.6 }}
           style={{
             borderTop: '1px solid var(--border-faint)',
-            padding: 'clamp(20px, 3.5vh, 32px) clamp(24px, 6vw, 80px)',
+            padding: 'clamp(12px, 1.8vh, 20px) clamp(24px, 6vw, 80px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -474,16 +473,28 @@ export default function ContactSection() {
             width: '100%',
           }}
         >
-          <img
-            src={logo}
-            alt="Yatharth"
-            style={{
-              height: 'clamp(40px, 5vw, 64px)',
-              width: 'auto', objectFit: 'contain',
-              opacity: 0.32,
-              userSelect: 'none', pointerEvents: 'none',
-            }}
-          />
+          {/* Both logos in DOM — instant opacity swap, consistent size */}
+          <div style={{ position: 'relative', height: 'clamp(28px, 3vw, 40px)', flexShrink: 0 }}>
+            <img
+              src={logoDark}
+              alt="Yatharth"
+              style={{
+                height: '100%', width: 'auto', objectFit: 'contain',
+                opacity: dark ? 0.32 : 0,
+                userSelect: 'none', pointerEvents: 'none', display: 'block',
+              }}
+            />
+            <img
+              src={logoLight}
+              alt="Yatharth"
+              style={{
+                position: 'absolute', top: 0, left: 0,
+                height: '100%', width: 'auto', objectFit: 'contain',
+                opacity: dark ? 0 : 0.45,
+                userSelect: 'none', pointerEvents: 'none', display: 'block',
+              }}
+            />
+          </div>
           <span style={{
             fontFamily: "'Inter', system-ui, sans-serif",
             fontWeight: 300, fontSize: 'clamp(0.56rem, 0.85vw, 0.66rem)',
@@ -492,35 +503,6 @@ export default function ContactSection() {
           }}>
             Mangaluru &nbsp;·&nbsp; Est. 2020
           </span>
-          <a
-            href="https://www.linkedin.com/company/yatharth-social/"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'flex', alignItems: 'center', gap: '7px',
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontWeight: 400, fontSize: 'clamp(0.58rem, 0.88vw, 0.7rem)',
-              letterSpacing: '0.06em',
-              color: a60,
-              textDecoration: 'none',
-              border: `1px solid ${a18}`,
-              borderRadius: '100px',
-              padding: '6px 14px',
-              transition: 'color 0.25s ease, border-color 0.25s ease, background 0.25s ease',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.color = accent
-              e.currentTarget.style.borderColor = a50
-              e.currentTarget.style.background = a06
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.color = a60
-              e.currentTarget.style.borderColor = a18
-              e.currentTarget.style.background = 'transparent'
-            }}
-          >
-          {/* (Intentionally left blank or add content here if needed) */}
-          </a>
           
         </motion.div>
       </section>
