@@ -44,10 +44,11 @@ export default function App() {
 
           <CraftSection />
 
-          <OurWorkSection />
-
           <ClientSection />
 
+          <OurWorkSection />
+
+         
           <TestimonialsSection />
           <FounderNote />
          
