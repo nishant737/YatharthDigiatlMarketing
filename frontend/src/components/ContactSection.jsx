@@ -1,7 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import logoDark from '../asset/amanlogo.png'
-import logoLight from '../asset/finalblue.png'
 import { useTheme } from '../ThemeContext'
 
 const fade = (delay = 0) => ({
@@ -473,28 +472,16 @@ export default function ContactSection() {
             width: '100%',
           }}
         >
-          {/* Both logos in DOM — instant opacity swap, consistent size */}
-          <div style={{ position: 'relative', height: 'clamp(28px, 3vw, 40px)', flexShrink: 0 }}>
-            <img
-              src={logoDark}
-              alt="Yatharth"
-              style={{
-                height: '100%', width: 'auto', objectFit: 'contain',
-                opacity: dark ? 0.32 : 0,
-                userSelect: 'none', pointerEvents: 'none', display: 'block',
-              }}
-            />
-            <img
-              src={logoLight}
-              alt="Yatharth"
-              style={{
-                position: 'absolute', top: 0, left: 0,
-                height: '100%', width: 'auto', objectFit: 'contain',
-                opacity: dark ? 0 : 0.45,
-                userSelect: 'none', pointerEvents: 'none', display: 'block',
-              }}
-            />
-          </div>
+          <img
+            src={logoDark}
+            alt="Yatharth"
+            style={{
+              height: 'clamp(20px, 2vw, 28px)',
+              width: 'auto', objectFit: 'contain',
+              opacity: dark ? 0.30 : 0.18,
+              userSelect: 'none', pointerEvents: 'none', display: 'block', flexShrink: 0,
+            }}
+          />
           <span style={{
             fontFamily: "'Inter', system-ui, sans-serif",
             fontWeight: 300, fontSize: 'clamp(0.56rem, 0.85vw, 0.66rem)',

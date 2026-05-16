@@ -17,6 +17,7 @@ import ClosingSection from './components/ClosingSection'
 import ContactSection from './components/ContactSection'
 import ChatBot from './components/ChatBot'
 import MusicPlayer from './components/MusicPlayer'
+import ReelWidget from './components/ReelWidget'
 
 export default function App() {
   const [loaded, setLoaded] = useState(false)
@@ -58,6 +59,7 @@ export default function App() {
       </main>
       <MusicPlayer loaded={loaded} />
       <ChatBot loaded={loaded} />
+      <ReelWidget loaded={loaded} />
     </ThemeProvider>
   )
 }
