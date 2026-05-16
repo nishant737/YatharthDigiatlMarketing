@@ -6,7 +6,7 @@ import logoLight from '../asset/finalblue.png'
 import { useTheme } from '../ThemeContext'
 
 // Particle Logo Component with dispersion effect
-function ParticleLogo({ logo, isHovering, mousePos, onMouseMove, onMouseEnter, onMouseLeave }) {
+function ParticleLogo({ logoDark, logoLight, dark, isHovering, mousePos, onMouseMove, onMouseEnter, onMouseLeave }) {
   const [particles, setParticles] = useState([])
   const containerRef = useRef(null)
   
@@ -72,22 +72,32 @@ function ParticleLogo({ logo, isHovering, mousePos, onMouseMove, onMouseEnter, o
         height: 'auto',
       }}
     >
-      {/* Clean logo - always visible */}
-      <img
-        src={logo}
-        alt="Yatharth"
-        style={{
-          width: '100%',
-          height: 'auto',
-          objectFit: 'contain',
-          userSelect: 'none',
-          pointerEvents: 'none',
-          display: 'block',
-          opacity: isHovering ? 0.3 : 1,
-          filter: isHovering ? 'blur(2px)' : 'none',
-          transition: 'opacity 0.4s ease, filter 0.4s ease',
-        }}
-      />
+      {/* Both logos always in DOM — instant opacity swap, no src-change flash */}
+      <div style={{ position: 'relative', width: '100%' }}>
+        <img
+          src={logoDark}
+          alt="Yatharth"
+          style={{
+            width: '100%', height: 'auto', objectFit: 'contain',
+            userSelect: 'none', pointerEvents: 'none', display: 'block',
+            opacity: dark ? (isHovering ? 0.3 : 1) : 0,
+            filter: isHovering && dark ? 'blur(2px)' : 'none',
+            transition: isHovering ? 'opacity 0.4s ease, filter 0.4s ease' : 'none',
+          }}
+        />
+        <img
+          src={logoLight}
+          alt="Yatharth"
+          style={{
+            position: 'absolute', inset: 0,
+            width: '100%', height: 'auto', objectFit: 'contain',
+            userSelect: 'none', pointerEvents: 'none', display: 'block',
+            opacity: dark ? 0 : (isHovering ? 0.3 : 1),
+            filter: isHovering && !dark ? 'blur(2px)' : 'none',
+            transition: isHovering ? 'opacity 0.4s ease, filter 0.4s ease' : 'none',
+          }}
+        />
+      </div>
       
       {/* Particle overlay */}
       <div
@@ -146,7 +156,6 @@ export default function HeroSection() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [isHovering, setIsHovering] = useState(false)
   const { dark } = useTheme()
-  const logo = dark ? logoDark : logoLight
 
   // GSAP-driven parallax and logo entrance refs
   const gridRef  = useRef(null)   // inner grid container — GSAP applies 3D tilt here
@@ -168,6 +177,9 @@ export default function HeroSection() {
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 200)
+    // Preload both logos so theme switch is instant (no network delay)
+    const pre1 = new Image(); pre1.src = logoDark
+    const pre2 = new Image(); pre2.src = logoLight
     return () => clearTimeout(t)
   }, [])
 
@@ -323,6 +335,13 @@ export default function HeroSection() {
           );
           animation: emberRise linear infinite;
           will-change: transform, opacity;
+        }
+        [data-theme="light"] .hero-ember {
+          background: radial-gradient(circle,
+            rgba(147, 197, 253, 0.95) 0%,
+            rgba(59,  130, 246, 0.50) 55%,
+            transparent 100%
+          );
         }
         /* ── Glow layers — dark (orange) ── */
         .hero-glow-outer {
@@ -534,7 +553,6 @@ export default function HeroSection() {
         {/* ── Ember particles: appear last (z:2) ── */}
         <div
           aria-hidden
-          style={{ opacity: dark ? 1 : 0 }}
           style={{
             position: 'absolute', bottom: 0, left: 0, right: 0,
             height: '55vh', zIndex: 2, pointerEvents: 'none', overflow: 'hidden',
@@ -571,9 +589,11 @@ export default function HeroSection() {
             >
               {/* Glow burst on reveal */}
               {mounted && <div className="logo-glow-burst" />}
-              <ParticleLogo 
-                logo={logo} 
-                isHovering={isHovering} 
+              <ParticleLogo
+                logoDark={logoDark}
+                logoLight={logoLight}
+                dark={dark}
+                isHovering={isHovering}
                 mousePos={mousePos}
                 onMouseMove={handleMouseMove}
                 onMouseEnter={handleMouseEnter}

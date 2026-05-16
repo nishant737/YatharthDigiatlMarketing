@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 const ThemeContext = createContext(null)
 
 function freezeTransitions() {
+  if (document.getElementById('__theme-freeze__')) return
   const style = document.createElement('style')
   style.id = '__theme-freeze__'
   style.textContent = `*, *::before, *::after { transition: none !important; animation-duration: 0.001ms !important; }`
@@ -16,14 +17,21 @@ function thawTransitions() {
 export function ThemeProvider({ children }) {
   const [dark, setDark] = useState(true)
 
+  // Set initial data-theme synchronously on mount
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
-  }, [dark])
+    document.documentElement.setAttribute('data-theme', 'dark')
+  }, [])
 
   const toggle = useCallback(() => {
     freezeTransitions()
-    setDark(d => !d)
-    // Re-enable after browser paints the new theme
+    setDark(d => {
+      const newDark = !d
+      // Update CSS vars synchronously in same microtask as state change
+      // so both inline styles and CSS vars flip in one paint
+      document.documentElement.setAttribute('data-theme', newDark ? 'dark' : 'light')
+      return newDark
+    })
+    // Unfreeze after two rAFs (two paint frames) to ensure everything settled
     requestAnimationFrame(() => requestAnimationFrame(() => {
       thawTransitions()
     }))

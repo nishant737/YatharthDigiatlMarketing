@@ -136,7 +136,6 @@ export default function MusicPlayer({ loaded }) {
     alignItems: 'center',
     justifyContent: 'center',
     outline: 'none',
-    transition: 'border-color 0.3s, background 0.3s, box-shadow 0.3s, color 0.3s',
   }
 
   return (

@@ -144,8 +144,6 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen]   = useState(false)
   const isMobile = useIsMobile()
   const { dark } = useTheme()
-  const logo = dark ? logoDark : logoLight
-
   useEffect(() => {
     const onScroll = () => {
       const threshold = window.innerHeight * 0.5
@@ -295,19 +293,29 @@ export default function Navbar() {
             position: 'relative',
           }}
         >
-          <img
-            className="mobile-logo"
-            src={logo}
-            alt="Yatharth"
-            style={{
-              height: 'clamp(36px, 4.5vw, 62px)',
-              width: 'auto',
-              objectFit: 'contain',
-              display: 'block',
-              userSelect: 'none',
-              pointerEvents: 'none',
-            }}
-          />
+          {/* Both logos in DOM — instant opacity swap on theme toggle */}
+          <div style={{ position: 'relative', height: 'clamp(36px, 4.5vw, 62px)' }}>
+            <img
+              className="mobile-logo"
+              src={logoDark}
+              alt="Yatharth"
+              style={{
+                height: '100%', width: 'auto', objectFit: 'contain',
+                display: 'block', userSelect: 'none', pointerEvents: 'none',
+                opacity: dark ? 1 : 0,
+              }}
+            />
+            <img
+              src={logoLight}
+              alt="Yatharth"
+              style={{
+                position: 'absolute', top: 0, left: 0,
+                height: '100%', width: 'auto', objectFit: 'contain',
+                display: 'block', userSelect: 'none', pointerEvents: 'none',
+                opacity: dark ? 0 : 1,
+              }}
+            />
+          </div>
         </a>
 
         {/* Center: 4-column nav grid (desktop, home only) */}
