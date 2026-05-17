@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Clarity from '@microsoft/clarity'
 import { ThemeProvider } from './ThemeContext'
 import CustomCursor from './components/CustomCursor'
 import LoadingScreen from './components/LoadingScreen'
@@ -21,6 +22,8 @@ import ReelWidget from './components/ReelWidget'
 
 export default function App() {
   const [loaded, setLoaded] = useState(false)
+
+  Clarity.init(import.meta.env.VITE_APP_CLARITY_ID)
 
   return (
     <ThemeProvider>
