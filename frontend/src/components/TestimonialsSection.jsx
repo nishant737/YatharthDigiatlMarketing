@@ -332,9 +332,9 @@ export default function TestimonialsSection() {
             alignItems: 'center',
             gap: 'clamp(14px, 2vw, 24px)',
           }}>
-            <CardSlot key="slot-left"   position={-1} t={TESTIMONIALS[leftIdx]}  direction={direction} onClick={() => goDir(leftIdx, -1)} />
-            <CardSlot key="slot-center" position={0}  t={TESTIMONIALS[active]}   direction={direction} />
-            <CardSlot key="slot-right"  position={1}  t={TESTIMONIALS[rightIdx]} direction={direction} onClick={() => goDir(rightIdx, 1)} />
+            <CardSlot key="slot-left"   position={-1} t={TESTIMONIALS[leftIdx]}  direction={direction} onClick={() => goDir(leftIdx, -1)} accent={accent} ab42={ab42} ab1={ab1} ab07={ab07} />
+            <CardSlot key="slot-center" position={0}  t={TESTIMONIALS[active]}   direction={direction} accent={accent} ab42={ab42} ab1={ab1} ab07={ab07} />
+            <CardSlot key="slot-right"  position={1}  t={TESTIMONIALS[rightIdx]} direction={direction} onClick={() => goDir(rightIdx, 1)} accent={accent} ab42={ab42} ab1={ab1} ab07={ab07} />
           </div>
         )}
 
