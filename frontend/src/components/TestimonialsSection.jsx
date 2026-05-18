@@ -1,10 +1,10 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useTheme } from '../ThemeContext'
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion'
-import imgPrakash from '../asset/Dr. K. Prakash Shetty.png'
-import imgBrijesh from '../asset/Captain Brijesh Chowta.png'
-import imgGurme   from '../asset/Gurme Suresh Shetty.png'
-import imgNitik   from '../asset/Nitik Ratnakar.png'
+import imgPrakash from '../asset/dr_prakash.webp'
+import imgBrijesh from '../asset/captain_brijesh.webp'
+import imgGurme   from '../asset/gurme_suresh.webp'
+import imgNitik   from '../asset/nitik_ratnakar.webp'
 
 const TESTIMONIALS = [
   {

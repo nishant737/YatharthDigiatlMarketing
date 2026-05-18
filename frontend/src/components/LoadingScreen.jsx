@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, animate, useMotionValue, useTransform, useSpring } from 'framer-motion'
-import logo from '../asset/l90.png'
+import logo from '../asset/l90.webp'
 
 export default function LoadingScreen({ onComplete }) {
   const [phase,   setPhase]   = useState('idle')   // idle → loading → exit → done

@@ -1,7 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import lpBg from '../asset/pagenote.jpg'
-import founderImg from '../asset/final1.png'
+import lpBg from '../asset/pagenote.webp'
+import founderImg from '../asset/final1.webp'
 import { useTheme } from '../ThemeContext'
 const makeFounderCSS = (accent, accentHalf, accentFull) => `
 .founder-lp-bg {

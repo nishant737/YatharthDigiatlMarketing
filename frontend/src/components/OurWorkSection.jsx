@@ -1,9 +1,9 @@
 import { useRef, useEffect, useState } from 'react'
 import { useTheme } from '../ThemeContext'
-import img1 from '../asset/bolpupic.jpeg'
-import img2 from '../asset/eta01.jpg'
-import img3 from '../asset/netzeropic.jpeg'
-import img6 from '../asset/amatapic.jpg'
+import img1 from '../asset/bolpupic.webp'
+import img2 from '../asset/eta01.webp'
+import img3 from '../asset/netzeropic.webp'
+import img6 from '../asset/amatapic.webp'
 
 
 const PROJECTS = [
@@ -67,6 +67,8 @@ function ProjectCard({ project, imageRef, footerRef, textMain, textSub, borderC 
             ref={imageRef}
             src={project.image}
             alt={project.title}
+            loading="lazy"
+            decoding="async"
             style={{
               position: 'absolute',
               top: '-32px', left: 0,

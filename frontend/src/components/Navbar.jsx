@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import logoDark from '../asset/amanlogo.png'
-import logoLight from '../asset/finalblue.png'
+import logoDark from '../asset/amanlogo.webp'
+import logoLight from '../asset/finalblue.webp'
 import { useTheme } from '../ThemeContext'
 
 function smoothScrollTo(targetY, duration = 900) {

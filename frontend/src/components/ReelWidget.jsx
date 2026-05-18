@@ -103,6 +103,7 @@ export default function ReelWidget({ loaded }) {
           loop
           playsInline
           muted={muted}
+          preload="none"
           style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
         />
 
@@ -209,6 +210,7 @@ export default function ReelWidget({ loaded }) {
           loop
           muted
           playsInline
+          preload="none"
           style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
         />
         {/* Play badge */}

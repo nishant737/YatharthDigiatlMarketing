@@ -239,6 +239,7 @@ export default function StorySection() {
               muted
               loop
               playsInline
+              preload="none"
               style={{
                 filter: 'brightness(0.5)',
               }}

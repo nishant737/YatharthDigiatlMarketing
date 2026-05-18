@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import logoDark from '../asset/amanlogo.png'
+import logoDark from '../asset/amanlogo.webp'
 import { useTheme } from '../ThemeContext'
 
 const fade = (delay = 0) => ({

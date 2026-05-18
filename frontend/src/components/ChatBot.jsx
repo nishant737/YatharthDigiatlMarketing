@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import arthLogo from '../asset/Arth_Logo.png'
+import arthLogo from '../asset/arth_logo.webp'
 import { useTheme } from '../ThemeContext'
 
 const SERVICE_OPTIONS = ['Website', 'Branding', 'Social Media', 'Logo', 'Other']

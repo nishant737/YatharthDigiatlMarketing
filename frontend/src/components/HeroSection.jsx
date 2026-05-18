@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import gsap from 'gsap'
-import logoDark from '../asset/amanlogo.png'
-import logoLight from '../asset/finalblue.png'
+import logoDark from '../asset/amanlogo.webp'
+import logoLight from '../asset/finalblue.webp'
 import { useTheme } from '../ThemeContext'
 
 // Particle Logo Component with dispersion effect
