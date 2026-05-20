@@ -167,6 +167,14 @@ export default function Navbar() {
 
   const scrollTo = useCallback((id) => {
     if (id === 'home') { smoothScrollTo(0) }
+    else if (id === 'story') {
+      const el = document.getElementById(id)
+      if (el) {
+        const sectionTop = el.getBoundingClientRect().top + window.scrollY
+        const targetY = sectionTop + el.offsetHeight - window.innerHeight
+        smoothScrollTo(targetY)
+      }
+    }
     else {
       const el = document.getElementById(id)
       if (el) smoothScrollTo(el.getBoundingClientRect().top + window.scrollY)

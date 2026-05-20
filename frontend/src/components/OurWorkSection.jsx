@@ -1,18 +1,28 @@
 import { useRef, useEffect, useState } from 'react'
 import { useTheme } from '../ThemeContext'
-import img1 from '../asset/bolpupic.webp'
-import img2 from '../asset/eta01.webp'
+import img1 from '../asset/BOLPU_Image.jpg'
+import img2 from '../asset/etafinalfix.jpg'
 import img3 from '../asset/netzeropic.webp'
-import img6 from '../asset/amatapic.webp'
+import img16 from '../asset/Amata_Image.jpg'
+import img5 from '../asset/Mangalore_Kambala.jpg'
+import img7 from '../asset/Restora_Image.jpg'
+import img17 from '../asset/Koin_Home_Image.jpg'
 
 
 const PROJECTS = [
   {
-    title: 'BOLPU',
+    title: 'Koin Home',
+    category: 'Brand Strategy',
+    tag: 'Brand & Promotion',
+    year: '2025',
+    image: img17,
+  },
+  {
+    title: 'AMATA BUILDING CARE',
     category: 'Brand Strategy',
     tag: 'Digital Marketing',
     year: '2024',
-    image: img1,
+    image: img16,
   },
   {
     title: 'ETA',
@@ -28,14 +38,32 @@ const PROJECTS = [
     year: '2023',
     image: img3,
   },
-
   {
-    title: 'AMATA BUILDING CARE',
+    title: 'BOLPU',
     category: 'Brand Strategy',
     tag: 'Digital Marketing',
     year: '2024',
-    image: img6,
+    image: img1,
   },
+{
+    title: 'Mangalore Kambala',
+    category: 'Event Management',
+    tag: 'Digital Marketing',
+    year: '2024',
+    image: img5,
+  },
+  {
+    title: 'Restora',
+    category: 'Social Media Presence',
+    tag: 'Digital Marketing',
+    year: '2024',
+    image: img7,
+  },
+   
+
+
+
+  
 ]
 
 function ProjectCard({ project, imageRef, footerRef, textMain, textSub, borderC }) {
@@ -158,9 +186,9 @@ function ProjectCard({ project, imageRef, footerRef, textMain, textSub, borderC 
 export default function OurWorkSection() {
   const { dark } = useTheme()
   const accent   = dark ? '#E3735E' : '#0A5675'
-  const textMain = dark ? '#ffffff' : 'var(--text-primary)'
-  const textSub  = dark ? 'rgba(255,255,255,0.5)' : 'rgba(26,15,6,0.45)'
-  const borderC  = dark ? 'rgba(255,255,255,0.15)' : 'rgba(26,15,6,0.12)'
+  const textMain = '#ffffff'
+  const textSub  = 'rgba(255,255,255,0.5)'
+  const borderC  = 'rgba(255,255,255,0.15)'
 
   const sectionRef   = useRef(null)
   const trackRef     = useRef(null)
@@ -201,8 +229,8 @@ export default function OurWorkSection() {
     const tick = () => {
       const diff = targetG.current - currentG.current
       const TOTAL_STEPS = PROJECTS.length
-      if (Math.abs(diff) > 0.00004) {
-        currentG.current += diff * 0.18
+      if (Math.abs(diff) > 0.000008) {
+        currentG.current += diff * 0.072
 
         if (trackRef.current) {
           const tx = -(currentG.current * TOTAL_STEPS * STEP_VW)
@@ -344,12 +372,14 @@ export default function OurWorkSection() {
               display: 'flex',
               willChange: 'transform',
               transform: 'translate3d(0, 0, 0)',
+              backfaceVisibility: 'hidden',
+              perspective: '1000px',
             }}
           >
             {PROJECTS.map((project, i) => (
               <div
                 key={i}
-                style={{ width: '100vw', height: '100%', flexShrink: 0 }}
+                style={{ width: '100vw', height: '100%', flexShrink: 0, backfaceVisibility: 'hidden' }}
               >
                 <ProjectCard
                   project={project}
@@ -384,7 +414,7 @@ export default function OurWorkSection() {
                 fontFamily: "'Inter', system-ui, sans-serif",
                 fontWeight: 700,
                 fontSize: 'clamp(1.8rem, 3.8vw, 4.2rem)',
-                color: textMain,
+                color: dark ? textMain : '#000000',
                 lineHeight: 1.15,
                 letterSpacing: '-0.03em',
                 margin: 0,
