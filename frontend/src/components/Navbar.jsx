@@ -56,8 +56,8 @@ const NAV_COLUMNS = [
     { label: 'Insights',     id: 'journal' },
   ],
   [
-    { label: 'Instagram',    href: 'https://www.instagram.com/yatharth_digitalmarketing/' },
-    { label: 'LinkedIn',     href: 'https://www.linkedin.com/company/yatharth'            },
+    { label: 'Instagram',    href: 'https://www.instagram.com/yatharthsocial/?hl=en' },
+    { label: 'LinkedIn',     href: 'https://www.linkedin.com/company/yatharth-social/' },
   ],
 ]
 
@@ -499,8 +499,8 @@ export default function Navbar() {
 
               <div style={{ display: 'flex', gap: '28px' }}>
                 {[
-                  { label: 'Instagram', href: 'https://www.instagram.com/yatharth_digitalmarketing/' },
-                  { label: 'LinkedIn',  href: 'https://www.linkedin.com/company/yatharth' },
+                  { label: 'Instagram', href: 'https://www.instagram.com/yatharthsocial/?hl=en' },
+                  { label: 'LinkedIn',  href: 'https://www.linkedin.com/company/yatharth-social/' },
                 ].map(s => (
                   <a
                     key={s.label}
