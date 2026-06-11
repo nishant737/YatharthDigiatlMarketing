@@ -49,6 +49,19 @@ const STORY_CSS = `
     margin: 0;
   }
 
+  @media (min-width: 769px) and (max-width: 1023px) {
+    .story-content {
+      max-width: 100%;
+    }
+    .story-tagline {
+      font-size: clamp(0.9rem, 1.3vw, 1.1rem);
+    }
+    .story-body {
+      font-size: clamp(0.8rem, 1.1vw, 1rem);
+      line-height: 1.75;
+    }
+  }
+
   @media (max-width: 768px) {
     .story-mobile-wrap {
       display: flex;
@@ -89,14 +102,24 @@ const STORY_DATA = {
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-function useIsMobile() {
-  const [m, setM] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
+function useDeviceType() {
+  const [type, setType] = useState(() => {
+    if (typeof window === 'undefined') return 'desktop'
+    const w = window.innerWidth
+    if (w < 768) return 'mobile'
+    if (w < 1024) return 'tablet'
+    return 'desktop'
+  })
   useEffect(() => {
-    const h = () => setM(window.innerWidth < 768)
-    window.addEventListener('resize', h)
+    const h = () => {
+      const w = window.innerWidth
+      const newType = w < 768 ? 'mobile' : w < 1024 ? 'tablet' : 'desktop'
+      setType(newType)
+    }
+    window.addEventListener('resize', h, { passive: true })
     return () => window.removeEventListener('resize', h)
   }, [])
-  return m
+  return type
 }
 
 export default function StorySection() {
@@ -106,7 +129,9 @@ export default function StorySection() {
   const contentRef = useRef(null)
   const taglineRef = useRef(null)
   const paraRef    = useRef(null)
-  const isMobile   = useIsMobile()
+  const deviceType = useDeviceType()
+  const isMobile   = deviceType === 'mobile'
+  const isTablet   = deviceType === 'tablet'
   
   useEffect(() => {
     const section = sectionRef.current
@@ -145,6 +170,15 @@ export default function StorySection() {
         ease: 'power2.inOut',
         duration: 0.7,
       }, 0)
+    } else if (isTablet) {
+      // Tablet: moderate shrink + subtle translation
+      tl.to(videoContainer, {
+        scale: 0.52,
+        x: '-12vw',
+        borderRadius: '28px',
+        ease: 'power2.out',
+        duration: 0.6,
+      }, 0)
     } else {
       // Desktop: shrink + translate left
       tl.to(videoContainer, {
@@ -175,9 +209,9 @@ export default function StorySection() {
         if (st.vars.trigger === section) st.kill()
       })
     }
-  }, [isMobile])
+  }, [isMobile, isTablet])
   
-  // Content positioning differs between mobile (below video) and desktop (right of video)
+  // Content positioning differs between mobile (below video), tablet (right with balance), and desktop (right of video)
   const contentStyle = isMobile
     ? {
         position: 'absolute',
@@ -190,20 +224,35 @@ export default function StorySection() {
         zIndex: 10,
         textAlign: 'center',
       }
-    : {
-        position: 'absolute',
-        left: '50vw',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        width: 'clamp(240px, 38vw, 520px)',
-        maxHeight: '46vh',
-        overflow: 'hidden',
-        padding: '0 clamp(12px, 2vw, 24px)',
-        zIndex: 10,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-      }
+    : isTablet
+      ? {
+          position: 'absolute',
+          left: '42vw',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          width: 'clamp(240px, 35vw, 420px)',
+          maxHeight: '52vh',
+          overflow: 'hidden',
+          padding: '0 clamp(12px, 1.8vw, 20px)',
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }
+      : {
+          position: 'absolute',
+          left: '50vw',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          width: 'clamp(240px, 38vw, 520px)',
+          maxHeight: '46vh',
+          overflow: 'hidden',
+          padding: '0 clamp(12px, 2vw, 24px)',
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }
 
   return (
     <>
@@ -212,7 +261,7 @@ export default function StorySection() {
         id="story"
         ref={sectionRef}
         className="story-section"
-        style={{ minHeight: isMobile ? '210vh' : '190vh' }}
+        style={{ minHeight: isMobile ? '210vh' : isTablet ? '200vh' : '190vh' }}
       >
         <div style={{
           position: 'sticky',

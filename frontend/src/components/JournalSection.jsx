@@ -188,12 +188,21 @@ const JOURNAL_CSS = `
 
 const ARTICLES = [
   {
+    id: 0,
+    tag: 'Digital Marketing',
+    title: 'Digital Marketing Cost in Mangalore (2026 Complete Guide)',
+    excerpt: 'Discover the complete breakdown of digital marketing costs in Mangalore 2026. Learn SEO, Google Ads, and social media pricing with real ROI examples.',
+    date: 'June 2026',
+    featured: true,
+    url: 'https://medium.com/p/0c8c6ec17855?postPublishedType=initial',
+  },
+  {
     id: 1,
     tag: 'Branding',
     title: 'Why Most Brand Identities Fail Within Three Years',
     excerpt: "A brand is not a logo. It's a promise. And most brands fail because they confuse the two from the very beginning.",
     date: 'March 2025',
-    featured: true,
+    featured: false,
     url: 'https://www.become.team/blogs/why-brands-fail-and-what-businesses-can-learn-from-it',
   },
   {
@@ -223,15 +232,7 @@ const ARTICLES = [
     featured: false,
     url: 'https://medium.com/%40anandpdoshi/typography-giving-voice-to-words-fd5a79cd5da4',
   },
-  {
-    id: 5,
-    tag: 'Strategy',
-    title: 'On Saying No to the Right Clients',
-    excerpt: 'The projects we turn down define us as much as the ones we take on.',
-    date: 'November 2024',
-    featured: false,
-    url: 'https://www.creativeboom.com/tips/when-and-how-to-say-no-when-freelancing/',
-  },
+  
 ]
 
 const VP = { once: false, margin: '-8% 0px' }

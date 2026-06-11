@@ -254,10 +254,18 @@ export default function OurWorkSection() {
       }
 
       const raw = rawScrollR.current
-      const collapseT  = Math.min(1, Math.max(0, raw / 0.10))
-      const eased      = collapseT * collapseT
-      const headerOpac = Math.max(0, 1 - eased)
-      const headerY    = -(eased * 35)
+      // More aggressive header collapse: fade out header completely in first 5% of scroll
+      const headerCollapseT = Math.min(1, Math.max(0, raw / 0.05))
+      const headerEased     = headerCollapseT * headerCollapseT
+      const headerOpac      = Math.max(0, 1 - headerEased)
+      const headerY         = -(headerEased * 50)
+
+      // Navbar collapse: slower fade (original 10% threshold)
+      const navbarCollapseT = Math.min(1, Math.max(0, raw / 0.10))
+      const navbarEased     = navbarCollapseT * navbarCollapseT
+      const navbarOpac      = Math.max(0, 1 - navbarEased)
+      const navbarY         = -(navbarEased * 35)
+
       if (Math.abs(headerOpac - lastCollapseH.current) > 0.004) {
         lastCollapseH.current = headerOpac
         if (headerRef.current) {
@@ -266,12 +274,12 @@ export default function OurWorkSection() {
           headerRef.current.style.pointerEvents = headerOpac < 0.05 ? 'none' : 'auto'
         }
         if (navbarRef.current) {
-          navbarRef.current.style.opacity       = String(headerOpac)
-          navbarRef.current.style.transform     = `translateY(${headerY * 0.5}px)`
-          navbarRef.current.style.pointerEvents = headerOpac < 0.05 ? 'none' : 'auto'
+          navbarRef.current.style.opacity       = String(navbarOpac)
+          navbarRef.current.style.transform     = `translateY(${navbarY * 0.5}px)`
+          navbarRef.current.style.pointerEvents = navbarOpac < 0.05 ? 'none' : 'auto'
         }
         if (dividerRef.current) {
-          dividerRef.current.style.opacity = String(headerOpac)
+          dividerRef.current.style.opacity = String(navbarOpac)
         }
       }
 
@@ -328,10 +336,11 @@ export default function OurWorkSection() {
           style={{
             position: 'absolute',
             top: 0, left: 0, right: 0,
-            zIndex: 5,
+            zIndex: 1,
             padding: 'clamp(72px, 10vh, 112px) clamp(20px, 4vw, 56px) clamp(10px, 2vh, 22px)',
             background: 'var(--bg-section)',
             willChange: 'opacity, transform',
+            transition: 'none',
           }}
         >
           <h2 style={{
@@ -361,6 +370,7 @@ export default function OurWorkSection() {
             overflow: 'hidden',
             minHeight: 0,
             willChange: 'opacity',
+            zIndex: 10,
           }}
         >
           <div

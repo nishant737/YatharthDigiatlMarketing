@@ -41,6 +41,16 @@ const MARQUEE_CSS = `
   background: var(--card-bg);
 }
 
+.cs-left-text {
+  max-width: 260px;
+}
+
+@media (min-width: 769px) and (max-width: 1023px) {
+  .cs-left-text {
+    max-width: 100%;
+  }
+}
+
 .cs-left {
   display: flex;
   flex-direction: column;
@@ -119,6 +129,26 @@ const MARQUEE_CSS = `
     padding: 10px 14px;
   }
 }
+
+@media (min-width: 769px) and (max-width: 1023px) {
+  .cs-wrap {
+    grid-template-columns: minmax(240px, 1fr) 1.5fr;
+    border-radius: 18px;
+  }
+  .cs-left {
+    padding: clamp(30px, 4vw, 44px) clamp(20px, 3.5vw, 36px);
+    border-right: 1px solid var(--cs-border);
+  }
+  .cs-right {
+    padding: clamp(26px, 3.5vw, 40px) clamp(20px, 3vw, 32px);
+    gap: clamp(16px, 2vw, 24px);
+  }
+  .cs-logo-item {
+    width: clamp(100px, 14vw, 150px);
+    height: clamp(52px, 7vw, 70px);
+    padding: 10px 16px;
+  }
+}
 `
 
 function MarqueeRow({ logos, direction }) {
@@ -178,6 +208,7 @@ export default function ClientSection() {
           {/* ── Left: text panel ── */}
           <div className="cs-left">
             <motion.div
+              className="cs-left-text"
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
@@ -200,7 +231,6 @@ export default function ClientSection() {
                 color: 'var(--text-38)',
                 lineHeight: 1.7,
                 margin: '0 0 28px',
-                maxWidth: '260px',
               }}>
                 {LOGOS.length}+ brands that trusted us to shape their digital presence.
               </p>

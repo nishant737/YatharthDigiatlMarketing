@@ -2,14 +2,24 @@ import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useTheme } from '../ThemeContext'
 
-function useIsMobile() {
-  const [mobile, setMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
+function useDeviceType() {
+  const [type, setType] = useState(() => {
+    if (typeof window === 'undefined') return 'desktop'
+    const w = window.innerWidth
+    if (w < 768) return 'mobile'
+    if (w < 1024) return 'tablet'
+    return 'desktop'
+  })
   useEffect(() => {
-    const update = () => setMobile(window.innerWidth < 768)
+    const update = () => {
+      const w = window.innerWidth
+      const newType = w < 768 ? 'mobile' : w < 1024 ? 'tablet' : 'desktop'
+      setType(newType)
+    }
     window.addEventListener('resize', update, { passive: true })
     return () => window.removeEventListener('resize', update)
   }, [])
-  return mobile
+  return type
 }
 
 /* ── Large icons ── */
@@ -166,7 +176,9 @@ const ROTATIONS = [-6, -3, -1, 1, 3, 6]
 
 export default function CraftSection() {
   const { dark }  = useTheme()
-  const isMobile  = useIsMobile()
+  const deviceType = useDeviceType()
+  const isMobile  = deviceType === 'mobile'
+  const isTablet  = deviceType === 'tablet'
   const SERVICES  = getServices(dark)
   const accent    = dark ? '#E3735E' : '#0A5675'
   const glowColor = dark ? 'rgba(219,100,54,0.35)' : 'rgba(10,86,117,0.40)'
@@ -180,11 +192,15 @@ export default function CraftSection() {
 
   const vw       = typeof window !== 'undefined' ? window.innerWidth : 1440
   const vh       = typeof window !== 'undefined' ? window.innerHeight : 900
-  const CARD_W   = isMobile ? Math.round(vw * 0.76) : Math.round(Math.min(380, vw * 0.30))
+  const CARD_W   = isMobile
+    ? Math.round(vw * 0.76)
+    : isTablet
+      ? Math.round(Math.min(340, vw * 0.33))
+      : Math.round(Math.min(380, vw * 0.30))
   const CARD_H   = isMobile ? Math.round(vh * 0.68) : Math.round(vh * 0.74)
-  const GAP      = isMobile ? 16 : 24
+  const GAP      = isMobile ? 16 : isTablet ? 18 : 24
   // Left padding so first card is roughly centred
-  const PEEK     = isMobile ? Math.round((vw - CARD_W) / 2) : Math.round((vw - CARD_W) / 2)
+  const PEEK     = Math.round((vw - CARD_W) / 2)
 
   const totalW   = PEEK + SERVICES.length * (CARD_W + GAP) - GAP + PEEK
   const maxShift = totalW - vw   // total px the track travels
@@ -238,7 +254,7 @@ export default function CraftSection() {
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           style={{
             textAlign: 'center', flexShrink: 0,
-            padding: isMobile ? '36px 20px 20px' : '42px 0 22px',
+            padding: isMobile ? '36px 20px 20px' : isTablet ? '40px 16px 20px' : '42px 0 22px',
           }}
         >
           <span style={{
@@ -248,7 +264,7 @@ export default function CraftSection() {
           }}>Our Services</span>
           <h2 style={{
             fontFamily: "'Inter', sans-serif", fontWeight: 300,
-            fontSize: isMobile ? 'clamp(1.55rem,6.5vw,2.1rem)' : 'clamp(1.7rem,2.6vw,2.5rem)',
+            fontSize: isMobile ? 'clamp(1.55rem,6.5vw,2.1rem)' : isTablet ? 'clamp(1.65rem,3vw,2.2rem)' : 'clamp(1.7rem,2.6vw,2.5rem)',
             letterSpacing: '-0.04em', color: 'var(--text-primary)',
             margin: 0, lineHeight: 1.1,
           }}>
@@ -349,7 +365,7 @@ export default function CraftSection() {
                   <div style={{
                     marginTop: 'auto',
                     background: 'linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.28) 55%, transparent 100%)',
-                    padding: isMobile ? '52px 20px 24px' : '64px 26px 28px',
+                    padding: isMobile ? '52px 20px 24px' : isTablet ? '58px 22px 26px' : '64px 26px 28px',
                     position: 'relative', zIndex: 2,
                   }}>
                     <h3 style={{
@@ -377,7 +393,7 @@ export default function CraftSection() {
         <div style={{
           display: 'flex', justifyContent: 'center', alignItems: 'center',
           gap: '6px', flexShrink: 0,
-          padding: isMobile ? '14px 0 26px' : '16px 0 28px',
+          padding: isMobile ? '14px 0 26px' : isTablet ? '15px 0 27px' : '16px 0 28px',
         }}>
           {SERVICES.map((_, i) => (
             <div key={i} style={{

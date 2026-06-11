@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import logoDark from '../asset/amanlogo.webp'
 import logoLight from '../asset/finalblue.webp'
 import { useTheme } from '../ThemeContext'
+import { useNavbarVisibility } from '../hooks/useNavbarVisibility'
 
 function smoothScrollTo(targetY, duration = 900) {
   const startY = window.scrollY
@@ -144,6 +145,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen]   = useState(false)
   const isMobile = useIsMobile()
   const { dark } = useTheme()
+  const shouldHideNavbar = useNavbarVisibility()
   useEffect(() => {
     const onScroll = () => {
       const threshold = window.innerHeight * 0.5
@@ -274,8 +276,12 @@ export default function Navbar() {
       <motion.nav
         id="main-navbar"
         initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+        animate={{
+          opacity: shouldHideNavbar ? 0 : 1,
+          y: shouldHideNavbar ? -20 : 0,
+          pointerEvents: shouldHideNavbar ? 'none' : 'auto',
+        }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         style={{
           position: 'fixed', top: 0, left: 0, right: 0,
           zIndex: 99990,
@@ -413,8 +419,11 @@ export default function Navbar() {
       <motion.div
         id="navbar-divider"
         initial={{ opacity: 0, scaleX: 0 }}
-        animate={{ opacity: isHome ? 0 : 1, scaleX: isHome ? 0 : 1 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        animate={{
+          opacity: isHome || shouldHideNavbar ? 0 : 1,
+          scaleX: isHome || shouldHideNavbar ? 0 : 1,
+        }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         style={{
           position: 'fixed',
           top: 'clamp(64px, 9vh, 82px)',

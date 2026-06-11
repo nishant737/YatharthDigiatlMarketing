@@ -1,6 +1,20 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from '../ThemeContext'
+
+// Generate FAQPage JSON-LD schema for Google
+const generateFAQSchema = (faqs) => ({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(faq => ({
+    '@type': 'Question',
+    name: faq.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.a.replace(/<[^>]*>/g, ''), // Strip HTML tags if any
+    },
+  })),
+})
 
 const FAQ_CSS = `
 .faq-section {
@@ -135,44 +149,44 @@ const FAQ_CSS = `
 
 const FAQS = [
   {
-    q: 'What does Yatharth do?',
-    a: 'Yatharth is a full-service digital marketing and brand strategy agency based in Mangalore, India. We help businesses define how they are seen online — through brand strategy, SEO, Meta ads, content creation, social media management, influencer marketing, reels strategy, videography, and creative direction.',
+    q: 'What is Yatharth and what digital marketing services do we offer in Mangalore?',
+    a: 'Yatharth is a full-service digital marketing company in Mangalore specializing in brand strategy, SEO services, social media marketing, Meta ads management, website development, influencer marketing, content creation, and creative direction. We help businesses across Mangalore, Udupi, and Karnataka establish powerful online presence through data-driven digital marketing strategies.',
   },
   {
-    q: 'Who is the founder of Yatharth?',
-    a: 'Yatharth was founded by Eshwar Shetty, a digital marketing expert with deep expertise in brand strategy, SEO, social media marketing, Meta ads, and influencer marketing. He has worked with businesses across Karnataka including Mangalore, Udupi, and beyond.',
+    q: 'What are the best SEO services in Mangalore, and how can they improve my rankings?',
+    a: 'Our SEO services in Mangalore include technical optimization, keyword research, on-page and off-page SEO, local optimization, and content strategy. We help businesses rank for high-intent keywords like "digital marketing company in Mangalore," "SEO services in Mangalore," and industry-specific terms. Our clients have seen organic traffic increases of 300-500% within 6 months.',
   },
   {
-    q: 'Which areas does Yatharth serve?',
-    a: 'Yatharth works with clients across India, with a strong presence in Karnataka — particularly Mangalore, Udupi, Dakshina Kannada District, and Udupi District. We also work with national and international brands.',
+    q: 'How does social media marketing in Mangalore drive business growth?',
+    a: 'Our social media marketing services in Mangalore cover strategy development, content creation, community management, paid advertising on Instagram and Facebook, influencer partnerships, and reels strategy. We help build engaged audiences and drive qualified leads for e-commerce, services, hospitality, and B2B businesses across Karnataka.',
   },
   {
-    q: 'What industries does Yatharth work with?',
-    a: 'We have worked with clients across real estate, politics, sustainability, hospitality, education, professional services, and retail. Our clients include business leaders, elected officials, and international organisations operating in India.',
+    q: 'What is Meta Ads management, and how can it help my Mangalore business?',
+    a: 'Meta Ads management involves creating and optimizing Facebook and Instagram advertising campaigns. We handle audience research, ad creative development, budget allocation, A/B testing, and performance tracking. Businesses using Meta Ads management typically see 200-400% ROI, making it ideal for e-commerce, local services, and lead generation in Mangalore.',
   },
   {
-    q: 'What services does Yatharth offer?',
-    a: 'Our core services include Brand Strategy, SEO, Digital Marketing, Social Media Management, Instagram Marketing, Meta Ads (Facebook & Instagram), Influencer Marketing, Reels Strategy, Videography & Video Production, Content Creation & Storytelling, Creative Direction, Website Development, Poster Design, Flex Banner Design, and Event Marketing & Promotion.',
+    q: 'Do you offer website development services optimized for digital marketing?',
+    a: 'Yes, our website development services are built with SEO and conversion optimization at the core. We create fast, mobile-responsive websites that rank well on Google and integrate with your digital marketing strategy. Every website includes technical SEO, performance optimization, and is ready for social media and paid advertising campaigns.',
   },
   {
-    q: 'How does the brand strategy process work at Yatharth?',
-    a: 'We begin with a deep discovery session to understand your business, audience, and goals. From there we define your brand positioning, identity, and narrative — the strategic foundation that drives everything else. The process typically takes 2–4 weeks and results in a clear, actionable brand playbook.',
+    q: 'What is influencer marketing and how does it work for Mangalore brands?',
+    a: 'Influencer marketing involves partnering with content creators to authentically promote your brand. We manage the entire process: identifying creators aligned with your brand, negotiating partnerships, briefing and content review, and tracking ROI. It\'s highly effective for e-commerce, hospitality, consumer products, and lifestyle brands in Mangalore and across India.',
   },
   {
-    q: 'Can Yatharth help with Meta ads and paid campaigns?',
-    a: 'Yes. We plan, create, and manage Meta ad campaigns across Facebook and Instagram. This includes audience targeting, creative production, A/B testing, and performance analytics — all aimed at maximising return on ad spend for your business.',
+    q: 'How long does it take to see results from digital marketing services?',
+    a: 'Results vary by strategy: Google Ads deliver immediate visibility, social media ads show results in 1-3 weeks, while SEO typically takes 3-6 months for significant rankings. Our approach focuses on sustainable, long-term growth combined with quick wins. We provide monthly performance reports so you can track progress.',
   },
   {
-    q: 'Does Yatharth offer influencer marketing services?',
-    a: 'Yes. We handle end-to-end influencer marketing — from identifying the right creators for your brand, managing outreach, briefing, content review, and performance tracking. We work with influencers across Instagram and YouTube in Karnataka and across India.',
+    q: 'Why should I hire a digital marketing company in Mangalore instead of freelancers?',
+    a: 'A professional digital marketing company in Mangalore like Yatharth provides accountability, diverse expertise across SEO, social media, ads, and website development, consistent strategy implementation, and measurable results. We have established processes, team redundancy, and proven success with 17+ brands. Freelancers may lack these advantages.',
   },
   {
-    q: 'How do I get started with Yatharth?',
-    a: 'The easiest way to start is to reach out through our contact form or call us directly. We will schedule a free discovery call to understand your goals and recommend the right services for your business.',
+    q: 'Who founded Yatharth, and what is their experience?',
+    a: 'Yatharth was founded by Eshwar Shetty, a digital marketing expert with 17+ years of experience in brand strategy, SEO services, social media marketing, Meta ads management, and influencer marketing. He has worked with Member of Parliament, MLAs, corporate leaders, and multinational organizations, bringing this expertise to every client engagement.',
   },
   {
-    q: 'Why should I choose Yatharth over other agencies?',
-    a: 'Yatharth combines strategic thinking with creative execution — we do not just run campaigns, we build brands. Our clients include a Member of Parliament, an MLA, a Founder Chairman of a major business group, and an Executive Director of an international corporation. We bring the same level of craft and dedication to every engagement, regardless of size.',
+    q: 'How do I start working with a digital marketing agency in Mangalore?',
+    a: 'Getting started is simple: contact us through our website, email, or phone to schedule a free discovery call. During this call, we\'ll discuss your business goals, current marketing challenges, and how our services (SEO, social media marketing, Meta ads, website development) can help. There\'s no obligation — we\'re here to listen and recommend the right strategy for your needs.',
   },
 ]
 
@@ -189,6 +203,19 @@ export default function FAQSection() {
   const accentColor = dark ? '#DB6436' : '#0A5675'
 
   const toggle = (i) => setOpenIdx(prev => prev === i ? null : i)
+
+  // Inject JSON-LD FAQPage schema into document head
+  useEffect(() => {
+    const schema = generateFAQSchema(FAQS)
+    const script = document.createElement('script')
+    script.type = 'application/ld+json'
+    script.textContent = JSON.stringify(schema)
+    document.head.appendChild(script)
+
+    return () => {
+      document.head.removeChild(script)
+    }
+  }, [])
 
   return (
     <section id="faq" className="faq-section">
@@ -275,21 +302,6 @@ export default function FAQSection() {
             )
           })}
         </motion.div>
-      </div>
-
-      {/* Hidden SEO block — all Q&As readable by crawlers without JS */}
-      <div style={{
-        position: 'absolute', width: 1, height: 1,
-        overflow: 'hidden', clip: 'rect(0 0 0 0)',
-        whiteSpace: 'nowrap', pointerEvents: 'none',
-      }} aria-hidden="true">
-        <h2>Frequently Asked Questions about Yatharth</h2>
-        {FAQS.map((faq, i) => (
-          <div key={i}>
-            <h3>{faq.q}</h3>
-            <p>{faq.a}</p>
-          </div>
-        ))}
       </div>
 
     </section>
