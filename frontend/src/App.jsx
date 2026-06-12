@@ -1,10 +1,12 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Clarity from '@microsoft/clarity'
 import { ThemeProvider } from './ThemeContext'
 import CustomCursor from './components/CustomCursor'
 import LoadingScreen from './components/LoadingScreen'
 import Navbar from './components/Navbar'
 import HeroSection from './components/HeroSection'
+import CaseStudyPage from './components/CaseStudyPage'
 
 // Lazy-load all below-the-fold sections to reduce initial bundle parse time
 const StorySection       = lazy(() => import('./components/StorySection'))
@@ -21,25 +23,9 @@ const ChatBot            = lazy(() => import('./components/ChatBot'))
 const MusicPlayer        = lazy(() => import('./components/MusicPlayer'))
 const ReelWidget         = lazy(() => import('./components/ReelWidget'))
 
-export default function App() {
-  const [loaded, setLoaded] = useState(false)
-
-  // Init Clarity once after mount — not during render
-  useEffect(() => {
-    const id = import.meta.env.VITE_APP_CLARITY_ID
-    if (id) Clarity.init(id)
-  }, [])
-
+function HomePage({ loaded }) {
   return (
-    <ThemeProvider>
-      <CustomCursor />
-      <LoadingScreen onComplete={() => setLoaded(true)} />
-
-      {/* Lock scroll while loading */}
-      <style>{`body { overflow: ${loaded ? 'auto' : 'hidden'}; }`}</style>
-
-      {loaded && <Navbar />}
-      <main style={{ background: 'var(--bg-primary)' }}>
+    <main style={{ background: 'var(--bg-primary)' }}>
         <HeroSection />
 
         {/* Below-fold sections — lazy loaded, no visible fallback needed (they're off-screen) */}
@@ -58,12 +44,42 @@ export default function App() {
           </div>
         </Suspense>
       </main>
+  )
+}
 
-      <Suspense fallback={null}>
-        <MusicPlayer loaded={loaded} />
-        <ChatBot loaded={loaded} />
-        <ReelWidget loaded={loaded} />
-      </Suspense>
-    </ThemeProvider>
+export default function App() {
+  const [loaded, setLoaded] = useState(false)
+
+  // Init Clarity once after mount — not during render
+  useEffect(() => {
+    const id = import.meta.env.VITE_APP_CLARITY_ID
+    if (id) Clarity.init(id)
+  }, [])
+
+  return (
+    <BrowserRouter>
+      <ThemeProvider>
+        <CustomCursor />
+        <LoadingScreen onComplete={() => setLoaded(true)} />
+
+        {/* Lock scroll while loading */}
+        <style>{`body { overflow: ${loaded ? 'auto' : 'hidden'}; }`}</style>
+
+        {/* Global Navbar — appears on all pages */}
+        {loaded && <Navbar />}
+
+        <Routes>
+          <Route path="/" element={<HomePage loaded={loaded} />} />
+          <Route path="/case-study/:caseStudyId" element={<CaseStudyPage />} />
+        </Routes>
+
+        {/* Global UI Elements — appear on all pages */}
+        <Suspense fallback={null}>
+          <MusicPlayer loaded={loaded} />
+          <ChatBot loaded={loaded} />
+          <ReelWidget loaded={loaded} />
+        </Suspense>
+      </ThemeProvider>
+    </BrowserRouter>
   )
 }

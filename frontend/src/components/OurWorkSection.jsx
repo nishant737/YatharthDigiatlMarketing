@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../ThemeContext'
 import img1 from '../asset/BOLPU_Image.jpg'
 import img2 from '../asset/etafinalfix.jpg'
@@ -16,6 +17,7 @@ const PROJECTS = [
     tag: 'Brand & Promotion',
     year: '2025',
     image: img17,
+    caseStudyId: 'koin-home',
   },
   {
     title: 'AMATA BUILDING CARE',
@@ -23,6 +25,7 @@ const PROJECTS = [
     tag: 'Digital Marketing',
     year: '2024',
     image: img16,
+    caseStudyId: 'amata-building-care',
   },
   {
     title: 'ETA',
@@ -30,6 +33,7 @@ const PROJECTS = [
     tag: 'Performance Marketing',
     year: '2024',
     image: img2,
+    caseStudyId: 'eta',
   },
   {
     title: 'NET ZERO',
@@ -37,6 +41,7 @@ const PROJECTS = [
     tag: 'Brand & Promotion',
     year: '2023',
     image: img3,
+    caseStudyId: 'net-zero',
   },
   {
     title: 'BOLPU',
@@ -44,13 +49,15 @@ const PROJECTS = [
     tag: 'Digital Marketing',
     year: '2024',
     image: img1,
+    caseStudyId: 'bolpu',
   },
-{
+  {
     title: 'Mangalore Kambala',
     category: 'Event Management',
     tag: 'Digital Marketing',
     year: '2024',
     image: img5,
+    caseStudyId: 'mangalore-kambala',
   },
   {
     title: 'Restora',
@@ -58,6 +65,7 @@ const PROJECTS = [
     tag: 'Digital Marketing',
     year: '2024',
     image: img7,
+    caseStudyId: 'restora',
   },
    
 
@@ -66,8 +74,9 @@ const PROJECTS = [
   
 ]
 
-function ProjectCard({ project, imageRef, footerRef, textMain, textSub, borderC }) {
+function ProjectCard({ project, imageRef, footerRef, textMain, textSub, borderC, navigate }) {
   const [hovered, setHovered] = useState(false)
+  const [arrowHovered, setArrowHovered] = useState(false)
 
   return (
     <div
@@ -168,16 +177,59 @@ function ProjectCard({ project, imageRef, footerRef, textMain, textSub, borderC 
           }}>{project.tag}</span>
         </div>
 
-        {/* Title */}
-        <h3 style={{
-          fontFamily: "'Inter', system-ui, sans-serif",
-          fontWeight: 800,
-          fontSize: 'clamp(2rem, 5vw, 5rem)',
-          color: textMain,
-          margin: 0,
-          letterSpacing: '-0.03em',
-          lineHeight: 1,
-        }}>{project.title}</h3>
+        {/* Title with Arrow */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 'clamp(12px, 2vw, 24px)',
+          justifyContent: 'space-between',
+        }}>
+          <h3 style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontWeight: 800,
+            fontSize: 'clamp(2rem, 5vw, 5rem)',
+            color: textMain,
+            margin: 0,
+            letterSpacing: '-0.03em',
+            lineHeight: 1,
+            flex: 1,
+          }}>{project.title}</h3>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              navigate(`/case-study/${project.caseStudyId}`)
+            }}
+            onMouseEnter={() => setArrowHovered(true)}
+            onMouseLeave={() => setArrowHovered(false)}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease',
+              transform: arrowHovered ? 'translate(4px, -4px)' : 'translate(0, 0)',
+              opacity: hovered ? 1 : 0.7,
+            }}
+            aria-label={`View ${project.title} case study`}
+          >
+            <svg
+              width="clamp(24px, 4vw, 32px)"
+              height="clamp(24px, 4vw, 32px)"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={textMain}
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M7 17L17 7" />
+              <path d="M7 7h10v10" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -185,6 +237,7 @@ function ProjectCard({ project, imageRef, footerRef, textMain, textSub, borderC 
 
 export default function OurWorkSection() {
   const { dark } = useTheme()
+  const navigate = useNavigate()
   const accent   = dark ? '#E3735E' : '#0A5675'
   const textMain = '#ffffff'
   const textSub  = 'rgba(255,255,255,0.5)'
@@ -398,6 +451,7 @@ export default function OurWorkSection() {
                   textMain={textMain}
                   textSub={textSub}
                   borderC={borderC}
+                  navigate={navigate}
                 />
               </div>
             ))}
