@@ -14,6 +14,19 @@ import etaImage1 from '../asset/eta01.jpg'
 import etaImage2 from '../asset/eta02.jpg'
 import etaImage3 from '../asset/eta03.jpg'
 import etaImage4 from '../asset/eta04.jpg'
+import netZeroImage1 from '../asset/netzero01.jpg'
+import netZeroVideo from '../asset/netzero02.mp4'
+import netZeroImage2 from '../asset/netzero03.jpg'
+import bolpuImage1 from '../asset/bolpu01.jpg'
+import bolpuVideo1 from '../asset/bolpu01.mp4'
+import bolpuImage2 from '../asset/bolpu02.jpg'
+import bolpuVideo2 from '../asset/bolpu02.mp4'
+import kambalVideo1 from '../asset/kambala1.mp4'
+import kambalVideo2 from '../asset/kambala2.mp4'
+import kambalImage from '../asset/kambala3.jpg'
+import restoraImage1 from '../asset/restora01.jpg'
+import restoraImage2 from '../asset/restora02.jpg'
+import restoraImage3 from '../asset/restora03.jpg'
 
 const CASE_STUDIES = {
   'koin-home': {
@@ -77,75 +90,83 @@ const CASE_STUDIES = {
     ],
   },
   'net-zero': {
-    title: 'NET ZERO',
-    subtitle: 'Sustainability Initiative Event Marketing',
-    category: 'Event Marketing',
-    year: '2023',
-    tag: 'Brand & Promotion',
+    title: 'NET ZERO VISION',
+    subtitle: 'Sustainable Tomorrow Initiative - Building Climate Action Through Digital Engagement',
+    category: 'Sustainability Marketing',
+    year: '2024',
+    tag: 'Environmental Impact',
     image: null,
-    overview: 'NET ZERO is a sustainability-focused initiative promoting zero-waste practices. We handled complete event marketing and brand awareness campaign.',
-    challenge: 'Educating the audience about sustainability while driving event attendance and engagement with limited budget.',
-    solution: 'Created integrated marketing campaign combining digital advertising, influencer partnerships, content marketing, and PR outreach. Developed event activation strategies and post-event engagement plans.',
-    results: 'Attracted 1,200+ attendees with 65% engagement rate. 40+ media mentions and significant social media reach expansion.',
-    process: [
-      { title: 'Strategy', description: 'Campaign planning and target audience definition' },
-      { title: 'Content', description: 'Content creation and influencer partnerships' },
-      { title: 'Promotion', description: 'Multi-channel digital advertising' },
-      { title: 'Activation', description: 'Event execution and engagement' },
+    overview: 'NET ZERO Vision is a comprehensive sustainability initiative dedicated to promoting zero-waste practices and climate-positive action. We partnered with them to create a powerful digital campaign that transformed environmental awareness into tangible community engagement, reaching conscious consumers and organizations committed to building a sustainable future.',
+    challenge: 'With growing climate concerns, NET ZERO Vision struggled to break through information overload and build meaningful connections with target audiences. Limited budget, lack of influencer partnerships, and insufficient digital infrastructure made it difficult to communicate the urgency of sustainability without seeming preachy or disconnected from real-world impact.',
+    solution: null,
+    results: null,
+    process: null,
+    solutionPoints: [
+      'Strategic Digital Campaign Development: Crafted multi-channel marketing strategy combining social media, email campaigns, and digital PR to reach environmentally conscious audiences with authentic, actionable sustainability messaging.',
+      'Influencer & Community Partnerships: Collaborated with sustainability-focused creators and environmental advocates to amplify NET ZERO\'s message, lending credibility and extending reach to engaged communities already invested in climate action.',
+      'Educational Content Creation: Produced compelling storytelling content highlighting zero-waste solutions, industry best practices, and personal impact stories that educated audiences while inspiring behavioral change.',
+      'Event Marketing & Activation: Designed and executed comprehensive event marketing strategy including pre-event digital promotion, live social coverage, and post-event engagement campaigns to drive attendance and participation.',
+      'Impact Measurement & Community Building: Implemented tracking systems to measure engagement, attendance conversion, and social sentiment, while building a growing community of sustainability advocates and brand ambassadors.',
     ],
   },
   'bolpu': {
-    title: 'BOLPU',
-    subtitle: 'Agricultural Product Brand Positioning',
-    category: 'Brand Strategy',
+    title: 'BOLPU – A Dawn of Opportunities',
+    subtitle: 'Startup Incubation & Mentorship Program - Transforming Local Ideas Into Global Enterprises',
+    category: 'Startup Growth',
     year: '2024',
-    tag: 'Digital Marketing',
+    tag: 'Entrepreneurship & Brand Building',
     image: null,
-    overview: 'BOLPU is an agricultural product company needing modern brand repositioning to reach younger consumers and e-commerce channels.',
-    challenge: 'Traditional brand perception limiting market reach. Need to modernize brand while maintaining core values and customer trust.',
-    solution: 'Conducted brand audit and consumer research. Developed modern visual identity and brand messaging. Created digital marketing strategy targeting e-commerce and D2C channels.',
-    results: 'Successfully launched modernized brand identity. Increased online sales by 120%. Expanded distribution to 8 new e-commerce platforms.',
-    process: [
-      { title: 'Audit', description: 'Brand health assessment' },
-      { title: 'Modernization', description: 'Visual identity refresh' },
-      { title: 'Digital', description: 'E-commerce and D2C strategy' },
-      { title: 'Growth', description: 'Distribution expansion' },
+    overview: 'BOLPU is a transformative startup incubation and mentorship program dedicated to helping aspiring entrepreneurs turn innovative business ideas into successful, sustainable companies. By focusing on ventures rooted in local strengths with national and global potential, BOLPU creates a thriving ecosystem where emerging businesses receive strategic guidance, resources, and community support to scale and succeed.',
+    challenge: 'Emerging startups and entrepreneurs lacked visibility, structured mentorship, and access to critical resources needed for sustainable growth. The challenge was to build awareness about the program, attract quality entrepreneurs, establish credibility within the startup ecosystem, and create compelling narratives around founder stories and success journeys.',
+    solution: null,
+    results: null,
+    process: null,
+    solutionPoints: [
+      'Brand Identity & Program Positioning: Developed a compelling brand narrative that positioned BOLPU as the bridge between local entrepreneurial talent and global market opportunities, emphasizing mentorship, support, and success stories.',
+      'Multi-Channel Digital Marketing Campaign: Created integrated marketing across social media, email, and digital platforms to reach aspiring entrepreneurs, investors, and stakeholders with targeted messaging about program benefits.',
+      'Founder Story & Impact Content: Produced authentic storytelling content highlighting cohort member journeys, pitch sessions, mentorship interactions, and real business outcomes to build trust and inspire participation.',
+      'Community Building & Engagement: Developed strategies to foster an active community of entrepreneurs, mentors, and industry partners through events, webinars, and peer-to-peer networking initiatives.',
+      'Growth Catalyst Positioning: Positioned BOLPU as a catalyst for transforming local talent into global enterprises, showcasing how the program bridges the gap between ideation and market success.',
     ],
   },
   'mangalore-kambala': {
     title: 'Mangalore Kambala',
-    subtitle: 'Traditional Sport Event Digital Promotion',
-    category: 'Event Management',
+    subtitle: 'Preserving Tradition While Embracing Digital - Revitalizing a Centuries-Old Cultural Icon',
+    category: 'Cultural Events & Heritage Marketing',
     year: '2024',
-    tag: 'Digital Marketing',
+    tag: 'Digital Event Promotion',
     image: null,
-    overview: 'Mangalore Kambala is a traditional buffalo race event requiring modern digital marketing to increase viewership and participation.',
-    challenge: 'Traditional event with aging audience base. Needed to attract younger demographics and expand regional awareness.',
-    solution: 'Created digital campaign including social media content series, influencer partnerships, live streaming strategy, and community engagement initiatives.',
-    results: 'Increased event viewership by 200%. Generated 50,000+ social media impressions. Attracted 35% more participants from new demographics.',
-    process: [
-      { title: 'Digital Strategy', description: 'Social media and content planning' },
-      { title: 'Influencers', description: 'Creator partnerships and outreach' },
-      { title: 'Live Coverage', description: 'Event streaming and real-time engagement' },
-      { title: 'Community', description: 'Audience building and retention' },
+    overview: 'Mangalore Kambala, a historic buffalo racing tradition steeped in cultural heritage, required a transformative digital marketing strategy to bridge the gap between its traditional audience and modern, younger demographics. We partnered to elevate this centuries-old event, creating compelling digital narratives that honored its cultural significance while expanding its reach through contemporary platforms and storytelling.',
+    challenge: 'Despite its deep cultural roots, Mangalore Kambala faced challenges in maintaining relevance with younger audiences and expanding beyond regional boundaries. The event struggled with limited digital presence, outdated marketing approaches, and difficulty in communicating its cultural importance to diverse demographics who had little awareness of this iconic tradition.',
+    solution: null,
+    results: null,
+    process: null,
+    solutionPoints: [
+      'Heritage-Focused Digital Storytelling: Created compelling content that celebrated the cultural significance, history, and tradition of Mangalore Kambala while framing it as a modern cultural experience worth experiencing and sharing.',
+      'Multi-Platform Campaign Strategy: Developed integrated digital campaigns across social media, video platforms, and digital advertising to reach both traditional audiences and younger demographics with targeted, culturally relevant messaging.',
+      'Influencer & Creator Partnerships: Collaborated with regional influencers, content creators, and cultural ambassadors to authentically promote the event and reach new audiences through trusted voices and engaging content formats.',
+      'Live Streaming & Real-Time Engagement: Implemented comprehensive live streaming strategy with behind-the-scenes content, interactive elements, and real-time engagement to bring the event experience to audiences unable to attend physically.',
+      'Community Building & Cultural Advocacy: Fostered a digital community of cultural enthusiasts, tradition advocates, and event participants, positioning Mangalore Kambala as an essential cultural experience for preserving and celebrating regional heritage.',
     ],
   },
   'restora': {
-    title: 'Restora',
-    subtitle: 'Restaurant Brand Social Media Growth',
-    category: 'Social Media Presence',
+    title: 'RESTORA',
+    subtitle: 'Premium Beauty Studio - Nail Art, Microblading & Lash Services Social Media Excellence',
+    category: 'Beauty & Wellness Marketing',
     year: '2024',
-    tag: 'Digital Marketing',
+    tag: 'Social Media & Brand Growth',
     image: null,
-    overview: 'Restora restaurant required comprehensive social media strategy to build brand presence and drive foot traffic.',
-    challenge: 'Limited social media presence with low engagement. Competing with established restaurant brands in the area.',
-    solution: 'Developed content calendar and visual identity for Instagram and Facebook. Created user-generated content campaigns, influencer partnerships, and targeted paid advertising.',
-    results: 'Grew Instagram following from 500 to 12,000 followers. Increased restaurant reservations by 60%. Monthly engagement rate of 8.5%.',
-    process: [
-      { title: 'Content Strategy', description: 'Visual identity and content calendar' },
-      { title: 'Community', description: 'Engagement and UGC campaigns' },
-      { title: 'Influencers', description: 'Partnerships and collaborations' },
-      { title: 'Paid Media', description: 'Targeted advertising campaigns' },
+    overview: 'RESTORA is a premium beauty studio in Mangalore specializing in professional nail art, microblading, and eyelash services. We partnered to transform their digital presence through strategic social media marketing, creating a visually stunning brand that showcases artistry, expertise, and the transformative beauty of their services.',
+    challenge: 'As a beauty studio in a competitive market, RESTORA struggled with limited social media visibility and low online engagement despite offering premium beauty services. The challenge was building brand awareness among beauty-conscious consumers in Mangalore while competing with established beauty brands and differentiating through authentic, high-quality visual content.',
+    solution: null,
+    results: null,
+    process: null,
+    solutionPoints: [
+      'Premium Visual Content Strategy: Created stunning, high-quality photography and videography showcasing nail art designs, microblading transformations, and lash services, positioning RESTORA as a premium beauty destination.',
+      'Instagram-First Approach: Developed a comprehensive Instagram strategy with daily posts, reels, stories, and interactive content designed specifically for beauty enthusiasts and potential clients seeking nail art and beauty services.',
+      'Before & After Transformation Stories: Produced compelling before-and-after content and transformation reels highlighting the artistry and impact of RESTORA\'s services, driving engagement and building trust with prospects.',
+      'User-Generated Content & Community Engagement: Implemented UGC campaigns encouraging clients to share their RESTORA experiences, building an authentic community of beauty advocates and brand ambassadors.',
+      'Influencer & Beauty Creator Partnerships: Collaborated with beauty influencers, makeup artists, and lifestyle creators in Mangalore to amplify RESTORA\'s reach and credibility within the beauty community.',
     ],
   },
 }
@@ -597,6 +618,27 @@ export default function CaseStudyPage() {
                         { type: 'image', src: etaImage3, title: 'Global Trade Solutions' },
                         { type: 'image', src: etaImage4, title: 'Ocean & Sustainability' },
                       ],
+                      'net-zero': [
+                        { type: 'image', src: netZeroImage1, title: 'Global Sustainability Vision' },
+                        { type: 'video', src: netZeroVideo, title: 'Event Conference Highlights' },
+                        { type: 'image', src: netZeroImage2, title: 'Future of Sustainable Design' },
+                      ],
+                      'bolpu': [
+                        { type: 'image', src: bolpuImage1, title: 'Cohort Innovation Showcase' },
+                        { type: 'video', src: bolpuVideo1, title: 'Leadership & Vision Launch' },
+                        { type: 'image', src: bolpuImage2, title: 'Founder Community Building' },
+                        { type: 'video', src: bolpuVideo2, title: 'Startup Mentorship Sessions' },
+                      ],
+                      'mangalore-kambala': [
+                        { type: 'video', src: kambalVideo1, title: 'The Spirit of Tradition' },
+                        { type: 'image', src: kambalImage, title: 'Cultural Heritage Showcase' },
+                        { type: 'video', src: kambalVideo2, title: 'Event Highlights & Action' },
+                      ],
+                      'restora': [
+                        { type: 'image', src: restoraImage1, title: 'Beauty Studio Artistry' },
+                        { type: 'image', src: restoraImage2, title: 'Transformation Journey' },
+                        { type: 'image', src: restoraImage3, title: 'Premium Beauty Services' },
+                      ],
                     }
                     return (mediaByCase[caseStudyId] || mediaByCase['koin-home']).map((media, item) => (
                     <motion.div
@@ -609,7 +651,7 @@ export default function CaseStudyPage() {
                         borderRadius: '12px',
                         overflow: 'hidden',
                         boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
-                        aspectRatio: (['amata-building-care', 'eta'].includes(caseStudyId) ? '4 / 5' : '9 / 16'),
+                        aspectRatio: caseStudyId === 'net-zero' ? '3 / 4' : (['amata-building-care', 'eta', 'bolpu', 'restora'].includes(caseStudyId) ? '4 / 5' : caseStudyId === 'mangalore-kambala' ? '9 / 16' : '9 / 16'),
                         background: 'var(--bg-section)',
                         display: 'flex',
                         alignItems: 'center',
