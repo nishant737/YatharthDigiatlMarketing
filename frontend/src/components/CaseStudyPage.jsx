@@ -597,7 +597,7 @@ export default function CaseStudyPage() {
                         borderRadius: '12px',
                         overflow: 'hidden',
                         boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
-                        aspectRatio: '9 / 16',
+                        aspectRatio: caseStudyId === 'amata-building-care' ? '4 / 5' : '9 / 16',
                         background: 'var(--bg-section)',
                         display: 'flex',
                         alignItems: 'center',
