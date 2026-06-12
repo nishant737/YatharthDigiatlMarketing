@@ -10,6 +10,10 @@ import amataVideo from '../asset/amata4.mp4'
 import amataImage1 from '../asset/amata01.jpg'
 import amataImage2 from '../asset/amata02.jpg'
 import amataImage3 from '../asset/amata03.jpg'
+import etaImage1 from '../asset/eta01.jpg'
+import etaImage2 from '../asset/eta02.jpg'
+import etaImage3 from '../asset/eta03.jpg'
+import etaImage4 from '../asset/eta04.jpg'
 
 const CASE_STUDIES = {
   'koin-home': {
@@ -587,6 +591,12 @@ export default function CaseStudyPage() {
                         { type: 'image', src: amataImage2, title: 'Marketing Collateral' },
                         { type: 'image', src: amataImage3, title: 'Event Branding' },
                       ],
+                      'eta': [
+                        { type: 'image', src: etaImage1, title: 'Industry Expertise' },
+                        { type: 'image', src: etaImage2, title: 'Heritage & Experience' },
+                        { type: 'image', src: etaImage3, title: 'Global Trade Solutions' },
+                        { type: 'image', src: etaImage4, title: 'Ocean & Sustainability' },
+                      ],
                     }
                     return (mediaByCase[caseStudyId] || mediaByCase['koin-home']).map((media, item) => (
                     <motion.div
@@ -599,7 +609,7 @@ export default function CaseStudyPage() {
                         borderRadius: '12px',
                         overflow: 'hidden',
                         boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
-                        aspectRatio: caseStudyId === 'amata-building-care' ? '4 / 5' : '9 / 16',
+                        aspectRatio: (['amata-building-care', 'eta'].includes(caseStudyId) ? '4 / 5' : '9 / 16'),
                         background: 'var(--bg-section)',
                         display: 'flex',
                         alignItems: 'center',
