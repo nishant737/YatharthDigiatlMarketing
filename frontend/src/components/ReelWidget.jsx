@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTheme } from '../ThemeContext'
 
-const REEL_SRC = '/asset/reel.mp4'
+const REEL_SRC = '/asset/annapoi.mp4'
 // Open: smooth ease-out spring. Close: snappier compression
 const OPEN_TRANSITION  = 'opacity 0.42s cubic-bezier(0.22,1,0.36,1), transform 0.42s cubic-bezier(0.22,1,0.36,1)'
 const CLOSE_TRANSITION = 'opacity 0.32s cubic-bezier(0.55,0,1,0.45), transform 0.32s cubic-bezier(0.55,0,1,0.45)'

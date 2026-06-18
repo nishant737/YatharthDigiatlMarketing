@@ -51,14 +51,7 @@ const PROJECTS = [
     image: img1,
     caseStudyId: 'bolpu',
   },
-  {
-    title: 'Mangalore Kambala',
-    category: 'Event Management',
-    tag: 'Digital Marketing',
-    year: '2024',
-    image: img5,
-    caseStudyId: 'mangalore-kambala',
-  },
+  
   {
     title: 'Restora',
     category: 'Social Media Presence',
