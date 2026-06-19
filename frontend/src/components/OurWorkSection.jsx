@@ -3,11 +3,16 @@ import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../ThemeContext'
 import img1 from '../asset/BOLPU_Image.jpg'
 import img2 from '../asset/etafinalfix.jpg'
-import img3 from '../asset/netzeropic.webp'
+import img3 from '../asset/NET_Zero_Vision_Image.jpg'
 import img16 from '../asset/Amata_Image.jpg'
 import img5 from '../asset/Mangalore_Kambala.jpg'
 import img7 from '../asset/Restora_Image.jpg'
 import img17 from '../asset/Koin_Home_Image.jpg'
+import mobileImg1 from '../../mobile-view/BOLPU-Mobile.jpg'
+import mobileImg2 from '../../mobile-view/ETA-Mobile.jpg'
+import mobileImg3 from '../../mobile-view/NET_Zero_Vision-mobile.jpg'
+import mobileImg7 from '../../mobile-view/Restora-mobile.jpg'
+import mobileImg17 from '../../mobile-view/Koinhome-mobile.jpg'
 
 
 const PROJECTS = [
@@ -228,6 +233,14 @@ function ProjectCard({ project, imageRef, footerRef, textMain, textSub, borderC,
   )
 }
 
+const mobileImageMap = {
+  'koin-home': mobileImg17,
+  'eta': mobileImg2,
+  'net-zero': mobileImg3,
+  'bolpu': mobileImg1,
+  'restora': mobileImg7,
+}
+
 export default function OurWorkSection() {
   const { dark } = useTheme()
   const navigate = useNavigate()
@@ -235,6 +248,11 @@ export default function OurWorkSection() {
   const textMain = '#ffffff'
   const textSub  = 'rgba(255,255,255,0.5)'
   const borderC  = 'rgba(255,255,255,0.15)'
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
+
+  const getProjectImage = (project) => {
+    return isMobile && mobileImageMap[project.caseStudyId] ? mobileImageMap[project.caseStudyId] : project.image
+  }
 
   const sectionRef   = useRef(null)
   const trackRef     = useRef(null)
@@ -257,6 +275,7 @@ export default function OurWorkSection() {
   const STEP_VW = 100
 
   useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768)
 
     const recacheTotalScroll = () => {
       const el = sectionRef.current
@@ -333,7 +352,7 @@ export default function OurWorkSection() {
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', () => { recacheTotalScroll(); onScroll() }, { passive: true })
+    window.addEventListener('resize', () => { handleResize(); recacheTotalScroll(); onScroll() }, { passive: true })
     navbarRef.current  = document.getElementById('main-navbar')
     dividerRef.current = document.getElementById('navbar-divider')
     recacheTotalScroll()
@@ -351,6 +370,19 @@ export default function OurWorkSection() {
       if (dividerRef.current) {
         dividerRef.current.style.opacity = '1'
       }
+    }
+  }, [])
+
+  // Scroll to Our Work section when returning from case study
+  useEffect(() => {
+    if (sessionStorage.getItem('scrollToOurWork')) {
+      sessionStorage.removeItem('scrollToOurWork')
+      setTimeout(() => {
+        const element = sectionRef.current
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }, 100)
     }
   }, [])
 
@@ -438,7 +470,7 @@ export default function OurWorkSection() {
                 style={{ width: '100vw', height: '100%', flexShrink: 0, backfaceVisibility: 'hidden' }}
               >
                 <ProjectCard
-                  project={project}
+                  project={{ ...project, image: getProjectImage(project) }}
                   imageRef={el => { imageRefs.current[i] = el }}
                   footerRef={el => { footerRefs.current[i] = el }}
                   textMain={textMain}

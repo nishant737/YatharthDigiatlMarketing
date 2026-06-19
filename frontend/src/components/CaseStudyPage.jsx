@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useTheme } from '../ThemeContext'
 import koinhomeVideo1 from '../asset/koinhome1.mp4'
@@ -242,7 +242,10 @@ export default function CaseStudyPage() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            onClick={() => navigate('/')}
+            onClick={() => {
+              navigate(-1)
+              sessionStorage.setItem('scrollToOurWork', 'true')
+            }}
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",
               display: 'flex',
