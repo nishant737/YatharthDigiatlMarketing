@@ -6,13 +6,13 @@ import img2 from '../asset/etafinalfix.jpg'
 import img3 from '../asset/NET_Zero_Vision_Image.jpg'
 import img16 from '../asset/Amata_Image.jpg'
 import img5 from '../asset/Mangalore_Kambala.jpg'
-import img7 from '../asset/Restora_Image.jpg'
 import img17 from '../asset/Koin_Home_Image.jpg'
+import imgOlive from '../asset/Olive-Dekstop.jpg'
 import mobileImg1 from '../../mobile-view/BOLPU-Mobile.jpg'
 import mobileImg2 from '../../mobile-view/ETA-Mobile.jpg'
 import mobileImg3 from '../../mobile-view/NET_Zero_Vision-mobile.jpg'
-import mobileImg7 from '../../mobile-view/Restora-mobile.jpg'
 import mobileImg17 from '../../mobile-view/Koinhome-mobile.jpg'
+import mobileImgOlive from '../../mobile-view/Olive-Mobile.jpg'
 
 
 const PROJECTS = [
@@ -56,20 +56,14 @@ const PROJECTS = [
     image: img1,
     caseStudyId: 'bolpu',
   },
-  
   {
-    title: 'Restora',
-    category: 'Social Media Presence',
+    title: 'Olive',
+    category: 'Brand Strategy',
     tag: 'Digital Marketing',
     year: '2024',
-    image: img7,
-    caseStudyId: 'restora',
+    image: imgOlive,
+    caseStudyId: 'olive',
   },
-   
-
-
-
-  
 ]
 
 function ProjectCard({ project, imageRef, footerRef, textMain, textSub, borderC, navigate }) {
@@ -238,7 +232,7 @@ const mobileImageMap = {
   'eta': mobileImg2,
   'net-zero': mobileImg3,
   'bolpu': mobileImg1,
-  'restora': mobileImg7,
+  'olive': mobileImgOlive,
 }
 
 export default function OurWorkSection() {

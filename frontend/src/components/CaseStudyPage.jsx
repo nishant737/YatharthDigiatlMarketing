@@ -27,6 +27,8 @@ import kambalImage from '../asset/kambala3.jpg'
 import restoraImage1 from '../asset/restora01.jpg'
 import restoraImage2 from '../asset/restora02.jpg'
 import restoraImage3 from '../asset/restora03.jpg'
+import heroVideo from '../asset/herovideo.mp4'
+import heroSectionVideo from '../asset/heroSectionVideo.mp4'
 
 const CASE_STUDIES = {
   'koin-home': {
@@ -149,24 +151,25 @@ const CASE_STUDIES = {
       'Community Building & Cultural Advocacy: Fostered a digital community of cultural enthusiasts, tradition advocates, and event participants, positioning Mangalore Kambala as an essential cultural experience for preserving and celebrating regional heritage.',
     ],
   },
-  'restora': {
-    title: 'RESTORA',
-    subtitle: 'Premium Beauty Studio - Nail Art, Microblading & Lash Services Social Media Excellence',
-    category: 'Beauty & Wellness Marketing',
+  'olive': {
+    title: 'OLIVE',
+    subtitle: 'Website Development & Digital Analytics Integration - Building a Data-Driven Web Presence',
+    category: 'Web Development & Analytics',
     year: '2024',
-    tag: 'Social Media & Brand Growth',
+    tag: 'Technical SEO & Performance',
     image: null,
-    overview: 'RESTORA is a premium beauty studio in Mangalore specializing in professional nail art, microblading, and eyelash services. We partnered to transform their digital presence through strategic social media marketing, creating a visually stunning brand that showcases artistry, expertise, and the transformative beauty of their services.',
-    challenge: 'As a beauty studio in a competitive market, RESTORA struggled with limited social media visibility and low online engagement despite offering premium beauty services. The challenge was building brand awareness among beauty-conscious consumers in Mangalore while competing with established beauty brands and differentiating through authentic, high-quality visual content.',
-    solution: null,
+    overview: 'OLIVE partnered with us to build a modern, high-performance website and establish comprehensive digital analytics infrastructure. Our mission was to create a robust online presence that not only showcased their brand effectively but also provided deep insights into user behavior, performance metrics, and search engine visibility through integrated analytics and monitoring tools.',
+    challenge: 'OLIVE needed a powerful web presence with complete visibility into their digital performance. Without proper analytics and SEO infrastructure, they were unable to understand user behavior, track conversions, or optimize for search engines. The challenge was building a website that served both users and business objectives while establishing measurable performance tracking.',
+    solution: 'We developed a comprehensive web solution incorporating modern design, robust technical architecture, and enterprise-grade analytics infrastructure to ensure data-driven decision making.',
     results: null,
     process: null,
     solutionPoints: [
-      'Premium Visual Content Strategy: Created stunning, high-quality photography and videography showcasing nail art designs, microblading transformations, and lash services, positioning RESTORA as a premium beauty destination.',
-      'Instagram-First Approach: Developed a comprehensive Instagram strategy with daily posts, reels, stories, and interactive content designed specifically for beauty enthusiasts and potential clients seeking nail art and beauty services.',
-      'Before & After Transformation Stories: Produced compelling before-and-after content and transformation reels highlighting the artistry and impact of RESTORA\'s services, driving engagement and building trust with prospects.',
-      'User-Generated Content & Community Engagement: Implemented UGC campaigns encouraging clients to share their RESTORA experiences, building an authentic community of beauty advocates and brand ambassadors.',
-      'Influencer & Beauty Creator Partnerships: Collaborated with beauty influencers, makeup artists, and lifestyle creators in Mangalore to amplify RESTORA\'s reach and credibility within the beauty community.',
+      'Professional Website Development: Built a modern, responsive website with clean architecture, fast loading times, and optimized performance across all devices and browsers.',
+      'Google Analytics Integration: Implemented comprehensive Google Analytics 4 tracking with custom events, conversion tracking, and detailed user journey analysis to measure engagement and performance.',
+      'Microsoft Clarity Implementation: Integrated Microsoft Clarity for session recordings, heatmaps, and user behavior analysis to understand how visitors interact with the website in real-time.',
+      'SEO Optimization & Technical SEO: Implemented on-page SEO best practices, optimized meta tags, structured data markup, XML sitemaps, and robot.txt configuration to improve search engine visibility.',
+      'Performance Monitoring & Continuous Optimization: Set up performance dashboards and monitoring systems to track key metrics, identify bottlenecks, and continuously improve website speed and user experience.',
+      'Conversion Tracking & Goal Implementation: Configured detailed conversion tracking and goal setup to measure business outcomes and ROI from web traffic.',
     ],
   },
 }
@@ -524,6 +527,24 @@ export default function CaseStudyPage() {
                     flex-direction: column;
                     gap: 40px;
                   }
+
+                  .solutions-wrapper.olive-layout {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 60px;
+                  }
+
+                  .solutions-wrapper.olive-layout .solutions-left-content {
+                    position: relative;
+                    top: auto;
+                    z-index: 1;
+                  }
+
+                  .solutions-wrapper.olive-layout .solutions-right-content {
+                    position: sticky;
+                    top: 120px;
+                    height: fit-content;
+                    z-index: 2;
+                  }
                 }
 
                 @media (max-width: 1023px) {
@@ -538,7 +559,7 @@ export default function CaseStudyPage() {
                 }
               `}</style>
 
-              <div className="solutions-wrapper">
+              <div className={`solutions-wrapper ${caseStudyId === 'olive' ? 'olive-layout' : ''}`}>
                 {/* Left Column: Solution Points */}
                 <motion.div
                   className="solutions-left-content"
@@ -637,10 +658,8 @@ export default function CaseStudyPage() {
                         { type: 'image', src: kambalImage, title: 'Cultural Heritage Showcase' },
                         { type: 'video', src: kambalVideo2, title: 'Event Highlights & Action' },
                       ],
-                      'restora': [
-                        { type: 'image', src: restoraImage1, title: 'Beauty Studio Artistry' },
-                        { type: 'image', src: restoraImage2, title: 'Transformation Journey' },
-                        { type: 'image', src: restoraImage3, title: 'Premium Beauty Services' },
+                      'olive': [
+                        { type: 'video', src: heroSectionVideo, title: 'Hero Video Showcase' },
                       ],
                     }
                     return (mediaByCase[caseStudyId] || mediaByCase['koin-home']).map((media, item) => (
@@ -654,7 +673,7 @@ export default function CaseStudyPage() {
                         borderRadius: '12px',
                         overflow: 'hidden',
                         boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
-                        aspectRatio: caseStudyId === 'net-zero' ? '3 / 4' : (['amata-building-care', 'eta', 'bolpu', 'restora'].includes(caseStudyId) ? '4 / 5' : caseStudyId === 'mangalore-kambala' ? '9 / 16' : '9 / 16'),
+                        aspectRatio: caseStudyId === 'net-zero' ? '3 / 4' : (['amata-building-care', 'eta', 'bolpu', 'olive'].includes(caseStudyId) ? '4 / 5' : caseStudyId === 'mangalore-kambala' ? '9 / 16' : '9 / 16'),
                         background: 'var(--bg-section)',
                         display: 'flex',
                         alignItems: 'center',
