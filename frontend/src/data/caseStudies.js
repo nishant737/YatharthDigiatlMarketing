@@ -127,6 +127,7 @@ export const CASE_STUDIES = {
     category: 'Brand Building',
     year: '2025',
     tag: 'Social Media & Performance Marketing',
+    website: 'https://www.radiancehotels.com',
     image: null,
     overview: 'Radiance by Hotel Roopa is a 3-star hotel in Mangalore. We built the brand from scratch and took care of its complete digital presence, from social media and performance marketing to a website with an integrated booking system.',
     challenge: 'As a new brand, Radiance had to be discovered and trusted by travellers in a competitive hospitality market. It needed a recognisable identity, an active online presence, a steady flow of enquiries, and an easy way for guests to book directly.',

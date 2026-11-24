@@ -172,6 +172,34 @@ export default function CaseStudyPage() {
             >
               {study.subtitle}
             </motion.p>
+
+            {study.website && (
+              <motion.a
+                href={study.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.35 }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  marginTop: '24px',
+                  padding: '12px 22px',
+                  borderRadius: '999px',
+                  border: `1px solid ${accentColor}`,
+                  color: accentColor,
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '0.95rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  wordBreak: 'break-all',
+                }}
+              >
+                Visit live website: {study.website.replace(/^https?:\/\/(www\.)?/, '')} ↗
+              </motion.a>
+            )}
           </div>
         </section>
 

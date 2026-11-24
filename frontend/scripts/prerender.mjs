@@ -242,6 +242,7 @@ for (const id of caseIds) {
 <h1>${esc(s.title)}</h1>
 <p>${esc(s.subtitle)}</p>
 <p>${esc(s.category)} · ${esc(s.tag)} · ${esc(s.year)}</p>
+${s.website ? `<p>Live website: <a href="${esc(s.website)}" rel="noopener">${esc(s.website.replace(/^https?:\/\//, ''))}</a></p>` : ''}
 <h2>Overview</h2><p>${esc(s.overview)}</p>
 <h2>The challenge</h2><p>${esc(s.challenge)}</p>
 ${s.solution ? `<h2>Our approach</h2><p>${esc(s.solution)}</p>` : ''}
