@@ -2,14 +2,14 @@ import { useRef, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../ThemeContext'
 import img1 from '../asset/BOLPU_Image.jpg'
-import img2 from '../asset/etafinalfix.jpg'
+import img2 from '../asset/village-dekstopview.jpg'
 import img3 from '../asset/NET_Zero_Vision_Image.jpg'
 import img16 from '../asset/Amata_Image.jpg'
-import img5 from '../asset/Mangalore_Kambala.jpg'
+import imgRadiance from '../asset/radiance.jpg'
 import img17 from '../asset/Koin_Home_Image.jpg'
 import imgOlive from '../asset/Olive-Dekstop.jpg'
 import mobileImg1 from '../../mobile-view/BOLPU-Mobile.jpg'
-import mobileImg2 from '../../mobile-view/ETA-Mobile.jpg'
+import mobileImg2 from '../../mobile-view/village-mobileview.jpg'
 import mobileImg3 from '../../mobile-view/NET_Zero_Vision-mobile.jpg'
 import mobileImg17 from '../../mobile-view/Koinhome-mobile.jpg'
 import mobileImgOlive from '../../mobile-view/Olive-Mobile.jpg'
@@ -33,12 +33,13 @@ const PROJECTS = [
     caseStudyId: 'amata-building-care',
   },
   {
-    title: 'ETA',
-    category: 'Digital Campaigns',
-    tag: 'Performance Marketing',
-    year: '2024',
+    title: 'Village',
+    category: 'Menu & Packaging Design',
+    tag: 'Brand & Design',
+    year: '2025',
     image: img2,
-    caseStudyId: 'eta',
+    caseStudyId: 'village',
+    objectPosition: 'right center',
   },
   {
     title: 'NET ZERO',
@@ -55,6 +56,14 @@ const PROJECTS = [
     year: '2024',
     image: img1,
     caseStudyId: 'bolpu',
+  },
+  {
+    title: 'Radiance',
+    category: 'Brand Building',
+    tag: 'Social Media & Performance Marketing',
+    year: '2025',
+    image: imgRadiance,
+    caseStudyId: 'radiance',
   },
   {
     title: 'Olive',
@@ -104,6 +113,7 @@ function ProjectCard({ project, imageRef, footerRef, textMain, textSub, borderC,
               width: '100%',
               height: 'calc(100% + 64px)',
               objectFit: 'cover',
+              objectPosition: project.objectPosition || 'center',
               display: 'block',
               willChange: 'transform',
               transform: 'translateY(0px)',
@@ -229,7 +239,7 @@ function ProjectCard({ project, imageRef, footerRef, textMain, textSub, borderC,
 
 const mobileImageMap = {
   'koin-home': mobileImg17,
-  'eta': mobileImg2,
+  'village': mobileImg2,
   'net-zero': mobileImg3,
   'bolpu': mobileImg1,
   'olive': mobileImgOlive,
@@ -369,6 +379,18 @@ export default function OurWorkSection() {
 
   // Scroll to Our Work section when returning from case study
   useEffect(() => {
+    // Returning from the "See More" page: land on the final slide, where the user left
+    if (sessionStorage.getItem('scrollToOurWorkEnd')) {
+      sessionStorage.removeItem('scrollToOurWorkEnd')
+      sessionStorage.removeItem('scrollToOurWork')
+      setTimeout(() => {
+        const el = sectionRef.current
+        if (!el) return
+        const top = el.getBoundingClientRect().top + window.scrollY
+        window.scrollTo({ top: top + el.offsetHeight - window.innerHeight, behavior: 'instant' })
+      }, 100)
+      return
+    }
     if (sessionStorage.getItem('scrollToOurWork')) {
       sessionStorage.removeItem('scrollToOurWork')
       setTimeout(() => {
@@ -464,7 +486,7 @@ export default function OurWorkSection() {
                 style={{ width: '100vw', height: '100%', flexShrink: 0, backfaceVisibility: 'hidden' }}
               >
                 <ProjectCard
-                  project={{ ...project, image: getProjectImage(project) }}
+                  project={{ ...project, image: getProjectImage(project), objectPosition: isMobile ? 'center' : project.objectPosition }}
                   imageRef={el => { imageRefs.current[i] = el }}
                   footerRef={el => { footerRefs.current[i] = el }}
                   textMain={textMain}
@@ -485,12 +507,18 @@ export default function OurWorkSection() {
                 padding: `0 clamp(48px, 8vw, 120px)`,
                 background: 'var(--bg-section)',
                 boxSizing: 'border-box',
+                position: 'relative',
               }}
             >
               <style>{`
-                @keyframes bounceDown {
-                  0%, 100% { transform: translateY(0); }
-                  50%       { transform: translateY(7px); }
+                @keyframes bounceDiag {
+                  0%, 100% { transform: translate(0, 0); }
+                  50%       { transform: translate(5px, -5px); }
+                }
+                @keyframes scrollCue {
+                  0%   { transform: translateY(0);    opacity: 0; }
+                  30%  { opacity: 1; }
+                  100% { transform: translateY(10px); opacity: 0; }
                 }
               `}</style>
               <p style={{
@@ -506,16 +534,64 @@ export default function OurWorkSection() {
                 These are not just projects, they are stories of our
                 clients, our work, and the impact we made.{' '}
                 <a
-                  href="#our-work"
+                  href="/our-work"
+                  onClick={e => {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return
+                    e.preventDefault()
+                    navigate('/our-work')
+                  }}
                   style={{ color: accent, textDecoration: 'none', whiteSpace: 'nowrap' }}
                 >
                   See More{' '}
                   <span style={{
                     display: 'inline-block',
-                    animation: 'bounceDown 1.4s ease-in-out infinite',
-                  }}>↓</span>
+                    animation: 'bounceDiag 1.4s ease-in-out infinite',
+                  }}>↗</span>
                 </a>
               </p>
+
+              {/* Scroll-down cue */}
+              <div
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  bottom: 'clamp(24px, 5vh, 48px)',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '10px',
+                  pointerEvents: 'none',
+                }}
+              >
+                <span style={{
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: '0.72rem',
+                  fontWeight: 500,
+                  letterSpacing: '0.22em',
+                  textTransform: 'uppercase',
+                  color: dark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)',
+                }}>Scroll down</span>
+                <div style={{
+                  width: '22px',
+                  height: '36px',
+                  borderRadius: '12px',
+                  border: `1.5px solid ${dark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.4)'}`,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  paddingTop: '6px',
+                  boxSizing: 'border-box',
+                }}>
+                  <span style={{
+                    width: '3px',
+                    height: '8px',
+                    borderRadius: '2px',
+                    background: accent,
+                    animation: 'scrollCue 1.6s ease-in-out infinite',
+                  }} />
+                </div>
+              </div>
             </div>
           </div>
         </div>

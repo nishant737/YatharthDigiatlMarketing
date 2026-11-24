@@ -640,7 +640,7 @@ export default function HeroSection() {
               transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1], delay: 0.65 }}
               style={{ pointerEvents: 'auto', textAlign: 'left' }}
             >
-              <p style={{
+              <h1 style={{
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 300,
                 fontSize: 'clamp(0.82rem, 1.05vw, 0.95rem)',
@@ -648,9 +648,10 @@ export default function HeroSection() {
                 lineHeight: 1.65,
                 margin: '0 0 8px',
                 maxWidth: '280px',
+                letterSpacing: 'normal',
               }}>
-                We are a branding studio<br />that helps businesses<br />build lasting impact.
-              </p>
+                A digital marketing &amp; website<br />development agency in Mangalore,<br />building brands with lasting impact.
+              </h1>
               <a
                 href="#clients"
                 style={{

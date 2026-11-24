@@ -21,158 +21,22 @@ import bolpuImage1 from '../asset/bolpu01.jpg'
 import bolpuVideo1 from '../asset/bolpu01.mp4'
 import bolpuImage2 from '../asset/bolpu02.jpg'
 import bolpuVideo2 from '../asset/bolpu02.mp4'
-import kambalVideo1 from '../asset/kambala1.mp4'
-import kambalVideo2 from '../asset/kambala2.mp4'
-import kambalImage from '../asset/kambala3.jpg'
+import radianceVideo1 from '../asset/radiance01.mp4'
+import radianceVideo2 from '../asset/radiance02.mp4'
 import restoraImage1 from '../asset/restora01.jpg'
 import restoraImage2 from '../asset/restora02.jpg'
 import restoraImage3 from '../asset/restora03.jpg'
 import heroVideo from '../asset/herovideo.mp4'
 import heroSectionVideo from '../asset/heroSectionVideo.mp4'
+import { CASE_STUDIES } from '../data/caseStudies'
+import villageBoxLid from '../asset/village-box-lid.webp'
+import villageBoxBack from '../asset/village-box-back.webp'
+import villageBucketLid from '../asset/village-bucket-lid.webp'
+import villageBucketWrap from '../asset/village-bucket-wrap.webp'
+import villageBucketLabel from '../asset/village-bucket-label.webp'
+import { caseStudySeo, HOME_SEO } from '../data/site'
+import { useSeo } from '../hooks/useSeo'
 
-const CASE_STUDIES = {
-  'koin-home': {
-    title: 'Koin Home',
-    subtitle: 'Authentic Korean hospitality experience in Mangalore with modern comfort and warm design',
-    category: 'Brand Strategy',
-    year: '2025',
-    tag: 'Brand & Promotion',
-    image: null,
-    overview: 'KOIN HOME, a premium Korean hospitality destination in Mangalore, aimed to strengthen its brand visibility, attract more domestic and international guests, and establish a powerful digital presence. By offering an authentic Korean cultural stay experience combined with modern comfort and personalized hospitality, KOIN HOME sought to position itself as a preferred accommodation choice for travelers, professionals, and long-term guests in Mangalore.',
-    challenge: 'Despite delivering a unique Korean hospitality experience and high-quality accommodation, KOIN HOME faced challenges in building online brand awareness and reaching its ideal audience. Limited social media visibility, inconsistent digital marketing efforts, and low engagement across online platforms restricted its ability to attract new guests, increase bookings, and compete effectively within the growing hospitality and tourism market in Mangalore.',
-    solution: null,
-    results: null,
-    process: null,
-    solutionPoints: [
-      'Developed a strong social media strategy to showcase KOIN HOME\'s unique Korean hospitality experience.',
-      'Created high-quality reels, photography, and engaging content highlighting the property, culture, and guest experience.',
-      'Improved brand storytelling through consistent visual identity and content planning.',
-      'Increased online visibility and audience engagement across social media platforms.',
-      'Built trust and awareness through authentic content and targeted digital marketing efforts.',
-    ],
-  },
-  'amata-building-care': {
-    title: 'AMATA BUILDING CARE',
-    subtitle: 'Building Care Solutions Brand Development',
-    category: 'Brand Strategy',
-    year: '2024',
-    tag: 'Digital Marketing',
-    image: null,
-    overview: 'AMATA Building Care, a leading provider of building care and maintenance products, partnered with us to strengthen its digital presence, enhance brand visibility, and create a more engaging connection with its target audience. Our collaboration focused on social media marketing, event branding, and creative design support to position AMATA as a trusted name in the building care industry.',
-    challenge: 'Despite offering high-quality building care solutions, AMATA Building Care faced challenges in establishing a strong digital presence and consistently communicating its brand value to customers and industry stakeholders. The brand needed a cohesive marketing strategy to increase awareness, showcase its expertise, and create a professional brand experience during key industry events.',
-    solution: 'We developed a premium brand identity that emphasized reliability, professionalism, and comprehensive service offerings. Created targeted marketing campaigns and positioned them across luxury property segments.',
-    results: null,
-    process: null,
-    solutionPoints: [
-      'Strategic Social Media Management: Managed and optimized AMATA Building Care\'s Instagram presence through consistent content planning, scheduling, and audience engagement strategies.',
-      'Creative Content & Graphic Design: Designed high-quality graphics and marketing creatives that effectively showcased AMATA\'s building care products, solutions, and industry expertise.',
-      'Enhanced Brand Communication: Developed a cohesive visual identity and content approach to strengthen brand recognition and maintain consistency across digital platforms.',
-      'Event Branding & Marketing Support: Provided end-to-end creative support for AMATA\'s Mumbai event, including event branding, promotional creatives, marketing collateral, and display assets.',
-      'Consistent Brand Experience Across Touchpoints: Ensured a unified brand presence across social media, event materials, and marketing communications, helping AMATA build credibility, visibility, and stronger industry engagement.',
-    ],
-  },
-  'eta': {
-    title: 'ETA Logistics',
-    subtitle: 'Social Media Strategy & Brand Building for Supply Chain Solutions',
-    category: 'Social Media Marketing',
-    year: '2024',
-    tag: 'Digital Marketing',
-    image: null,
-    overview: 'ETA Logistics, a logistics and supply chain solutions company, partnered with us to strengthen its digital presence and maintain a consistent brand image across social media. Our focus was on creating engaging content that showcased the company\'s services, industry expertise, and operational capabilities while building brand awareness online.',
-    challenge: 'Despite having a strong presence in the logistics sector, ETA Logistics had limited visibility on social media and lacked a consistent content strategy to effectively communicate its services and industry expertise. The brand needed a professional digital presence to engage potential clients and reinforce its credibility in a competitive market.',
-    solution: null,
-    results: null,
-    process: null,
-    solutionPoints: [
-      'Strategic Social Media Management: Managed ETA Logistics\' Instagram presence through structured content planning, scheduling, and ongoing account management.',
-      'Industry-Focused Content Creation: Created informative and engaging content that highlighted logistics solutions, supply chain expertise, industry updates, and company services.',
-      'Consistent Brand Communication: Maintained a cohesive visual identity and messaging strategy to ensure a professional and recognizable brand presence.',
-      'Increased Digital Visibility: Implemented content strategies designed to improve reach, engagement, and overall brand awareness among target audiences.',
-      'Long-Term Brand Growth Support: Provided continuous social media marketing support for over a year, helping ETA Logistics establish a stronger and more consistent online presence.',
-    ],
-  },
-  'net-zero': {
-    title: 'NET ZERO VISION',
-    subtitle: 'Sustainable Tomorrow Initiative - Building Climate Action Through Digital Engagement',
-    category: 'Sustainability Marketing',
-    year: '2024',
-    tag: 'Environmental Impact',
-    image: null,
-    overview: 'NET ZERO Vision is a comprehensive sustainability initiative dedicated to promoting zero-waste practices and climate-positive action. We partnered with them to create a powerful digital campaign that transformed environmental awareness into tangible community engagement, reaching conscious consumers and organizations committed to building a sustainable future.',
-    challenge: 'With growing climate concerns, NET ZERO Vision struggled to break through information overload and build meaningful connections with target audiences. Limited budget, lack of influencer partnerships, and insufficient digital infrastructure made it difficult to communicate the urgency of sustainability without seeming preachy or disconnected from real-world impact.',
-    solution: null,
-    results: null,
-    process: null,
-    solutionPoints: [
-      'Strategic Digital Campaign Development: Crafted multi-channel marketing strategy combining social media, email campaigns, and digital PR to reach environmentally conscious audiences with authentic, actionable sustainability messaging.',
-      'Influencer & Community Partnerships: Collaborated with sustainability-focused creators and environmental advocates to amplify NET ZERO\'s message, lending credibility and extending reach to engaged communities already invested in climate action.',
-      'Educational Content Creation: Produced compelling storytelling content highlighting zero-waste solutions, industry best practices, and personal impact stories that educated audiences while inspiring behavioral change.',
-      'Event Marketing & Activation: Designed and executed comprehensive event marketing strategy including pre-event digital promotion, live social coverage, and post-event engagement campaigns to drive attendance and participation.',
-      'Impact Measurement & Community Building: Implemented tracking systems to measure engagement, attendance conversion, and social sentiment, while building a growing community of sustainability advocates and brand ambassadors.',
-    ],
-  },
-  'bolpu': {
-    title: 'BOLPU – A Dawn of Opportunities',
-    subtitle: 'Startup Incubation & Mentorship Program - Transforming Local Ideas Into Global Enterprises',
-    category: 'Startup Growth',
-    year: '2024',
-    tag: 'Entrepreneurship & Brand Building',
-    image: null,
-    overview: 'BOLPU is a transformative startup incubation and mentorship program dedicated to helping aspiring entrepreneurs turn innovative business ideas into successful, sustainable companies. By focusing on ventures rooted in local strengths with national and global potential, BOLPU creates a thriving ecosystem where emerging businesses receive strategic guidance, resources, and community support to scale and succeed.',
-    challenge: 'Emerging startups and entrepreneurs lacked visibility, structured mentorship, and access to critical resources needed for sustainable growth. The challenge was to build awareness about the program, attract quality entrepreneurs, establish credibility within the startup ecosystem, and create compelling narratives around founder stories and success journeys.',
-    solution: null,
-    results: null,
-    process: null,
-    solutionPoints: [
-      'Brand Identity & Program Positioning: Developed a compelling brand narrative that positioned BOLPU as the bridge between local entrepreneurial talent and global market opportunities, emphasizing mentorship, support, and success stories.',
-      'Multi-Channel Digital Marketing Campaign: Created integrated marketing across social media, email, and digital platforms to reach aspiring entrepreneurs, investors, and stakeholders with targeted messaging about program benefits.',
-      'Founder Story & Impact Content: Produced authentic storytelling content highlighting cohort member journeys, pitch sessions, mentorship interactions, and real business outcomes to build trust and inspire participation.',
-      'Community Building & Engagement: Developed strategies to foster an active community of entrepreneurs, mentors, and industry partners through events, webinars, and peer-to-peer networking initiatives.',
-      'Growth Catalyst Positioning: Positioned BOLPU as a catalyst for transforming local talent into global enterprises, showcasing how the program bridges the gap between ideation and market success.',
-    ],
-  },
-  'mangalore-kambala': {
-    title: 'Mangalore Kambala',
-    subtitle: 'Preserving Tradition While Embracing Digital - Revitalizing a Centuries-Old Cultural Icon',
-    category: 'Cultural Events & Heritage Marketing',
-    year: '2024',
-    tag: 'Digital Event Promotion',
-    image: null,
-    overview: 'Mangalore Kambala, a historic buffalo racing tradition steeped in cultural heritage, required a transformative digital marketing strategy to bridge the gap between its traditional audience and modern, younger demographics. We partnered to elevate this centuries-old event, creating compelling digital narratives that honored its cultural significance while expanding its reach through contemporary platforms and storytelling.',
-    challenge: 'Despite its deep cultural roots, Mangalore Kambala faced challenges in maintaining relevance with younger audiences and expanding beyond regional boundaries. The event struggled with limited digital presence, outdated marketing approaches, and difficulty in communicating its cultural importance to diverse demographics who had little awareness of this iconic tradition.',
-    solution: null,
-    results: null,
-    process: null,
-    solutionPoints: [
-      'Heritage-Focused Digital Storytelling: Created compelling content that celebrated the cultural significance, history, and tradition of Mangalore Kambala while framing it as a modern cultural experience worth experiencing and sharing.',
-      'Multi-Platform Campaign Strategy: Developed integrated digital campaigns across social media, video platforms, and digital advertising to reach both traditional audiences and younger demographics with targeted, culturally relevant messaging.',
-      'Influencer & Creator Partnerships: Collaborated with regional influencers, content creators, and cultural ambassadors to authentically promote the event and reach new audiences through trusted voices and engaging content formats.',
-      'Live Streaming & Real-Time Engagement: Implemented comprehensive live streaming strategy with behind-the-scenes content, interactive elements, and real-time engagement to bring the event experience to audiences unable to attend physically.',
-      'Community Building & Cultural Advocacy: Fostered a digital community of cultural enthusiasts, tradition advocates, and event participants, positioning Mangalore Kambala as an essential cultural experience for preserving and celebrating regional heritage.',
-    ],
-  },
-  'olive': {
-    title: 'OLIVE',
-    subtitle: 'Website Development & Digital Analytics Integration - Building a Data-Driven Web Presence',
-    category: 'Web Development & Analytics',
-    year: '2024',
-    tag: 'Technical SEO & Performance',
-    image: null,
-    overview: 'OLIVE partnered with us to build a modern, high-performance website and establish comprehensive digital analytics infrastructure. Our mission was to create a robust online presence that not only showcased their brand effectively but also provided deep insights into user behavior, performance metrics, and search engine visibility through integrated analytics and monitoring tools.',
-    challenge: 'OLIVE needed a powerful web presence with complete visibility into their digital performance. Without proper analytics and SEO infrastructure, they were unable to understand user behavior, track conversions, or optimize for search engines. The challenge was building a website that served both users and business objectives while establishing measurable performance tracking.',
-    solution: 'We developed a comprehensive web solution incorporating modern design, robust technical architecture, and enterprise-grade analytics infrastructure to ensure data-driven decision making.',
-    results: null,
-    process: null,
-    solutionPoints: [
-      'Professional Website Development: Built a modern, responsive website with clean architecture, fast loading times, and optimized performance across all devices and browsers.',
-      'Google Analytics Integration: Implemented comprehensive Google Analytics 4 tracking with custom events, conversion tracking, and detailed user journey analysis to measure engagement and performance.',
-      'Microsoft Clarity Implementation: Integrated Microsoft Clarity for session recordings, heatmaps, and user behavior analysis to understand how visitors interact with the website in real-time.',
-      'SEO Optimization & Technical SEO: Implemented on-page SEO best practices, optimized meta tags, structured data markup, XML sitemaps, and robot.txt configuration to improve search engine visibility.',
-      'Performance Monitoring & Continuous Optimization: Set up performance dashboards and monitoring systems to track key metrics, identify bottlenecks, and continuously improve website speed and user experience.',
-      'Conversion Tracking & Goal Implementation: Configured detailed conversion tracking and goal setup to measure business outcomes and ROI from web traffic.',
-    ],
-  },
-}
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -180,6 +44,9 @@ const fadeUp = (delay = 0) => ({
   viewport: { once: true, margin: '-60px' },
   transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1], delay },
 })
+
+// Case studies that have no photos/videos yet: the media column is hidden
+const NO_MEDIA = []
 
 export default function CaseStudyPage() {
   const { caseStudyId } = useParams()
@@ -192,6 +59,7 @@ export default function CaseStudyPage() {
   }, [caseStudyId])
 
   const study = CASE_STUDIES[caseStudyId]
+  useSeo(study ? caseStudySeo(caseStudyId, study) : HOME_SEO)
 
   if (!study) {
     return (
@@ -510,6 +378,10 @@ export default function CaseStudyPage() {
                   grid-template-columns: 1fr;
                   gap: 60px;
                 }
+                .solutions-wrapper.no-media {
+                  grid-template-columns: 1fr !important;
+                  max-width: 900px;
+                }
 
                 @media (min-width: 1024px) {
                   .solutions-wrapper {
@@ -559,7 +431,7 @@ export default function CaseStudyPage() {
                 }
               `}</style>
 
-              <div className={`solutions-wrapper ${caseStudyId === 'olive' ? 'olive-layout' : ''}`}>
+              <div className={`solutions-wrapper ${caseStudyId === 'olive' ? 'olive-layout' : ''} ${NO_MEDIA.includes(caseStudyId) ? 'no-media' : ''}`}>
                 {/* Left Column: Solution Points */}
                 <motion.div
                   className="solutions-left-content"
@@ -621,6 +493,7 @@ export default function CaseStudyPage() {
                 </motion.div>
 
                 {/* Right Column: Media Portfolio */}
+                {!NO_MEDIA.includes(caseStudyId) && (
                 <div className="solutions-right-content">
                   {(() => {
                     const mediaByCase = {
@@ -653,10 +526,17 @@ export default function CaseStudyPage() {
                         { type: 'image', src: bolpuImage2, title: 'Founder Community Building' },
                         { type: 'video', src: bolpuVideo2, title: 'Startup Mentorship Sessions' },
                       ],
-                      'mangalore-kambala': [
-                        { type: 'video', src: kambalVideo1, title: 'The Spirit of Tradition' },
-                        { type: 'image', src: kambalImage, title: 'Cultural Heritage Showcase' },
-                        { type: 'video', src: kambalVideo2, title: 'Event Highlights & Action' },
+                      'radiance': [
+                        { type: 'video', src: radianceVideo1, title: 'Radiance by Hotel Roopa' },
+                        { type: 'video', src: radianceVideo2, title: 'The Radiance Experience' },
+                      ],
+                      // aspect: keep each artwork's own shape. bare: transparent cut-out, shown without a card
+                      'village': [
+                        { type: 'image', src: villageBoxLid, title: 'Village Biryani box: lid artwork', aspect: '1600 / 1292' },
+                        { type: 'image', src: villageBucketLid, title: 'Bucket Biryani lid', aspect: '1 / 1', bare: true },
+                        { type: 'image', src: villageBucketWrap, title: 'Bucket Biryani wrap-around label', aspect: '1982 / 705', bare: true },
+                        { type: 'image', src: villageBucketLabel, title: 'Bucket Biryani label panels', aspect: '2000 / 678' },
+                        { type: 'image', src: villageBoxBack, title: 'Village Biryani box: back panel', aspect: '1600 / 1285' },
                       ],
                       'olive': [
                         { type: 'video', src: heroSectionVideo, title: 'Hero Video Showcase' },
@@ -670,11 +550,11 @@ export default function CaseStudyPage() {
                       viewport={{ once: true, margin: '-80px' }}
                       transition={{ duration: 0.7, delay: item * 0.05 }}
                       style={{
-                        borderRadius: '12px',
+                        borderRadius: media.bare ? 0 : '12px',
                         overflow: 'hidden',
-                        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
-                        aspectRatio: caseStudyId === 'net-zero' ? '3 / 4' : (['amata-building-care', 'eta', 'bolpu', 'olive'].includes(caseStudyId) ? '4 / 5' : caseStudyId === 'mangalore-kambala' ? '9 / 16' : '9 / 16'),
-                        background: 'var(--bg-section)',
+                        boxShadow: media.bare ? 'none' : '0 12px 40px rgba(0, 0, 0, 0.15)',
+                        aspectRatio: media.aspect || (caseStudyId === 'net-zero' ? '3 / 4' : (['amata-building-care', 'eta', 'bolpu', 'olive'].includes(caseStudyId) ? '4 / 5' : '9 / 16')),
+                        background: media.bare ? 'transparent' : 'var(--bg-section)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -682,10 +562,10 @@ export default function CaseStudyPage() {
                         transition: 'box-shadow 0.3s ease',
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.boxShadow = '0 16px 48px rgba(0, 0, 0, 0.2)'
+                        if (!media.bare) e.currentTarget.style.boxShadow = '0 16px 48px rgba(0, 0, 0, 0.2)'
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.15)'
+                        if (!media.bare) e.currentTarget.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.15)'
                       }}
                     >
                       {media.type === 'video' ? (
@@ -708,7 +588,7 @@ export default function CaseStudyPage() {
                           style={{
                             width: '100%',
                             height: '100%',
-                            objectFit: 'cover',
+                            objectFit: media.bare ? 'contain' : 'cover',
                             display: 'block',
                           }}
                           loading="lazy"
@@ -718,6 +598,7 @@ export default function CaseStudyPage() {
                     ))
                   })()}
                 </div>
+                )}
               </div>
             </div>
           </section>

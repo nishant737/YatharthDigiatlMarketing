@@ -7,6 +7,8 @@ import LoadingScreen from './components/LoadingScreen'
 import Navbar from './components/Navbar'
 import HeroSection from './components/HeroSection'
 import CaseStudyPage from './components/CaseStudyPage'
+import { useSeo } from './hooks/useSeo'
+import { HOME_SEO } from './data/site'
 
 // Lazy-load all below-the-fold sections to reduce initial bundle parse time
 const StorySection       = lazy(() => import('./components/StorySection'))
@@ -19,11 +21,13 @@ const FAQSection         = lazy(() => import('./components/FAQSection'))
 const JournalSection     = lazy(() => import('./components/JournalSection'))
 const ClosingSection     = lazy(() => import('./components/ClosingSection'))
 const ContactSection     = lazy(() => import('./components/ContactSection'))
+const WorkByServicePage  = lazy(() => import('./components/WorkByServicePage'))
 const ChatBot            = lazy(() => import('./components/ChatBot'))
 const MusicPlayer        = lazy(() => import('./components/MusicPlayer'))
 const ReelWidget         = lazy(() => import('./components/ReelWidget'))
 
 function HomePage({ loaded }) {
+  useSeo(HOME_SEO)
   return (
     <main style={{ background: 'var(--bg-primary)' }}>
         <HeroSection />
@@ -71,6 +75,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage loaded={loaded} />} />
           <Route path="/case-study/:caseStudyId" element={<CaseStudyPage />} />
+          <Route path="/our-work" element={<Suspense fallback={null}><WorkByServicePage /></Suspense>} />
         </Routes>
 
         {/* Global UI Elements — appear on all pages */}
