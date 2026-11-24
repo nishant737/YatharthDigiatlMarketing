@@ -73,7 +73,14 @@ const STYLE = `<style>
 .pr h2{font-size:1.3rem;margin:2em 0 .6em}.pr h3{font-size:1.05rem;margin:1.2em 0 .3em}
 .pr p,.pr li,.pr dd{color:#b9b4ab;max-width:780px}.pr nav a{margin-right:18px}
 .pr dt{font-weight:600;margin-top:1em}.pr dd{margin:0}
+.pr-cover{position:fixed;inset:0;z-index:2147483647;background:#0a0806;display:flex;align-items:center;justify-content:center}
+.pr-cover img{width:min(220px,50vw);height:auto;filter:brightness(0) invert(1);opacity:.9}
+html:has(.pr-cover){overflow:hidden;background:#0a0806}
 </style>`
+
+// Visitors never see the crawler text: this splash matches the React
+// LoadingScreen and sits on top until React mounts and replaces #root.
+const COVER = `<div class="pr-cover" aria-hidden="true"><img src="/logo.png" alt="" width="600" height="335"></div>`
 
 const NAV = `<nav aria-label="Main"><a href="/">Home</a><a href="/our-work">Our work</a><a href="/#faq">FAQ</a><a href="/#contact">Contact</a></nav>`
 
@@ -142,7 +149,7 @@ function renderPage({ seo, schemas, body }) {
   html = setTag(html, /<meta name="twitter:title"[^>]*>/, `<meta name="twitter:title" content="${esc(seo.title)}" />`)
   html = setTag(html, /<meta name="twitter:description"[^>]*>/, `<meta name="twitter:description" content="${esc(seo.description)}" />`)
   html = html.replace('</head>', `    ${schemas.map(jsonLd).join('\n    ')}\n  </head>`)
-  html = setTag(html, /<div id="root"><\/div>/, `<div id="root">${STYLE}<div class="pr">${NAV}${body}</div></div>`)
+  html = setTag(html, /<div id="root"><\/div>/, `<div id="root">${STYLE}${COVER}<div class="pr">${NAV}${body}</div></div>`)
   return html
 }
 
