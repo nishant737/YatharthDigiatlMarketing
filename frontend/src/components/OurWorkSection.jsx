@@ -13,6 +13,7 @@ import mobileImg2 from '../../mobile-view/village-mobileview.jpg'
 import mobileImg3 from '../../mobile-view/NET_Zero_Vision-mobile.jpg'
 import mobileImg17 from '../../mobile-view/Koinhome-mobile.jpg'
 import mobileImgOlive from '../../mobile-view/Olive-Mobile.jpg'
+import mobileImgRadiance from '../../mobile-view/Radiance-mobile.jpg'
 
 
 const PROJECTS = [
@@ -243,6 +244,7 @@ const mobileImageMap = {
   'net-zero': mobileImg3,
   'bolpu': mobileImg1,
   'olive': mobileImgOlive,
+  'radiance': mobileImgRadiance,
 }
 
 export default function OurWorkSection() {
