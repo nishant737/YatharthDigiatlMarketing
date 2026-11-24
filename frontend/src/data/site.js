@@ -14,7 +14,7 @@ export const SITE = {
   country: 'IN',
   founder: 'Eshwar Shetty',
   logo: '/logo.png',
-  ogImage: '/og-image.jpg',
+  ogImage: '/og-yatharth-2026.jpg',
   sameAs: [
     'https://www.instagram.com/yatharthsocial/',
     'https://www.linkedin.com/company/yatharth-social/',
