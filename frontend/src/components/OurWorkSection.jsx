@@ -1,22 +1,52 @@
 import { useRef, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../ThemeContext'
-import img1 from '../asset/BOLPU_Image.jpg'
+import imgAlvas from '../asset/Alvas_Schools_Image.jpg'
+import imgVaibhav from '../asset/Vaibhav_Veda_Image.jpg'
+import imgMsDev from '../asset/MS_Developers_Image.jpg'
+import imgGoldfinch from '../asset/Goldfinch_Image.jpg'
 import img2 from '../asset/village-dekstopview.jpg'
 import img3 from '../asset/NET_Zero_Vision_Image.jpg'
 import img16 from '../asset/Amata_Image.jpg'
 import imgRadiance from '../asset/radiance.jpg'
 import img17 from '../asset/Koin_Home_Image.jpg'
 import imgOlive from '../asset/Olive-Dekstop.jpg'
-import mobileImg1 from '../../mobile-view/BOLPU-Mobile.jpg'
 import mobileImg2 from '../../mobile-view/village-mobileview.jpg'
 import mobileImg3 from '../../mobile-view/NET_Zero_Vision-mobile.jpg'
 import mobileImg17 from '../../mobile-view/Koinhome-mobile.jpg'
 import mobileImgOlive from '../../mobile-view/Olive-Mobile.jpg'
 import mobileImgRadiance from '../../mobile-view/Radiance-mobile.jpg'
+import mobileImgAlvas from '../../mobile-view/Alvas-mobile.jpg'
+import mobileImgVaibhav from '../../mobile-view/VaibhavVeda-mobile.jpg'
+import mobileImgMsDev from '../../mobile-view/MSDevelopers-mobile.jpg'
+import mobileImgGoldfinch from '../../mobile-view/Goldfinch-mobile.jpg'
 
 
 const PROJECTS = [
+  {
+    title: 'Vaibhav Veda Green Ventures',
+    category: 'Website Development',
+    tag: 'Next.js, SEO, AEO & GEO',
+    year: '2026',
+    image: imgVaibhav,
+    caseStudyId: 'vaibhav-veda',
+  },
+  {
+    title: 'MS Developers',
+    category: 'Website, Social Media & Ads',
+    tag: 'Lead Capture with CRM Integration',
+    year: '2026',
+    image: imgMsDev,
+    caseStudyId: 'ms-developers',
+  },
+  {
+    title: 'Goldfinch Mangaluru',
+    category: 'Performance Marketing',
+    tag: 'Social Media & Booking Campaigns',
+    year: '2026',
+    image: imgGoldfinch,
+    caseStudyId: 'goldfinch',
+  },
   {
     title: 'Koin Home',
     category: 'Brand Strategy',
@@ -51,12 +81,12 @@ const PROJECTS = [
     caseStudyId: 'net-zero',
   },
   {
-    title: 'BOLPU',
-    category: 'Brand Strategy',
-    tag: 'Digital Marketing',
-    year: '2024',
-    image: img1,
-    caseStudyId: 'bolpu',
+    title: "Alva's Schools",
+    category: 'Performance Marketing',
+    tag: 'Admissions Campaign & Social Media',
+    year: '2026',
+    image: imgAlvas,
+    caseStudyId: 'alvas-schools',
   },
   {
     title: 'Radiance',
@@ -242,9 +272,12 @@ const mobileImageMap = {
   'koin-home': mobileImg17,
   'village': mobileImg2,
   'net-zero': mobileImg3,
-  'bolpu': mobileImg1,
   'olive': mobileImgOlive,
   'radiance': mobileImgRadiance,
+  'alvas-schools': mobileImgAlvas,
+  'vaibhav-veda': mobileImgVaibhav,
+  'ms-developers': mobileImgMsDev,
+  'goldfinch': mobileImgGoldfinch,
 }
 
 export default function OurWorkSection() {

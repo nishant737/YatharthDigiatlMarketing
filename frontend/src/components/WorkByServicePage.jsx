@@ -10,6 +10,10 @@ import imgAmata from '../asset/Amata_Image.jpg'
 import imgVillage from '../asset/village-dekstopview.jpg'
 import imgNetZero from '../asset/NET_Zero_Vision_Image.jpg'
 import imgBolpu from '../asset/BOLPU_Image.jpg'
+import imgAlvas from '../asset/Alvas_Schools_Image.jpg'
+import imgVaibhav from '../asset/Vaibhav_Veda_Image.jpg'
+import imgMsDev from '../asset/MS_Developers_Image.jpg'
+import imgGoldfinch from '../asset/Goldfinch_Image.jpg'
 import imgRadiance from '../asset/radiance.jpg'
 import imgOlive from '../asset/Olive-Dekstop.jpg'
 import imgEta from '../asset/etafinalfix.jpg'
@@ -22,6 +26,10 @@ const CLIENT_IMAGES = {
   'eta':                 { image: imgEta,      position: 'center' },
   'village':             { image: imgVillage,  position: 'center' },
   'bolpu':               { image: imgBolpu,    position: 'center' },
+  'alvas-schools':       { image: imgAlvas,    position: 'center' },
+  'vaibhav-veda':        { image: imgVaibhav,  position: 'center' },
+  'ms-developers':       { image: imgMsDev,    position: 'center' },
+  'goldfinch':           { image: imgGoldfinch, position: 'center' },
   'net-zero':            { image: imgNetZero,  position: 'center' },
 }
 

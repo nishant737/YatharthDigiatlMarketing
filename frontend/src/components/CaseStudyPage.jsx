@@ -27,6 +27,18 @@ import restoraImage1 from '../asset/restora01.jpg'
 import restoraImage2 from '../asset/restora02.jpg'
 import restoraImage3 from '../asset/restora03.jpg'
 import heroVideo from '../asset/herovideo.mp4'
+import alvasVideo1 from '../asset/alvas01.mp4'
+import alvasVideo2 from '../asset/alvas02.mp4'
+import alvasPoster1 from '../asset/alvas01-poster.jpg'
+import alvasPoster2 from '../asset/alvas02-poster.jpg'
+import msDevVideo1 from '../asset/msdev01.mp4'
+import msDevVideo2 from '../asset/msdev02.mp4'
+import msDevPoster1 from '../asset/msdev01-poster.jpg'
+import msDevPoster2 from '../asset/msdev02-poster.jpg'
+import goldfinchVideo1 from '../asset/goldfinch01.mp4'
+import goldfinchVideo2 from '../asset/goldfinch02.mp4'
+import goldfinchPoster1 from '../asset/goldfinch01-poster.jpg'
+import goldfinchPoster2 from '../asset/goldfinch02-poster.jpg'
 import heroSectionVideo from '../asset/heroSectionVideo.mp4'
 import { CASE_STUDIES } from '../data/caseStudies'
 import villageBoxLid from '../asset/village-box-lid.webp'
@@ -46,7 +58,7 @@ const fadeUp = (delay = 0) => ({
 })
 
 // Case studies that have no photos/videos yet: the media column is hidden
-const NO_MEDIA = []
+const NO_MEDIA = ['vaibhav-veda']
 
 export default function CaseStudyPage() {
   const { caseStudyId } = useParams()
@@ -197,7 +209,7 @@ export default function CaseStudyPage() {
                   wordBreak: 'break-all',
                 }}
               >
-                Visit live website: {study.website.replace(/^https?:\/\/(www\.)?/, '')} ↗
+                Visit live website: {study.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')} ↗
               </motion.a>
             )}
           </div>
@@ -554,6 +566,18 @@ export default function CaseStudyPage() {
                         { type: 'image', src: bolpuImage2, title: 'Founder Community Building' },
                         { type: 'video', src: bolpuVideo2, title: 'Startup Mentorship Sessions' },
                       ],
+                      'goldfinch': [
+                        { type: 'video', src: goldfinchVideo1, poster: goldfinchPoster1, title: 'Goldfinch Kitchen Reel' },
+                        { type: 'video', src: goldfinchVideo2, poster: goldfinchPoster2, title: 'Goldfinch Guest Experience' },
+                      ],
+                      'ms-developers': [
+                        { type: 'video', src: msDevVideo1, poster: msDevPoster1, title: 'MS Developers Villa Reel' },
+                        { type: 'video', src: msDevVideo2, poster: msDevPoster2, title: 'MS Developers Villa Walkthrough' },
+                      ],
+                      'alvas-schools': [
+                        { type: 'video', src: alvasVideo1, poster: alvasPoster1, title: "Alva's Schools Admissions Ad" },
+                        { type: 'video', src: alvasVideo2, poster: alvasPoster2, title: "Alva's Schools Campus Reel" },
+                      ],
                       'radiance': [
                         { type: 'video', src: radianceVideo1, title: 'Radiance by Hotel Roopa' },
                         { type: 'video', src: radianceVideo2, title: 'The Radiance Experience' },
@@ -607,7 +631,9 @@ export default function CaseStudyPage() {
                           }}
                           controls
                           controlsList="nodownload"
-                          poster={media.src}
+                          poster={media.poster || media.src}
+                          preload="metadata"
+                          playsInline
                         />
                       ) : (
                         <img
